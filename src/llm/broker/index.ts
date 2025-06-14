@@ -19,10 +19,13 @@ export class LLM {
      * @param serviceOptions - Configuration options for the LLM service
      */
     constructor(serviceOptions: Types.ILLMServiceOptions) {
-        this.config = { ...CONSTS.DEFAULT_LLM_CONFIG, ...serviceOptions.config };
+        this.config = {
+            ...CONSTS.DEFAULT_LLM_CONFIG,
+            ...serviceOptions.config,
+        };
         this.options = { ...CONSTS.DEFAULT_SERVICE_OPTIONS, ...serviceOptions };
         this.providerFactory = new ProviderFactory();
-        
+
         // Auto-detect provider or use specified one
         const providerName = this.detectProvider();
         this.provider = this.providerFactory.createProvider(providerName);
@@ -49,19 +52,21 @@ export class LLM {
             readonly temperature?: number;
             readonly maxTokens?: number;
             readonly additionalParams?: Record<string, unknown>;
-        }
+        },
     ): Promise<Types.TLLMResponse> {
         const request: Types.ILLMRequest = {
             model: this.config.model,
             messages,
-            temperature: requestOptions?.temperature ?? this.options.defaultTemperature,
-            maxTokens: requestOptions?.maxTokens ?? this.options.defaultMaxTokens,
+            temperature:
+                requestOptions?.temperature ?? this.options.defaultTemperature,
+            maxTokens:
+                requestOptions?.maxTokens ?? this.options.defaultMaxTokens,
             stream: false,
             additionalParams: requestOptions?.additionalParams,
         };
 
         const requestBody = this.provider.transformRequest(request);
-        
+
         try {
             const response = await this.httpClient.request({
                 method: 'POST',
@@ -71,7 +76,11 @@ export class LLM {
 
             return this.provider.transformResponse(response.data);
         } catch (error) {
-            throw this.handleError(error);
+            const err = this.handleError(error);
+            const wrappedError = new Error(err.message);
+            Object.assign(wrappedError, { err });
+
+            throw wrappedError;
         }
     }
 
@@ -88,11 +97,12 @@ export class LLM {
         requestOptions?: {
             readonly temperature?: number;
             readonly maxTokens?: number;
-        }
+        },
     ): Promise<string> {
         const messages: Types.ILLMMessage[] = [];
-        
-        if (systemMessage) messages.push({ role: 'system', content: systemMessage });        
+
+        if (systemMessage)
+            messages.push({ role: 'system', content: systemMessage });
         messages.push({ role: 'user', content: prompt });
 
         const response = await this.chatCompletion(messages, requestOptions);
@@ -124,7 +134,7 @@ export class LLM {
         provider: Types.Provider.TName,
         apiKey: string | undefined,
         model: string,
-        overrides?: Partial<Types.ILLMConfig>
+        overrides?: Partial<Types.ILLMConfig>,
     ): LLM {
         const factory = new ProviderFactory();
         const defaultConfig = factory.getDefaultConfig(provider);
@@ -143,10 +153,10 @@ export class LLM {
      * @returns Detected provider name
      */
     private detectProvider(): Types.Provider.TName {
-        if (this.config.baseURL?.includes('api.openai.com')) {
+        if (this.config.baseURL.includes('api.openai.com')) {
             return 'openai';
         }
-        if (this.config.baseURL?.includes('api.anthropic.com')) {
+        if (this.config.baseURL.includes('api.anthropic.com')) {
             return 'anthropic';
         }
         return 'local';
@@ -156,19 +166,32 @@ export class LLM {
     private setupInterceptors(): void {
         this.httpClient.interceptors.response.use(
             (response) => response,
-            async (error) => {
-                const config = error.config as AxiosRequestConfig & { _retryCount?: number };
-                const retryCount = config._retryCount ?? 0;
-                
-                if (this.shouldRetry(error) && retryCount < (this.config.maxRetries ?? 3)) {
-                    config._retryCount = retryCount + 1;
-                    const delay = CONSTS.RETRY_DELAYS[retryCount] ?? CONSTS.RETRY_DELAYS[CONSTS.RETRY_DELAYS.length - 1];
-                    await this.delay(delay);
-                    return this.httpClient.request(config);
+            async (error: unknown) => {
+                if (axios.isAxiosError(error) && error.config) {
+                    const config = error.config as AxiosRequestConfig & {
+                        _retryCount?: number;
+                    };
+                    const retryCount = config._retryCount ?? 0;
+
+                    if (
+                        this.shouldRetry(error) &&
+                        retryCount < (this.config.maxRetries ?? 3)
+                    ) {
+                        config._retryCount = retryCount + 1;
+                        const delay =
+                            CONSTS.RETRY_DELAYS[retryCount] ??
+                            CONSTS.RETRY_DELAYS[CONSTS.RETRY_DELAYS.length - 1];
+                        await this.delay(delay);
+                        return this.httpClient.request(config);
+                    }
                 }
-                
-                return Promise.reject(error);
-            }
+
+                return Promise.reject(
+                    error instanceof Error
+                        ? error
+                        : new Error('Unexpected error'),
+                );
+            },
         );
     }
 
@@ -180,7 +203,10 @@ export class LLM {
     private shouldRetry(error: unknown): boolean {
         if (axios.isAxiosError(error)) {
             const status = error.response?.status;
-            return status !== undefined && CONSTS.RETRYABLE_STATUS_CODES.includes(status as never);
+            return (
+                status !== undefined &&
+                CONSTS.RETRYABLE_STATUS_CODES.includes(status as never)
+            );
         }
         return false;
     }
@@ -198,27 +224,32 @@ export class LLM {
     }
 
     /**
-     * Handles and transforms errors into standardized format
+     * Handles and transforms errors into standardised format
      * @param error - The original error
-     * @returns Standardized LLM error
+     * @returns Standardised LLM error
      */
     private handleError(error: unknown): Types.ILLMError {
         if (axios.isAxiosError(error)) {
             const status = error.response?.status ?? 0;
             const errorType = CONSTS.ERROR_TYPE_MAP[status] ?? 'unknown';
-            
+
             return {
                 type: errorType,
                 message: error.message,
                 statusCode: status,
-                retryable: CONSTS.RETRYABLE_STATUS_CODES.includes(status as never),
+                retryable: CONSTS.RETRYABLE_STATUS_CODES.includes(
+                    status as never,
+                ),
                 originalError: error,
             };
         }
 
         return {
             type: 'unknown',
-            message: error instanceof Error ? error.message : 'Unknown error occurred',
+            message:
+                error instanceof Error
+                    ? error.message
+                    : 'Unknown error occurred',
             retryable: false,
             originalError: error,
         };
@@ -230,6 +261,6 @@ export class LLM {
      * @returns Promise that resolves after the delay
      */
     private async delay(ms: number): Promise<void> {
-        return new Promise(resolve => setTimeout(resolve, ms));
+        return new Promise((resolve) => setTimeout(resolve, ms));
     }
 }

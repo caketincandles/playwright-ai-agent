@@ -1,6 +1,6 @@
 import * as Types from '../types';
 import * as CONSTS from '../consts';
-import * as Logger from '../../logger'
+import * as Logger from '../../../../lib/services/logger';
 import { OpenAI } from './open-ai';
 import { Anthropic } from './anthropic';
 import { Local } from './local';
@@ -9,7 +9,10 @@ export { OpenAI, Anthropic, Local };
 
 /** Factory for creating LLM provider instances - centralises instantiation and config */
 export class ProviderFactory implements Types.Provider.IFactory {
-    private readonly providers = new Map<Types.Provider.TName, Types.Provider.IBase>([
+    private readonly providers = new Map<
+        Types.Provider.TName,
+        Types.Provider.IBase
+    >([
         [CONSTS.PROVIDERS.OPENAI, new OpenAI()],
         [CONSTS.PROVIDERS.ANTHROPIC, new Anthropic()],
         [CONSTS.PROVIDERS.LOCAL, new Local()],
@@ -25,10 +28,14 @@ export class ProviderFactory implements Types.Provider.IFactory {
     createProvider(name: Types.Provider.TName): Types.Provider.IBase {
         const provider = this.providers.get(name);
         if (!provider) {
-            this.logger.error(`Unknown provider: ${name}`, { availableProviders: this.getAvailableProviders() });
+            this.logger.error(`Unknown provider: ${name}`, {
+                availableProviders: this.getAvailableProviders(),
+            });
         }
-        
+
         this.logger.debug(`Created provider: ${name}`);
+        // logger handles exits more cleanly but then run into null issues rip
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return provider!;
     }
 
@@ -58,10 +65,13 @@ export class ProviderFactory implements Types.Provider.IFactory {
      */
     createFromPreset(
         name: Types.Provider.TName,
-        config: Partial<Types.ILLMConfig> = {}
+        config: Partial<Types.ILLMConfig> = {},
     ): Types.Provider.IBase {
         const provider = this.createProvider(name);
-        const mergedConfig = { ...provider.defaultConfig, ...config } as Types.ILLMConfig;
+        const mergedConfig = {
+            ...provider.defaultConfig,
+            ...config,
+        } as Types.ILLMConfig;
         provider.validateConfig(mergedConfig);
         return provider;
     }

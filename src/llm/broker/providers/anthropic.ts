@@ -18,14 +18,19 @@ export class Anthropic extends BaseProvider {
     };
 
     transformRequest(request: Types.ILLMRequest): Record<string, unknown> {
-        const systemMessages = request.messages.filter(m => m.role === 'system');
-        const userMessages = request.messages.filter(m => m.role !== 'system');
-        
+        const systemMessages = request.messages.filter(
+            (m) => m.role === 'system',
+        );
+        const userMessages = request.messages.filter(
+            (m) => m.role !== 'system',
+        );
+
         return {
             model: request.model,
             max_tokens: request.maxTokens ?? 1000,
-            system: systemMessages.map(m => m.content).join('\n') || undefined,
-            messages: userMessages.map(m => ({
+            system:
+                systemMessages.map((m) => m.content).join('\n') || undefined,
+            messages: userMessages.map((m) => ({
                 role: m.role,
                 content: m.content,
             })),
@@ -35,9 +40,12 @@ export class Anthropic extends BaseProvider {
     }
 
     transformResponse(responseData: unknown): Types.TLLMResponse {
-        const data = responseData as { content?: Array<{ text?: string }>; [key: string]: unknown };
+        const data = responseData as {
+            content?: { text?: string }[];
+            [key: string]: unknown;
+        };
         const content = data.content?.[0]?.text ?? '';
-        
+
         return {
             content,
             metadata: data,

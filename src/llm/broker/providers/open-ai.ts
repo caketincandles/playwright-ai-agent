@@ -32,7 +32,7 @@ export class OpenAI extends BaseProvider {
     buildAuthHeaders(apiKey?: string): Record<string, string> {
         return {
             ...this.getBaseHeaders(),
-            'Authorization': `Bearer ${apiKey ?? ''}`,
+            Authorization: `Bearer ${apiKey ?? ''}`,
         };
     }
 

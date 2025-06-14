@@ -8,10 +8,11 @@ export { Provider };
  * Supports any LLM API endpoint with flexible authentication and configuration
  */
 
-type TRole = typeof CONSTS.ROLE[keyof typeof CONSTS.ROLE];
+type TRole = (typeof CONSTS.ROLE)[keyof typeof CONSTS.ROLE];
 
 /** Supported authentication methods for LLM APIs */
-export type TAuthMethod = typeof CONSTS.AUTH_METHOD[keyof typeof CONSTS.AUTH_METHOD];
+export type TAuthMethod =
+    (typeof CONSTS.AUTH_METHOD)[keyof typeof CONSTS.AUTH_METHOD];
 
 /** LLM provider configuration interface */
 export interface ILLMConfig {
@@ -92,7 +93,13 @@ export interface ILLMServiceOptions {
 
 /** Error types that can occur during LLM operations */
 export interface ILLMError {
-    readonly type: 'network' | 'auth' | 'rate-limit' | 'invalid-request' | 'server' | 'unknown';
+    readonly type:
+        | 'network'
+        | 'auth'
+        | 'rate-limit'
+        | 'invalid-request'
+        | 'server'
+        | 'unknown';
     readonly message: string;
     readonly statusCode?: number;
     readonly retryable: boolean;

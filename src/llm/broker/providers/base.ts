@@ -1,5 +1,5 @@
 import * as Types from '../types';
-import * as Logger from '../../logger'
+import * as Logger from '../../../../lib/services/logger';
 
 /**
  * Abstract base class for LLM providers
@@ -16,7 +16,9 @@ export abstract class BaseProvider implements Types.Provider.IBase {
      * @param request - Standard LLM request
      * @returns Provider-specific request body
      */
-    abstract transformRequest(request: Types.ILLMRequest): Record<string, unknown>;
+    abstract transformRequest(
+        request: Types.ILLMRequest,
+    ): Record<string, unknown>;
 
     /**
      * Transforms provider response to standard format
@@ -38,7 +40,8 @@ export abstract class BaseProvider implements Types.Provider.IBase {
      * @returns True if valid, throws error if invalid
      */
     validateConfig(config: Types.ILLMConfig): boolean {
-        if (!config.baseURL) this.logger.error(`${this.name}: baseURL is required`);
+        if (!config.baseURL)
+            this.logger.error(`${this.name}: baseURL is required`);
         if (!config.model) this.logger.error(`${this.name}: model is required`);
         return true;
     }
@@ -49,7 +52,8 @@ export abstract class BaseProvider implements Types.Provider.IBase {
      * @returns Text content
      */
     protected extractContent(response: Types.TLLMResponse): string {
-        if ('choices' in response) return response.choices[0]?.message.content ?? '';
+        if ('choices' in response)
+            return response.choices[0]?.message.content ?? '';
         return response.content;
     }
 

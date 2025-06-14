@@ -6,9 +6,8 @@ export class MockFileService implements Types.IFileService {
 
     async readFile(filePath: string): Promise<string> {
         const content = this.files.get(path.resolve(filePath));
-        if (content === undefined) {
+        if (content === undefined)
             throw new Error(`File not found: ${filePath}`);
-        }
         return content;
     }
 
@@ -26,7 +25,9 @@ export class MockFileService implements Types.IFileService {
         return this.files.has(path.resolve(filePath));
     }
 
-    async ensureDirectory(): Promise<void> {}
+    async ensureDirectory(): Promise<void> {
+        return;
+    }
 
     reset(): void {
         this.files.clear();

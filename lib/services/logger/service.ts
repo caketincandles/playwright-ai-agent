@@ -14,7 +14,7 @@ export class LoggerService {
     constructor(
         private readonly tag: Types.ILogTag,
         config?: Partial<Types.ILoggerConfig>,
-        private readonly fileService: IFileService = new FileService()
+        private readonly fileService: IFileService = new FileService(),
     ) {
         this.config = { ...CONSTS.DEFAULT_LOG_CONFIG, ...config };
     }
@@ -67,11 +67,11 @@ export class LoggerService {
      * @param error - Error object or details
      * @param exitCode - Process exit code (default: 1)
      */
-    error(message: string, error?: unknown, exitCode: number = 1): never {
+    error(message: string, error?: unknown, exitCode = 1): never {
         const suffix = this.config.userFacing ? '' : '.';
         this.log(CONSTS.LOG_LEVEL.ERROR, '❌ ' + message + suffix);
         this.printDetails(error, CONSTS.LOG_COLOUR[CONSTS.LOG_LEVEL.ERROR]);
-        
+
         // Always exit on errors to ensure failures are caught
         process.exit(exitCode);
     }
@@ -81,19 +81,20 @@ export class LoggerService {
      * @param recommendation - Recommendation data with metadata
      */
     async recommendation(recommendation: Types.IRecommendation): Promise<void> {
-        const { type, severity, message, file, line, suggestion, autoFixable } = recommendation;
-        
+        const { type, severity, message, file, line, suggestion, autoFixable } =
+            recommendation;
+
         const prefix = autoFixable ? '🔧' : '💡';
         const location = this.formatLocation(file, line);
         const logMessage = `${prefix} [${type.toUpperCase()}] ${message}${location}`;
-        
+
         const level = this.mapSeverityToLevel(severity);
         this.log(level, logMessage);
-        
+
         if (suggestion) {
             this.printDetails(suggestion, CONSTS.LOG_COLOUR[level]);
         }
-        
+
         await this.writeToFile('recommendation', recommendation);
     }
 
@@ -103,22 +104,24 @@ export class LoggerService {
      */
     async healResult(result: Types.IHealResult): Promise<void> {
         const { success, changes, filesModified } = result;
-        
+
         if (success) {
             this.success('Heal operation completed');
             if (filesModified?.length) {
-                this.info(`Modified ${filesModified.length} files: ${filesModified.join(', ')}`);
+                this.info(
+                    `Modified ${filesModified.length.toString()} files: ${filesModified.join(', ')}`,
+                );
             }
         } else {
             this.warn('Heal operation completed with recommendations only');
         }
-        
-        this.info(`Generated ${changes.length} recommendations`);
-        
+
+        this.info(`Generated ${changes.length.toString()} recommendations`);
+
         for (const change of changes) {
             await this.recommendation(change);
         }
-        
+
         await this.writeToFile('heal_result', result);
     }
 
@@ -148,7 +151,7 @@ export class LoggerService {
      */
     private formatLocation(file?: string, line?: number): string {
         if (!file) return '';
-        if (line) return ` (${file}:${line})`;
+        if (line) return ` (${file}:${line.toString()})`;
         return ` (${file})`;
     }
 
@@ -157,12 +160,18 @@ export class LoggerService {
      * @param severity - Recommendation severity
      * @returns Corresponding log level
      */
-    private mapSeverityToLevel(severity: Types.IRecommendation['severity']): Types.TLogLevelValue {
+    private mapSeverityToLevel(
+        severity: Types.IRecommendation['severity'],
+    ): Types.TLogLevelValue {
         switch (severity) {
-            case 'ERROR': return CONSTS.LOG_LEVEL.ERROR;
-            case 'WARN': return CONSTS.LOG_LEVEL.WARN;
-            case 'INFO': return CONSTS.LOG_LEVEL.INFO;
-            default: return CONSTS.LOG_LEVEL.INFO;
+            case 'ERROR':
+                return CONSTS.LOG_LEVEL.ERROR;
+            case 'WARN':
+                return CONSTS.LOG_LEVEL.WARN;
+            case 'INFO':
+                return CONSTS.LOG_LEVEL.INFO;
+            default:
+                return CONSTS.LOG_LEVEL.INFO;
         }
     }
 
@@ -173,15 +182,17 @@ export class LoggerService {
      */
     private async writeToFile(type: string, data: unknown): Promise<void> {
         if (!this.config.outputFile) return;
-    
+
         try {
             const entry = {
                 timestamp: new Date().toISOString(),
                 tag: this.tag,
                 type,
-                ...(data && typeof data === 'object' && !Array.isArray(data) ? data : { data })
+                ...(data && typeof data === 'object' && !Array.isArray(data)
+                    ? data
+                    : { data }),
             };
-        
+
             const line = JSON.stringify(entry) + '\n';
             await this.fileService.appendFile(this.config.outputFile, line);
         } catch (writeError) {
@@ -195,18 +206,28 @@ export class LoggerService {
      * @param message - Message to log
      * @param details - Additional data to include
      */
-    private log(level: Types.TLogLevelValue, message: string, details?: unknown): void {
+    private log(
+        level: Types.TLogLevelValue,
+        message: string,
+        details?: unknown,
+    ): void {
         if (level < this.config.minLevel) return;
-        
-        const timestamp = this.config.showTimestamp ? `[${new Date().toISOString()}] ` : '';
-        const levelLabel = CONSTS.LOG_COLOUR[level](CONSTS.LOG_LEVEL_REVERSE[level]);
-        const serviceTag = CONSTS.SERVICE_COLOUR[this.tag.service](`[${this.tag.service}]`);
-        const targetTag = this.tag.target 
+
+        const timestamp = this.config.showTimestamp
+            ? `[${new Date().toISOString()}] `
+            : '';
+        const levelLabel = CONSTS.LOG_COLOUR[level](
+            CONSTS.LOG_LEVEL_REVERSE[level],
+        );
+        const serviceTag = CONSTS.SERVICE_COLOUR[this.tag.service](
+            `[${this.tag.service}]`,
+        );
+        const targetTag = this.tag.target
             ? ` ${CONSTS.TARGET_COLOUR[this.tag.target](`[_${this.tag.target}_]`)}`
             : '';
-        
+
         const output = `${timestamp}${levelLabel} ${serviceTag}${targetTag}: ${message}\n`;
-        
+
         if (level >= CONSTS.LOG_LEVEL.ERROR) {
             process.stderr.write(output);
         } else process.stdout.write(output);
@@ -221,12 +242,15 @@ export class LoggerService {
      * @param data - Data to print
      * @param colorFn - Color function for styling
      */
-    private printDetails(data: unknown, colorFn: (text: string) => string): void {
+    private printDetails(
+        data: unknown,
+        colorFn: (text: string) => string,
+    ): void {
         if (data === undefined || data === null) return;
-        
+
         const formatted = this.formatData(data);
         const output = colorFn(formatted) + '\n';
-        
+
         process.stderr.write(output);
     }
 
@@ -237,9 +261,10 @@ export class LoggerService {
      */
     private formatData(data: unknown): string {
         if (data instanceof Error) return data.stack ?? data.message;
-        if (typeof data === 'object' && data !== null) return JSON.stringify(data, null, 2);
+        if (typeof data === 'object' && data !== null)
+            return JSON.stringify(data, null, 2);
         if (typeof data === 'number') return data.toString();
-        
+
         return String(data);
     }
 }

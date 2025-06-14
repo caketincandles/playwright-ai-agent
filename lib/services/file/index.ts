@@ -13,7 +13,9 @@ export class FileService implements Types.IFileService {
         try {
             return await fs.readFile(fullPath, 'utf-8');
         } catch (error) {
-            throw new Error(`Failed to read file ${fullPath}: ${this.getErrorMessage(error)}`);
+            throw new Error(
+                `Failed to read file ${fullPath}: ${this.getErrorMessage(error)}`,
+            );
         }
     }
 
@@ -23,7 +25,9 @@ export class FileService implements Types.IFileService {
             await this.ensureDirectory(path.dirname(fullPath));
             await fs.writeFile(fullPath, content, 'utf-8');
         } catch (error) {
-            throw new Error(`Failed to write file ${fullPath}: ${this.getErrorMessage(error)}`);
+            throw new Error(
+                `Failed to write file ${fullPath}: ${this.getErrorMessage(error)}`,
+            );
         }
     }
 
@@ -33,7 +37,9 @@ export class FileService implements Types.IFileService {
             await this.ensureDirectory(path.dirname(fullPath));
             await fs.appendFile(fullPath, content, 'utf-8');
         } catch (error) {
-            throw new Error(`Failed to append to file ${fullPath}: ${this.getErrorMessage(error)}`);
+            throw new Error(
+                `Failed to append to file ${fullPath}: ${this.getErrorMessage(error)}`,
+            );
         }
     }
 
@@ -50,7 +56,9 @@ export class FileService implements Types.IFileService {
         try {
             await fs.mkdir(this.resolvePath(dirPath), { recursive: true });
         } catch (error) {
-            throw new Error(`Failed to create directory ${dirPath}: ${this.getErrorMessage(error)}`);
+            throw new Error(
+                `Failed to create directory ${dirPath}: ${this.getErrorMessage(error)}`,
+            );
         }
     }
 

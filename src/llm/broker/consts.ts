@@ -35,29 +35,32 @@ export const DEFAULT_SERVICE_OPTIONS: Partial<Types.ILLMServiceOptions> = {
 } as const;
 
 /** Standard headers for different auth methods */
-export const AUTH_HEADERS: Record<Types.TAuthMethod, (apiKey?: string) => Record<string, string>> = {
+export const AUTH_HEADERS: Record<
+    Types.TAuthMethod,
+    (apiKey?: string) => Record<string, string>
+> = {
     'api-key': (apiKey?: string) => ({
-        'Authorization': `Bearer ${apiKey ?? ''}`,
+        Authorization: `Bearer ${apiKey ?? ''}`,
         'Content-Type': 'application/json',
     }),
-    'bearer': (apiKey?: string) => ({
-        'Authorization': `Bearer ${apiKey ?? ''}`,
+    bearer: (apiKey?: string) => ({
+        Authorization: `Bearer ${apiKey ?? ''}`,
         'Content-Type': 'application/json',
     }),
-    'none': () => ({
+    none: () => ({
         'Content-Type': 'application/json',
     }),
-    'custom': () => ({}),
+    custom: () => ({}),
 } as const;
 
 /** Common LLM provider endpoints and configurations */
 export const PROVIDER_PRESETS: Record<string, Partial<Types.ILLMConfig>> = {
-    'openai': {
+    openai: {
         baseURL: 'https://api.openai.com/v1/chat/completions',
         authMethod: 'bearer',
         customRequestFormat: false,
     },
-    'anthropic': {
+    anthropic: {
         baseURL: 'https://api.anthropic.com/v1/messages',
         authMethod: 'api-key',
         customRequestFormat: true,
@@ -72,7 +75,7 @@ export const PROVIDER_PRESETS: Record<string, Partial<Types.ILLMConfig>> = {
             'api-key': '',
         },
     },
-    'local': {
+    local: {
         baseURL: 'http://localhost:8080/v1/chat/completions',
         authMethod: 'none',
         customRequestFormat: false,
@@ -105,5 +108,5 @@ export const ERROR_TYPE_MAP: Record<number, Types.ILLMError['type']> = {
 } as const;
 
 /** Default system message for test generation */
-export const DEFAULT_SYSTEM_MESSAGE = 
+export const DEFAULT_SYSTEM_MESSAGE =
     'You are an expert at generating and fixing Playwright automation tests. Provide clear, maintainable, and robust test code.' as const;

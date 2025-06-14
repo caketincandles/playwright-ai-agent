@@ -24,14 +24,17 @@ class LoggerManager {
      * @param config - Optional config overrides
      * @returns Cached or new logger instance
      */
-    getLogger(tag: Types.ILogTag, config?: Partial<Types.ILoggerConfig>): LoggerService {
+    getLogger(
+        tag: Types.ILogTag,
+        config?: Partial<Types.ILoggerConfig>,
+    ): LoggerService {
         const key = this.createKey(tag);
-        
+
         if (!this.loggers.has(key)) {
             const mergedConfig = { ...this.globalConfig, ...config };
             this.loggers.set(key, new LoggerService(tag, mergedConfig));
         }
-        
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return this.loggers.get(key)!;
     }
 
@@ -41,7 +44,7 @@ class LoggerManager {
      * @returns Unique string key
      */
     private createKey(tag: Types.ILogTag): string {
-        return `${tag.service}:${tag.target || 'default'}`;
+        return `${tag.service}:${tag.target ?? 'default'}`;
     }
 }
 
@@ -51,10 +54,14 @@ const logger = new LoggerManager();
 export { CONSTS };
 
 export const Log = {
-    LLM: (target?: Types.TTargetType) => logger.getLogger({ service: CONSTS.SERVICE.HEAL, target }),
-    Create: (target?: Types.TTargetType) => logger.getLogger({ service: CONSTS.SERVICE.CREATE, target }),
-    Improve: (target?: Types.TTargetType) => logger.getLogger({ service: CONSTS.SERVICE.IMPROVE, target }),
-    Dev: (target?: Types.TTargetType) => logger.getLogger({ service: CONSTS.SERVICE.DEV, target }),
+    LLM: (target?: Types.TTargetType) =>
+        logger.getLogger({ service: CONSTS.SERVICE.HEAL, target }),
+    Create: (target?: Types.TTargetType) =>
+        logger.getLogger({ service: CONSTS.SERVICE.CREATE, target }),
+    Improve: (target?: Types.TTargetType) =>
+        logger.getLogger({ service: CONSTS.SERVICE.IMPROVE, target }),
+    Dev: (target?: Types.TTargetType) =>
+        logger.getLogger({ service: CONSTS.SERVICE.DEV, target }),
 } as const;
 
 /**
@@ -69,11 +76,13 @@ export function initLogging(config?: {
     readonly showTimestamp?: boolean;
 }): void {
     const logConfig: Partial<Types.ILoggerConfig> = {};
-    
+
     if (config?.level) logConfig.minLevel = CONSTS.LOG_LEVEL[config.level];
-    if (config?.userFacing !== undefined) logConfig.userFacing = config.userFacing;
+    if (config?.userFacing !== undefined)
+        logConfig.userFacing = config.userFacing;
     if (config?.outputFile) logConfig.outputFile = config.outputFile;
-    if (config?.showTimestamp !== undefined) logConfig.showTimestamp = config.showTimestamp;
-    
+    if (config?.showTimestamp !== undefined)
+        logConfig.showTimestamp = config.showTimestamp;
+
     logger.setGlobalConfig(logConfig);
 }

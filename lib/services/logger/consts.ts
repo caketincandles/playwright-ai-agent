@@ -61,7 +61,8 @@ export const DEV_LOG_CONFIG: Types.ILoggerConfig = {
  * Assigns a distinct colour to each log level for better readability in the terminal.
  */
 export const LOG_COLOUR: Record<
-    Types.TLogLevelValue, (text: string) => string
+    Types.TLogLevelValue,
+    (text: string) => string
 > = {
     [LOG_LEVEL.DEBUG]: chalk.gray,
     [LOG_LEVEL.INFO]: chalk.blue,
@@ -87,7 +88,7 @@ export const SERVICE_COLOUR: Record<string, (text: string) => string> = {
  */
 export const TARGET_COLOUR: Record<string, (text: string) => string> = {
     [TARGET.LOCATOR]: chalk.cyan,
-    [TARGET.PAGE]: chalk.magenta, 
+    [TARGET.PAGE]: chalk.magenta,
     [TARGET.API]: chalk.green,
 } as const;
 
@@ -95,7 +96,10 @@ export const TARGET_COLOUR: Record<string, (text: string) => string> = {
  * Reverse mapping from log level values to their string keys.
  * Useful for converting numeric levels back to their readable identifiers.
  */
-export const LOG_LEVEL_REVERSE: Record<Types.TLogLevelValue, Types.TLogLevelKey> = {
+export const LOG_LEVEL_REVERSE: Record<
+    Types.TLogLevelValue,
+    Types.TLogLevelKey
+> = {
     [LOG_LEVEL.DEBUG]: 'DEBUG',
     [LOG_LEVEL.INFO]: 'INFO',
     [LOG_LEVEL.SUCCESS]: 'SUCCESS',

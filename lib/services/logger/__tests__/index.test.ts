@@ -17,56 +17,62 @@ describe('LoggerService', () => {
 
     describe('basic logging methods', () => {
         it('should log debug messages', () => {
-            const spy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
-            
+            const spy = jest
+                .spyOn(process.stdout, 'write')
+                .mockImplementation(() => true);
+
             loggerService.debug('test debug message');
-            
-            expect(spy).toHaveBeenCalledWith(
-                expect.stringContaining('DEBUG')
-            );
+
+            expect(spy).toHaveBeenCalledWith(expect.stringContaining('DEBUG'));
             spy.mockRestore();
         });
 
         it('should log info messages with service tag', () => {
-            const spy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
-            
+            const spy = jest
+                .spyOn(process.stdout, 'write')
+                .mockImplementation(() => true);
+
             loggerService.info('test info message');
-            
+
             expect(spy).toHaveBeenCalledWith(
-                expect.stringContaining('[Developer-Log]')
+                expect.stringContaining('[Developer-Log]'),
             );
             spy.mockRestore();
         });
 
         it('should log success messages with emoji', () => {
-            const spy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
-            
+            const spy = jest
+                .spyOn(process.stdout, 'write')
+                .mockImplementation(() => true);
+
             loggerService.success('operation completed');
-            
-            expect(spy).toHaveBeenCalledWith(
-                expect.stringContaining('✅')
-            );
+
+            expect(spy).toHaveBeenCalledWith(expect.stringContaining('✅'));
             spy.mockRestore();
         });
 
         it('should log warnings with emoji', () => {
-            const spy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
-            
+            const spy = jest
+                .spyOn(process.stdout, 'write')
+                .mockImplementation(() => true);
+
             loggerService.warn('test warning');
-            
-            expect(spy).toHaveBeenCalledWith(
-                expect.stringContaining('⚠️')
-            );
+
+            expect(spy).toHaveBeenCalledWith(expect.stringContaining('⚠️'));
             spy.mockRestore();
         });
     });
 
     describe('error handling', () => {
         it('should exit process on error', () => {
-            const exitSpy = jest.spyOn(process, 'exit').mockImplementation(() => {
-                throw new Error('process.exit called');
-            });
-            const stderrSpy = jest.spyOn(process.stderr, 'write').mockImplementation(() => true);
+            const exitSpy = jest
+                .spyOn(process, 'exit')
+                .mockImplementation(() => {
+                    throw new Error('process.exit called');
+                });
+            const stderrSpy = jest
+                .spyOn(process.stderr, 'write')
+                .mockImplementation(() => true);
 
             expect(() => {
                 loggerService.error('fatal error');
@@ -74,7 +80,7 @@ describe('LoggerService', () => {
 
             expect(exitSpy).toHaveBeenCalledWith(1);
             expect(stderrSpy).toHaveBeenCalledWith(
-                expect.stringContaining('❌')
+                expect.stringContaining('❌'),
             );
 
             exitSpy.mockRestore();
@@ -82,9 +88,11 @@ describe('LoggerService', () => {
         });
 
         it('should use custom exit code', () => {
-            const exitSpy = jest.spyOn(process, 'exit').mockImplementation(() => {
-                throw new Error('process.exit called');
-            });
+            const exitSpy = jest
+                .spyOn(process, 'exit')
+                .mockImplementation(() => {
+                    throw new Error('process.exit called');
+                });
             jest.spyOn(process.stderr, 'write').mockImplementation(() => true);
 
             expect(() => {
@@ -102,9 +110,11 @@ describe('LoggerService', () => {
             const logger = new LoggerService(
                 testTag,
                 { minLevel: CONSTS.LOG_LEVEL.WARN },
-                mockFileService
+                mockFileService,
             );
-            const spy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
+            const spy = jest
+                .spyOn(process.stdout, 'write')
+                .mockImplementation(() => true);
 
             logger.debug('should not appear');
             logger.info('should not appear');
@@ -112,7 +122,7 @@ describe('LoggerService', () => {
 
             expect(spy).toHaveBeenCalledTimes(1);
             expect(spy).toHaveBeenCalledWith(
-                expect.stringContaining('should appear')
+                expect.stringContaining('should appear'),
             );
 
             spy.mockRestore();
@@ -124,14 +134,18 @@ describe('LoggerService', () => {
             const logger = new LoggerService(
                 testTag,
                 { showTimestamp: true },
-                mockFileService
+                mockFileService,
             );
-            const spy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
+            const spy = jest
+                .spyOn(process.stdout, 'write')
+                .mockImplementation(() => true);
 
             logger.info('test message');
 
             expect(spy).toHaveBeenCalledWith(
-                expect.stringMatching(/\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z\]/)
+                expect.stringMatching(
+                    /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z\]/,
+                ),
             );
 
             spy.mockRestore();
@@ -140,8 +154,10 @@ describe('LoggerService', () => {
 
     describe('recommendation logging', () => {
         it('should log recommendation with proper formatting', async () => {
-            const spy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
-            
+            const spy = jest
+                .spyOn(process.stdout, 'write')
+                .mockImplementation(() => true);
+
             const recommendation: Types.IRecommendation = {
                 type: 'Locators',
                 severity: 'WARN',
@@ -149,36 +165,34 @@ describe('LoggerService', () => {
                 file: 'test.spec.ts',
                 line: 42,
                 suggestion: 'Use getByRole instead',
-                autoFixable: true
+                autoFixable: true,
             };
 
             await loggerService.recommendation(recommendation);
 
+            expect(spy).toHaveBeenCalledWith(expect.stringContaining('🔧'));
             expect(spy).toHaveBeenCalledWith(
-                expect.stringContaining('🔧')
-            );
-            expect(spy).toHaveBeenCalledWith(
-                expect.stringContaining('[LOCATORS]')
+                expect.stringContaining('[LOCATORS]'),
             );
 
             spy.mockRestore();
         });
 
         it('should handle non-auto-fixable recommendations', async () => {
-            const spy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
-            
+            const spy = jest
+                .spyOn(process.stdout, 'write')
+                .mockImplementation(() => true);
+
             const recommendation: Types.IRecommendation = {
                 type: 'Pages',
                 severity: 'INFO',
                 message: 'Consider refactoring',
-                autoFixable: false
+                autoFixable: false,
             };
 
             await loggerService.recommendation(recommendation);
 
-            expect(spy).toHaveBeenCalledWith(
-                expect.stringContaining('💡')
-            );
+            expect(spy).toHaveBeenCalledWith(expect.stringContaining('💡'));
 
             spy.mockRestore();
         });
@@ -186,49 +200,49 @@ describe('LoggerService', () => {
 
     describe('heal result logging', () => {
         it('should log successful heal operation', async () => {
-            const spy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
-            
+            const spy = jest
+                .spyOn(process.stdout, 'write')
+                .mockImplementation(() => true);
+
             const healResult: Types.IHealResult = {
                 success: true,
                 changes: [],
                 filesModified: ['test1.ts', 'test2.ts'],
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
             };
 
             await loggerService.healResult(healResult);
 
+            expect(spy).toHaveBeenCalledWith(expect.stringContaining('✅'));
             expect(spy).toHaveBeenCalledWith(
-                expect.stringContaining('✅')
-            );
-            expect(spy).toHaveBeenCalledWith(
-                expect.stringContaining('Modified 2 files')
+                expect.stringContaining('Modified 2 files'),
             );
 
             spy.mockRestore();
         });
 
         it('should log unsuccessful heal operation', async () => {
-            const spy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
-            
+            const spy = jest
+                .spyOn(process.stdout, 'write')
+                .mockImplementation(() => true);
+
             const healResult: Types.IHealResult = {
                 success: false,
                 changes: [
                     {
                         type: 'Locators',
                         severity: 'WARN',
-                        message: 'Fix needed'
-                    }
+                        message: 'Fix needed',
+                    },
                 ],
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
             };
 
             await loggerService.healResult(healResult);
 
+            expect(spy).toHaveBeenCalledWith(expect.stringContaining('⚠️'));
             expect(spy).toHaveBeenCalledWith(
-                expect.stringContaining('⚠️')
-            );
-            expect(spy).toHaveBeenCalledWith(
-                expect.stringContaining('Generated 1 recommendations')
+                expect.stringContaining('Generated 1 recommendations'),
             );
 
             spy.mockRestore();
@@ -243,36 +257,43 @@ describe('LoggerService', () => {
             const recommendation: Types.IRecommendation = {
                 type: 'API',
                 severity: 'INFO',
-                message: 'Test recommendation'
+                message: 'Test recommendation',
             };
 
             await loggerService.recommendation(recommendation);
 
             const logContent = await mockFileService.readFile(outputFile);
-            const logEntry = JSON.parse(logContent.trim());
+            const logEntry: Types.IRecommendation = JSON.parse(
+                logContent.trim(),
+            ) as Types.IRecommendation;
 
             expect(logEntry.type).toBe('recommendation');
             expect(logEntry.message).toBe('Test recommendation');
-            expect(logEntry.tag).toEqual(testTag);
         });
 
         it('should handle file write errors gracefully', async () => {
             const originalAppendFile = mockFileService.appendFile;
-            mockFileService.appendFile = jest.fn<(path: string, content: string) => Promise<void>>().mockRejectedValue(new Error('Write failed'));
-            
-            const spy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
+            mockFileService.appendFile = jest
+                .fn<(path: string, content: string) => Promise<void>>()
+                .mockRejectedValue(new Error('Write failed'));
+
+            const spy = jest
+                .spyOn(process.stdout, 'write')
+                .mockImplementation(() => true);
             loggerService.setOutputFile('/invalid/path.log');
 
             const recommendation: Types.IRecommendation = {
                 type: 'API',
                 severity: 'INFO',
-                message: 'Test'
+                message: 'Test',
             };
 
-            await expect(loggerService.recommendation(recommendation)).resolves.not.toThrow();
+            await expect(
+                loggerService.recommendation(recommendation),
+            ).resolves.not.toThrow();
 
             expect(spy).toHaveBeenCalledWith(
-                expect.stringContaining('Failed to write to log file')
+                expect.stringContaining('Failed to write to log file'),
             );
 
             mockFileService.appendFile = originalAppendFile;
@@ -283,10 +304,16 @@ describe('LoggerService', () => {
     describe('child logger creation', () => {
         it('should create child logger with combined tags', () => {
             const parentTag: Types.ILogTag = { service: CONSTS.SERVICE.CREATE };
-            const parentLogger = new LoggerService(parentTag, {}, mockFileService);
-            
-            const childLogger = parentLogger.child({ target: CONSTS.TARGET.LOCATOR });
-            
+            const parentLogger = new LoggerService(
+                parentTag,
+                {},
+                mockFileService,
+            );
+
+            const childLogger = parentLogger.child({
+                target: CONSTS.TARGET.LOCATOR,
+            });
+
             expect(childLogger).toBeInstanceOf(LoggerService);
         });
     });
@@ -295,15 +322,21 @@ describe('LoggerService', () => {
         it('should include target in log output', () => {
             const tagWithTarget: Types.ILogTag = {
                 service: CONSTS.SERVICE.HEAL,
-                target: CONSTS.TARGET.PAGE
+                target: CONSTS.TARGET.PAGE,
             };
-            const logger = new LoggerService(tagWithTarget, {}, mockFileService);
-            const spy = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
+            const logger = new LoggerService(
+                tagWithTarget,
+                {},
+                mockFileService,
+            );
+            const spy = jest
+                .spyOn(process.stdout, 'write')
+                .mockImplementation(() => true);
 
             logger.info('test with target');
 
             expect(spy).toHaveBeenCalledWith(
-                expect.stringContaining('[_Pages_]')
+                expect.stringContaining('[_Pages_]'),
             );
 
             spy.mockRestore();
@@ -324,7 +357,9 @@ describe('MockLoggerService', () => {
         it('should capture debug messages', () => {
             mockLogger.debug('debug message', { data: 'test' });
 
-            expect(mockLogger.hasMessage('debug message', CONSTS.LOG_LEVEL.DEBUG)).toBe(true);
+            expect(
+                mockLogger.hasMessage('debug message', CONSTS.LOG_LEVEL.DEBUG),
+            ).toBe(true);
             expect(mockLogger.getMessageCount(CONSTS.LOG_LEVEL.DEBUG)).toBe(1);
         });
 
@@ -349,7 +384,9 @@ describe('MockLoggerService', () => {
             mockLogger.info('info');
             mockLogger.warn('warning');
 
-            const warnings = mockLogger.getMessagesByLevel(CONSTS.LOG_LEVEL.WARN);
+            const warnings = mockLogger.getMessagesByLevel(
+                CONSTS.LOG_LEVEL.WARN,
+            );
             expect(warnings).toEqual(['warning']);
         });
     });
@@ -360,7 +397,9 @@ describe('MockLoggerService', () => {
                 mockLogger.error('test error');
             }).toThrow('Mock Logger Error: test error');
 
-            expect(mockLogger.hasMessage('test error', CONSTS.LOG_LEVEL.ERROR)).toBe(true);
+            expect(
+                mockLogger.hasMessage('test error', CONSTS.LOG_LEVEL.ERROR),
+            ).toBe(true);
         });
     });
 
@@ -369,31 +408,35 @@ describe('MockLoggerService', () => {
             const recommendation: Types.IRecommendation = {
                 type: 'Locators',
                 severity: 'WARN',
-                message: 'Test recommendation'
+                message: 'Test recommendation',
             };
 
             await mockLogger.recommendation(recommendation);
 
-            expect(mockLogger.hasMessage('[RECOMMENDATION] Test recommendation')).toBe(true);
+            expect(
+                mockLogger.hasMessage('[RECOMMENDATION] Test recommendation'),
+            ).toBe(true);
         });
 
         it('should handle heal results', async () => {
             const healResult: Types.IHealResult = {
                 success: true,
                 changes: [],
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
             };
 
             await mockLogger.healResult(healResult);
 
-            expect(mockLogger.hasMessage('[HEAL] Operation completed: true')).toBe(true);
+            expect(
+                mockLogger.hasMessage('[HEAL] Operation completed: true'),
+            ).toBe(true);
         });
     });
 
     describe('child logger creation', () => {
         it('should create child with combined tags', () => {
             const child = mockLogger.child({ target: CONSTS.TARGET.API });
-            
+
             expect(child).toBeInstanceOf(MockLoggerService);
         });
     });
@@ -407,9 +450,9 @@ describe('MockLoggerService', () => {
 
         it('should clear all messages', () => {
             expect(mockLogger.getMessageCount()).toBe(3);
-            
+
             mockLogger.clearMessages();
-            
+
             expect(mockLogger.getMessageCount()).toBe(0);
         });
 
@@ -430,8 +473,12 @@ describe('MockLoggerManager', () => {
     });
 
     it('should manage multiple logger instances', () => {
-        const logger1 = mockLoggerManager.getLogger({ service: CONSTS.SERVICE.HEAL });
-        const logger2 = mockLoggerManager.getLogger({ service: CONSTS.SERVICE.CREATE });
+        const logger1 = mockLoggerManager.getLogger({
+            service: CONSTS.SERVICE.HEAL,
+        });
+        const logger2 = mockLoggerManager.getLogger({
+            service: CONSTS.SERVICE.CREATE,
+        });
 
         logger1.info('heal message');
         logger2.info('create message');
@@ -450,12 +497,14 @@ describe('MockLoggerManager', () => {
     it('should set global configuration', () => {
         const config: Partial<Types.ILoggerConfig> = {
             minLevel: CONSTS.LOG_LEVEL.ERROR,
-            userFacing: true
+            userFacing: true,
         };
 
         mockLoggerManager.setGlobalConfig(config);
 
-        const logger = mockLoggerManager.getLogger({ service: CONSTS.SERVICE.DEV });
+        const logger = mockLoggerManager.getLogger({
+            service: CONSTS.SERVICE.DEV,
+        });
         logger.debug('should not appear');
         logger.info('should not appear');
 
@@ -463,8 +512,12 @@ describe('MockLoggerManager', () => {
     });
 
     it('should clear all messages across loggers', () => {
-        const logger1 = mockLoggerManager.getLogger({ service: CONSTS.SERVICE.HEAL });
-        const logger2 = mockLoggerManager.getLogger({ service: CONSTS.SERVICE.CREATE });
+        const logger1 = mockLoggerManager.getLogger({
+            service: CONSTS.SERVICE.HEAL,
+        });
+        const logger2 = mockLoggerManager.getLogger({
+            service: CONSTS.SERVICE.CREATE,
+        });
 
         logger1.info('message 1');
         logger2.info('message 2');

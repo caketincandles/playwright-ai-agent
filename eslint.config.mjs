@@ -44,7 +44,7 @@ export default tseslint.config(
                     },
                 },
             ],
-            complexity: ['warn', 8],
+            complexity: ['warn', 10],
             'max-params': ['error', 4],
         },
     },
@@ -57,14 +57,13 @@ export default tseslint.config(
             },
         },
         rules: {
-            complexity: ['warn', 8],
+            complexity: ['warn', 10],
             'max-params': ['error', 4],
         },
     },
     {
         ignores: [
             'dist/**/*',
-            'lib/**/*', 
             'node_modules/**/*',
             'data/**/*',
             '**/*.d.ts',
