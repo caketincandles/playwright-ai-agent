@@ -9,27 +9,26 @@ export default tseslint.config(
     ...tseslint.configs.strictTypeChecked,
     ...tseslint.configs.stylisticTypeChecked,
     {
+        files: ['**/*.ts', '**/*.tsx'],
         languageOptions: {
             parserOptions: {
-                project: true, // Enables project-specific TypeScript settings
+                project: true,
+                tsconfigRootDir: import.meta.dirname,
             },
         },
         rules: {
-            'prettier/prettier': ['warn', { endOfLine: 'auto' }], // Warn for Prettier issues
+            'prettier/prettier': ['warn', { endOfLine: 'auto' }],
             '@typescript-eslint/no-non-null-assertion': 'warn',
             '@typescript-eslint/naming-convention': [
                 'warn',
-                // Classes: PascalCase
                 {
                     selector: 'class',
                     format: ['PascalCase'],
                 },
-                // Functions: camelCase
                 {
                     selector: 'function',
                     format: ['camelCase'],
                 },
-                // Types: TPascalCase
                 {
                     selector: 'typeAlias',
                     format: ['PascalCase'],
@@ -38,7 +37,6 @@ export default tseslint.config(
                         match: true,
                     },
                 },
-                // Interfaces: IPascalCase
                 {
                     selector: 'interface',
                     format: ['PascalCase'],
@@ -47,18 +45,40 @@ export default tseslint.config(
                         match: true,
                     },
                 },
-                // Interfaces and Types are just a personal preference...
-                // I know it's retro, I like to know on import not hover
             ],
-
-            complexity: ['warn', 8], // Limit Function Cyclomatic Complexity
-            'max-params': ['error', 4], // Max of 4 parameters for functions
+            complexity: ['warn', 8],
+            'max-params': ['error', 4],
         },
         plugins: {
-            prettier: eslintPluginPrettier, // Prettier plugin to enforce code style
+            prettier: eslintPluginPrettier,
         },
         settings: {
-            prettier, // Prettier config for ESLint to use
+            prettier,
         },
+    },
+    {
+        files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
+        languageOptions: {
+            parserOptions: {
+                ecmaVersion: 'latest',
+                sourceType: 'module',
+            },
+        },
+        rules: {
+            'prettier/prettier': ['warn', { endOfLine: 'auto' }],
+            complexity: ['warn', 8],
+            'max-params': ['error', 4],
+        },
+        plugins: {
+            prettier: eslintPluginPrettier,
+        },
+    },
+    {
+        ignores: [
+            'dist/**/*',
+            'node_modules/**/*',
+            'data/**/*',
+            '**/*.d.ts',
+        ],
     },
 );
