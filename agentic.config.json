@@ -1,0 +1,18 @@
+{
+  "openai": {
+    "apiKey": "${OPENAI_API_KEY}",
+    "model": "gpt-4",
+    "baseURL": "https://api.openai.com/v1"
+  },
+  "playwright": {
+    "headless": true,
+    "timeout": 30000
+  },
+  "output": {
+    "directory": "./src/locators",
+    "baseImportPath": "../base/BaseLocators"
+  },
+  "prompts": {
+    "directory": "./prompts"
+  }
+}

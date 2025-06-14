@@ -1,0 +1,72 @@
+{
+    "$schema": "https://typedoc.org/schema.json",
+    "name": "Playwright AI Agent - TS Docs",
+    "entryPoints": ["./src/**/*.ts", "./lib/**/*.ts"],
+    "entryPointStrategy": "expand",
+    "out": "./docs/ts-docs",
+
+    "exclude": [
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/templates/**"
+    ],
+
+    "excludePrivate": true,
+    "excludeProtected": false,
+    "excludeInternal": true,
+    "excludeExternals": true,
+
+    "categorizeByGroup": true,
+    "categoryOrder": [
+        "Configuration",
+        "Core",
+        "Fixtures",
+        "Page Objects",
+        "Utilities",
+        "Tests",
+        "*"
+    ],
+
+    "navigation": {
+        "includeCategories": true,
+        "includeGroups": true,
+        "includeFolders": true
+    },
+
+    "plugin": [
+        "typedoc-plugin-merge-modules",
+        "typedoc-plugin-missing-exports"
+    ],
+
+    "theme": "default",
+    "lightHighlightTheme": "github-light",
+    "darkHighlightTheme": "github-dark",
+
+    "readme": "./README.md",
+    "includeVersion": true,
+    "gitRevision": "main",
+    "gitRemote": "origin",
+
+    "commentStyle": "all",
+    "useTsLinkResolution": true,
+    "preserveLinkText": true,
+
+    "validation": {
+        "notExported": true,
+        "invalidLink": true,
+        "notDocumented": false
+    },
+
+    "visibilityFilters": {
+        "protected": true,
+        "private": true,
+        "inherited": true,
+        "external": false,
+        "@alpha": false,
+        "@beta": false
+    },
+
+    "compilerOptions": {
+        "skipLibCheck": true
+    }
+}

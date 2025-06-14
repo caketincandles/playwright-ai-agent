@@ -1,0 +1,29 @@
+# Node dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+docs/ts-docs/
+
+# Environment variables
+.env
+.env.local
+
+# IDE settings (keep recommended project config)
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Historically used templates to avoid redefinition/user error
+data/
+
+# Playground data 
+tmp/

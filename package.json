@@ -1,0 +1,77 @@
+{
+  "name": "playwright-ai-agent",
+  "version": "1.0.0",
+  "description": "AI-powered Playwright locator generation service",
+  "keywords": ["playwright", "testing", "automation", "ai", "locators", "typescript", "agentic"],
+  "author": "Caitlin Randles",
+  "license": "GNU-AGPL",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-org/agentic-playwright-locators.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/agentic-playwright-locators/issues"
+  },
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "bin": {
+    "agentic-locators": "lib/app/cli.js"
+  },
+  "files": [
+    "lib/**/*",
+    "prompts/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "scripts": {
+    "build": "tsc && tsc-alias",
+    "build:watch": "tsc -w",
+    "dev": "ts-node -r tsconfig-paths/register app/cli.ts",
+    "start": "node lib/app/cli.js",
+    "lint": "npx eslint . && npx prettier . -c",
+    "lint:fix": "eslint . --fix && prettier --write .",
+    "docs:build": "typedoc && cp docs/README.md docs/ts-docs/index.md",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run lint && npm run build",
+    "test": "echo \"Tests coming soon\" && exit 0"
+  },
+  "dependencies": {
+    "@types/node": "^22.15.21",
+    "axios": "^1.9.0",
+    "dotenv": "^16.5.0", 
+    "inquirer": "^10.2.2",
+    "ora": "^8.1.1",
+    "playwright": "^1.49.1",
+    "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.8.3",
+    "zod": "^3.25.28"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.27.0",
+    "@microsoft/tsdoc": "^0.15.1",
+    "@types/eslint__js": "^8.42.3",
+    "@types/inquirer": "^9.0.7",
+    "@types/prettier": "^2.7.3",
+    "@typescript-eslint/eslint-plugin": "^8.32.1",
+    "@typescript-eslint/parser": "^8.32.1",
+    "chalk": "^5.4.1",
+    "eslint": "^9.27.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-playwright": "^2.2.0",
+    "eslint-plugin-prettier": "^5.4.0",
+    "eslint-plugin-tsdoc": "^0.4.0",
+    "prettier": "^3.5.3",
+    "typedoc": "^0.28.4",
+    "typedoc-plugin-merge-modules": "^7.0.0",
+    "typedoc-plugin-missing-exports": "^4.0.0",
+    "typescript-eslint": "^8.32.1"
+  },
+  "peerDependencies": {
+    "playwright": ">=1.40.0"
+  }
+}
