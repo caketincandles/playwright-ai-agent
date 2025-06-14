@@ -1,6 +1,6 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
 import * as CONSTS from './consts';
-import * as Types from './types';
+import * as Types from '../types';
 import { ProviderFactory } from './providers';
 
 /**
@@ -9,16 +9,16 @@ import { ProviderFactory } from './providers';
  */
 export class LLM {
     private readonly httpClient: AxiosInstance;
-    private readonly config: Types.ILLMConfig;
-    private readonly options: Types.ILLMServiceOptions;
-    private readonly provider: Types.Provider.IBase;
+    private readonly config: Types.Broker.ILLMConfig;
+    private readonly options: Types.Broker.ILLMServiceOptions;
+    private readonly provider: Types.Broker.Provider.IBase;
     private readonly providerFactory: ProviderFactory;
 
     /**
      * Creates a new LLM service instance
      * @param serviceOptions - Configuration options for the LLM service
      */
-    constructor(serviceOptions: Types.ILLMServiceOptions) {
+    constructor(serviceOptions: Types.Broker.ILLMServiceOptions) {
         this.config = {
             ...CONSTS.DEFAULT_LLM_CONFIG,
             ...serviceOptions.config,
@@ -47,14 +47,14 @@ export class LLM {
      * @returns Promise resolving to the LLM response
      */
     async chatCompletion(
-        messages: readonly Types.ILLMMessage[],
+        messages: readonly Types.Broker.ILLMMessage[],
         requestOptions?: {
             readonly temperature?: number;
             readonly maxTokens?: number;
             readonly additionalParams?: Record<string, unknown>;
         },
-    ): Promise<Types.TLLMResponse> {
-        const request: Types.ILLMRequest = {
+    ): Promise<Types.Broker.TLLMResponse> {
+        const request: Types.Broker.ILLMRequest = {
             model: this.config.model,
             messages,
             temperature:
@@ -99,7 +99,7 @@ export class LLM {
             readonly maxTokens?: number;
         },
     ): Promise<string> {
-        const messages: Types.ILLMMessage[] = [];
+        const messages: Types.Broker.ILLMMessage[] = [];
 
         if (systemMessage)
             messages.push({ role: 'system', content: systemMessage });
@@ -131,19 +131,19 @@ export class LLM {
      * @returns Configured LLM service instance
      */
     static fromPreset(
-        provider: Types.Provider.TName,
+        provider: Types.TName,
         apiKey: string | undefined,
         model: string,
-        overrides?: Partial<Types.ILLMConfig>,
+        overrides?: Partial<Types.Broker.ILLMConfig>,
     ): LLM {
         const factory = new ProviderFactory();
         const defaultConfig = factory.getDefaultConfig(provider);
-        const config: Types.ILLMConfig = {
+        const config: Types.Broker.ILLMConfig = {
             ...defaultConfig,
             apiKey,
             model,
             ...overrides,
-        } as Types.ILLMConfig;
+        } as Types.Broker.ILLMConfig;
 
         return new LLM({ config });
     }
@@ -152,7 +152,7 @@ export class LLM {
      * Auto-detects provider based on configuration
      * @returns Detected provider name
      */
-    private detectProvider(): Types.Provider.TName {
+    private detectProvider(): Types.TName {
         if (this.config.baseURL.includes('api.openai.com')) {
             return 'openai';
         }
@@ -216,7 +216,7 @@ export class LLM {
      * @param response - LLM response object
      * @returns Text content from the response
      */
-    private extractContent(response: Types.TLLMResponse): string {
+    private extractContent(response: Types.Broker.TLLMResponse): string {
         if ('choices' in response) {
             return response.choices[0]?.message.content ?? '';
         }
@@ -228,7 +228,7 @@ export class LLM {
      * @param error - The original error
      * @returns Standardised LLM error
      */
-    private handleError(error: unknown): Types.ILLMError {
+    private handleError(error: unknown): Types.Broker.ILLMError {
         if (axios.isAxiosError(error)) {
             const status = error.response?.status ?? 0;
             const errorType = CONSTS.ERROR_TYPE_MAP[status] ?? 'unknown';

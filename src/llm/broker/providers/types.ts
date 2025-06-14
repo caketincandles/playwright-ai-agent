@@ -1,7 +1,4 @@
-import * as CONSTS from '../../consts';
-import { ILLMConfig, ILLMRequest, TLLMResponse } from '../types';
-
-export type TName = (typeof CONSTS.PROVIDERS)[keyof typeof CONSTS.PROVIDERS];
+import * as Types from '../../types';
 
 /** Provider configuration factory */
 export interface IFactory {
@@ -10,34 +7,34 @@ export interface IFactory {
      * @param name - Provider name
      * @returns Provider instance
      */
-    createProvider(name: TName): IBase;
+    createProvider(name: Types.TName): IBase;
 
     /**
      * Gets default config for provider
      * @param name - Provider name
      * @returns Default configuration
      */
-    getDefaultConfig(name: TName): Partial<ILLMConfig>;
+    getDefaultConfig(name: Types.TName): Partial<Types.Broker.ILLMConfig>;
 }
 
 /** Base interface for all LLM providers */
 export interface IBase {
-    readonly name: TName;
-    readonly defaultConfig: Partial<ILLMConfig>;
+    readonly name: Types.TName;
+    readonly defaultConfig: Partial<Types.Broker.ILLMConfig>;
 
     /**
      * Transforms request to provider-specific format
      * @param request - Standard LLM request
      * @returns Provider-specific request body
      */
-    transformRequest(request: ILLMRequest): Record<string, unknown>;
+    transformRequest(request: Types.Broker.ILLMRequest): Record<string, unknown>;
 
     /**
      * Transforms provider response to standard format
      * @param responseData - Raw provider response
      * @returns Standardized LLM response
      */
-    transformResponse(responseData: unknown): TLLMResponse;
+    transformResponse(responseData: unknown): Types.Broker.TLLMResponse;
 
     /**
      * Builds authentication headers
@@ -51,5 +48,5 @@ export interface IBase {
      * @param config - Configuration to validate
      * @returns True if valid, throws error if invalid
      */
-    validateConfig(config: ILLMConfig): boolean;
+    validateConfig(config: Types.Broker.ILLMConfig): boolean;
 }

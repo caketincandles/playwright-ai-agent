@@ -1,4 +1,4 @@
-import * as Types from '../types';
+import * as Types from '../../types';
 import * as CONSTS from '../../consts';
 import * as Logger from '../../../../lib/services/logger';
 import { OpenAI } from './open-ai';
@@ -8,10 +8,10 @@ import { Local } from './local';
 export { OpenAI, Anthropic, Local };
 
 /** Factory for creating LLM provider instances - centralises instantiation and config */
-export class ProviderFactory implements Types.Provider.IFactory {
+export class ProviderFactory implements Types.Broker.Provider.IFactory {
     private readonly providers = new Map<
-        Types.Provider.TName,
-        Types.Provider.IBase
+        Types.TName,
+        Types.Broker.Provider.IBase
     >([
         [CONSTS.PROVIDERS.OPENAI, new OpenAI()],
         [CONSTS.PROVIDERS.ANTHROPIC, new Anthropic()],
@@ -25,7 +25,7 @@ export class ProviderFactory implements Types.Provider.IFactory {
      * @param name - Provider name
      * @returns Provider instance
      */
-    createProvider(name: Types.Provider.TName): Types.Provider.IBase {
+    createProvider(name: Types.TName): Types.Broker.Provider.IBase {
         const provider = this.providers.get(name);
         if (!provider) {
             this.logger.error(`Unknown provider: ${name}`, {
@@ -44,7 +44,7 @@ export class ProviderFactory implements Types.Provider.IFactory {
      * @param name - Provider name
      * @returns Default configuration
      */
-    getDefaultConfig(name: Types.Provider.TName): Partial<Types.ILLMConfig> {
+    getDefaultConfig(name: Types.TName): Partial<Types.Broker.ILLMConfig> {
         const provider = this.createProvider(name);
         return provider.defaultConfig;
     }
@@ -53,7 +53,7 @@ export class ProviderFactory implements Types.Provider.IFactory {
      * Gets all available provider names
      * @returns Array of provider names
      */
-    getAvailableProviders(): readonly Types.Provider.TName[] {
+    getAvailableProviders(): readonly Types.TName[] {
         return Array.from(this.providers.keys());
     }
 
@@ -64,14 +64,14 @@ export class ProviderFactory implements Types.Provider.IFactory {
      * @returns Configured provider
      */
     createFromPreset(
-        name: Types.Provider.TName,
-        config: Partial<Types.ILLMConfig> = {},
-    ): Types.Provider.IBase {
+        name: Types.TName,
+        config: Partial<Types.Broker.ILLMConfig> = {},
+    ): Types.Broker.Provider.IBase {
         const provider = this.createProvider(name);
         const mergedConfig = {
             ...provider.defaultConfig,
             ...config,
-        } as Types.ILLMConfig;
+        } as Types.Broker.ILLMConfig;
         provider.validateConfig(mergedConfig);
         return provider;
     }

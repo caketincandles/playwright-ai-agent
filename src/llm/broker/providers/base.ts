@@ -1,13 +1,13 @@
-import * as Types from '../types';
+import * as Types from '../../types';
 import * as Logger from '../../../../lib/services/logger';
 
 /**
  * Abstract base class for LLM providers
  * Provides common functionality and enforces interface compliance
  */
-export abstract class BaseProvider implements Types.Provider.IBase {
-    abstract readonly name: Types.Provider.TName;
-    abstract readonly defaultConfig: Partial<Types.ILLMConfig>;
+export abstract class BaseProvider implements Types.Broker.Provider.IBase {
+    abstract readonly name: Types.TName;
+    abstract readonly defaultConfig: Partial<Types.Broker.ILLMConfig>;
 
     protected readonly logger = Logger.Log.LLM();
 
@@ -17,7 +17,7 @@ export abstract class BaseProvider implements Types.Provider.IBase {
      * @returns Provider-specific request body
      */
     abstract transformRequest(
-        request: Types.ILLMRequest,
+        request: Types.Broker.ILLMRequest,
     ): Record<string, unknown>;
 
     /**
@@ -25,7 +25,7 @@ export abstract class BaseProvider implements Types.Provider.IBase {
      * @param responseData - Raw provider response
      * @returns Standardized LLM response
      */
-    abstract transformResponse(responseData: unknown): Types.TLLMResponse;
+    abstract transformResponse(responseData: unknown): Types.Broker.TLLMResponse;
 
     /**
      * Builds authentication headers
@@ -39,7 +39,7 @@ export abstract class BaseProvider implements Types.Provider.IBase {
      * @param config - Configuration to validate
      * @returns True if valid, throws error if invalid
      */
-    validateConfig(config: Types.ILLMConfig): boolean {
+    validateConfig(config: Types.Broker.ILLMConfig): boolean {
         if (!config.baseURL)
             this.logger.error(`${this.name}: baseURL is required`);
         if (!config.model) this.logger.error(`${this.name}: model is required`);
@@ -51,7 +51,7 @@ export abstract class BaseProvider implements Types.Provider.IBase {
      * @param response - LLM response
      * @returns Text content
      */
-    protected extractContent(response: Types.TLLMResponse): string {
+    protected extractContent(response: Types.Broker.TLLMResponse): string {
         if ('choices' in response)
             return response.choices[0]?.message.content ?? '';
         return response.content;

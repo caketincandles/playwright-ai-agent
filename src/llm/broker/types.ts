@@ -1,6 +1,6 @@
 import * as CONSTS from '../consts';
-import { TRole } from '../types';
 import * as Provider from './providers/types';
+import { TRole } from '../types';
 
 export { Provider };
 
