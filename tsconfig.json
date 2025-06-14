@@ -24,7 +24,9 @@
   },
   "include": [
     "src/**/*",
-    "app/**/*"
+    "app/**/*",
+    "jest.setup.ts",
+    "jest.config.ts"
   ],
   "exclude": [
     "node_modules",

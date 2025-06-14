@@ -1,8 +1,7 @@
 // @ts-check
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
-import prettier from 'eslint-config-prettier';
-import eslintPluginPrettier from 'eslint-plugin-prettier';
+import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default tseslint.config(
     eslint.configs.recommended,
@@ -12,12 +11,11 @@ export default tseslint.config(
         files: ['**/*.ts', '**/*.tsx'],
         languageOptions: {
             parserOptions: {
-                project: true,
+                projectService: true,
                 tsconfigRootDir: import.meta.dirname,
             },
         },
         rules: {
-            'prettier/prettier': ['warn', { endOfLine: 'auto' }],
             '@typescript-eslint/no-non-null-assertion': 'warn',
             '@typescript-eslint/naming-convention': [
                 'warn',
@@ -49,12 +47,6 @@ export default tseslint.config(
             complexity: ['warn', 8],
             'max-params': ['error', 4],
         },
-        plugins: {
-            prettier: eslintPluginPrettier,
-        },
-        settings: {
-            prettier,
-        },
     },
     {
         files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
@@ -65,12 +57,8 @@ export default tseslint.config(
             },
         },
         rules: {
-            'prettier/prettier': ['warn', { endOfLine: 'auto' }],
             complexity: ['warn', 8],
             'max-params': ['error', 4],
-        },
-        plugins: {
-            prettier: eslintPluginPrettier,
         },
     },
     {
@@ -84,4 +72,5 @@ export default tseslint.config(
             '*.config.*',
         ],
     },
+    eslintConfigPrettier,
 );
