@@ -76,9 +76,12 @@ export default tseslint.config(
     {
         ignores: [
             'dist/**/*',
+            'lib/**/*', 
             'node_modules/**/*',
             'data/**/*',
             '**/*.d.ts',
+            'coverage/**/*',
+            '*.config.*',
         ],
     },
 );
