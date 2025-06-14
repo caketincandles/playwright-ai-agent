@@ -1,5 +1,5 @@
 import * as Types from '../types';
-import * as CONSTS from '../consts';
+import * as CONSTS from '../../consts';
 import * as Logger from '../../../../lib/services/logger';
 import { OpenAI } from './open-ai';
 import { Anthropic } from './anthropic';

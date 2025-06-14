@@ -1,18 +1,12 @@
-import * as CONSTS from './consts';
+import * as CONSTS from '../consts';
+import { TRole } from '../types';
 import * as Provider from './providers/types';
 
 export { Provider };
 
-/**
- * Type definitions for the LLM service broker
- * Supports any LLM API endpoint with flexible authentication and configuration
- */
-
-type TRole = (typeof CONSTS.ROLE)[keyof typeof CONSTS.ROLE];
-
 /** Supported authentication methods for LLM APIs */
 export type TAuthMethod =
-    (typeof CONSTS.AUTH_METHOD)[keyof typeof CONSTS.AUTH_METHOD];
+    (typeof CONSTS.BROKER.AUTH_METHOD)[keyof typeof CONSTS.BROKER.AUTH_METHOD];
 
 /** LLM provider configuration interface */
 export interface ILLMConfig {

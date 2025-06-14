@@ -1,4 +1,4 @@
-import * as CONSTS from '../consts';
+import * as CONSTS from '../../consts';
 import { ILLMConfig, ILLMRequest, TLLMResponse } from '../types';
 
 export type TName = (typeof CONSTS.PROVIDERS)[keyof typeof CONSTS.PROVIDERS];

@@ -1,5 +1,5 @@
 import * as Types from '../types';
-import * as CONSTS from '../consts';
+import * as CONSTS from '../../consts';
 import { BaseProvider } from './base';
 
 /**
