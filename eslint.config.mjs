@@ -69,6 +69,8 @@ export default tseslint.config(
             '**/*.d.ts',
             'coverage/**/*',
             '*.config.*',
+            '**/*.test.*',
+            '**/*.mock.*',
         ],
     },
     eslintConfigPrettier,
