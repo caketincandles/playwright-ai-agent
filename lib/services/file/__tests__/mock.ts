@@ -1,7 +1,7 @@
 import * as path from 'path';
-import { IFileService } from './types';
+import { Types } from '..';
 
-export class MockFileService implements IFileService {
+export class MockFileService implements Types.IFileService {
     private readonly files = new Map<string, string>();
 
     async readFile(filePath: string): Promise<string> {

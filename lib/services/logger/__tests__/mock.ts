@@ -1,8 +1,8 @@
-import * as Types from '../logger/types';
-import * as CONSTS from '../logger/consts';
+import * as Types from '../types';
+import * as CONSTS from '../consts';
 
 /** Mock logger service for development and testing - captures all log messages for debugging */
-class MockLoggerService {
+export class MockLoggerService {
     private config: Types.ILoggerConfig;
     private messages: Array<{
         level: Types.TLogLevelValue;
@@ -148,7 +148,7 @@ class MockLoggerService {
 }
 
 /** Mock logger factory that returns MockLoggerService instances */
-class MockLoggerManager {
+export class MockLoggerManager {
     private loggers = new Map<string, MockLoggerService>();
     private globalConfig: Partial<Types.ILoggerConfig> = {};
 

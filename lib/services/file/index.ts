@@ -1,9 +1,11 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { IFileService } from './types';
+import * as Types from './types';
+
+export { Types };
 
 /** Production file service implementation */
-export class FileService implements IFileService {
+export class FileService implements Types.IFileService {
     constructor(private readonly basePath?: string) {}
 
     async readFile(filePath: string): Promise<string> {
