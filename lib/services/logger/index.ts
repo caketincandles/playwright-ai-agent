@@ -1,6 +1,6 @@
 import * as CONSTS from './consts';
 import * as Types from './types';
-import { LoggerService } from './service';
+import { LoggerService } from './core';
 
 /**
  * Global logger manager for caching and reusing logger instances.
@@ -25,18 +25,17 @@ class LoggerManager {
      * @returns Cached or new logger instance
      */
     getLogger(
-        tag: Types.ILogTag,
-        config?: Partial<Types.ILoggerConfig>,
-    ): LoggerService {
-        const key = this.createKey(tag);
-
-        if (!this.loggers.has(key)) {
-            const mergedConfig = { ...this.globalConfig, ...config };
-            this.loggers.set(key, new LoggerService(tag, mergedConfig));
-        }
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        return this.loggers.get(key)!;
+    tag: Types.ILogTag,
+    config?: Partial<Types.ILoggerConfig>,
+): Types.ILogger {
+    const key = this.createKey(tag);
+    if (!this.loggers.has(key)) {
+        const mergedConfig = { ...this.globalConfig, ...config };
+        this.loggers.set(key, new LoggerService(tag, mergedConfig));
     }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return this.loggers.get(key)!;
+}
 
     /**
      * Creates unique key for logger caching.
@@ -51,22 +50,24 @@ class LoggerManager {
 // Export singleton instance
 const logger = new LoggerManager();
 
-export { CONSTS };
+export { CONSTS, Types };
 
-export const Log = {
-    LLM: (target?: Types.TTargetType) =>
+export const Log: Record<Types.TServiceType, (target?: Types.TTargetType) => Types.ILogger> = {
+    [CONSTS.SERVICE.HEAL]: (target?: Types.TTargetType) => 
         logger.getLogger({ service: CONSTS.SERVICE.HEAL, target }),
-    Create: (target?: Types.TTargetType) =>
+    [CONSTS.SERVICE.CREATE]: (target?: Types.TTargetType) => 
         logger.getLogger({ service: CONSTS.SERVICE.CREATE, target }),
-    Improve: (target?: Types.TTargetType) =>
+    [CONSTS.SERVICE.IMPROVE]: (target?: Types.TTargetType) => 
         logger.getLogger({ service: CONSTS.SERVICE.IMPROVE, target }),
-    Dev: (target?: Types.TTargetType) =>
+    [CONSTS.SERVICE.DEV]: (target?: Types.TTargetType) => 
         logger.getLogger({ service: CONSTS.SERVICE.DEV, target }),
-} as const;
+    [CONSTS.SERVICE.INSTALL]: (target?: Types.TTargetType) => 
+        logger.getLogger({ service: CONSTS.SERVICE.INSTALL, target }),
+};
 
 /**
  * Initialises global logging configuration.
- * Should be called once during package initialization.
+ * Should be called once during package initialisation.
  * @param config - Global configuration object
  */
 export function initLogging(config?: {

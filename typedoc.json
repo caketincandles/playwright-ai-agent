@@ -1,7 +1,7 @@
 {
     "$schema": "https://typedoc.org/schema.json",
     "name": "Playwright AI Agent - TS Docs",
-    "entryPoints": ["./src/**/*.ts", "./lib/**/*.ts"],
+    "entryPoints": ["./src/**/*.ts", "./lib/**/*.ts", "./app/**/*.ts"],
     "entryPointStrategy": "expand",
     "out": "./docs/ts-docs",
 

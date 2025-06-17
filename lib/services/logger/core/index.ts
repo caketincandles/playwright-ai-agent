@@ -1,20 +1,20 @@
 import process from 'process';
-import * as CONSTS from './consts';
-import * as Types from './types';
-import { FileService } from '../file';
-import { IFileService } from '../file/types';
+import * as CONSTS from '../consts';
+import * as Types from '../types';
+import { FileService } from '../../file';
+import { IFileService } from '../../file/types';
 
 /**
  * Enhanced logging system for AI automation operations.
  * Provides structured output, file logging, and process management for errors vs warnings.
  */
-export class LoggerService {
-    private config: Types.ILoggerConfig;
+export class LoggerService implements Types.ILogger {
+    protected config: Types.ILoggerConfig;
 
     constructor(
-        private readonly tag: Types.ILogTag,
+        protected readonly tag: Types.ILogTag,
         config?: Partial<Types.ILoggerConfig>,
-        private readonly fileService: IFileService = new FileService(),
+        protected readonly fileService: IFileService = new FileService(),
     ) {
         this.config = { ...CONSTS.DEFAULT_LOG_CONFIG, ...config };
     }
@@ -77,127 +77,13 @@ export class LoggerService {
     }
 
     /**
-     * Logs structured recommendations for test improvements.
-     * @param recommendation - Recommendation data with metadata
-     */
-    async recommendation(recommendation: Types.IRecommendation): Promise<void> {
-        const { type, severity, message, file, line, suggestion, autoFixable } =
-            recommendation;
-
-        const prefix = autoFixable ? '🔧' : '💡';
-        const location = this.formatLocation(file, line);
-        const logMessage = `${prefix} [${type.toUpperCase()}] ${message}${location}`;
-
-        const level = this.mapSeverityToLevel(severity);
-        this.log(level, logMessage);
-
-        if (suggestion) {
-            this.printDetails(suggestion, CONSTS.LOG_COLOUR[level]);
-        }
-
-        await this.writeToFile('recommendation', recommendation);
-    }
-
-    /**
-     * Logs heal operation results with comprehensive summary.
-     * @param result - Heal operation results
-     */
-    async healResult(result: Types.IHealResult): Promise<void> {
-        const { success, changes, filesModified } = result;
-
-        if (success) {
-            this.success('Heal operation completed');
-            if (filesModified?.length) {
-                this.info(
-                    `Modified ${filesModified.length.toString()} files: ${filesModified.join(', ')}`,
-                );
-            }
-        } else {
-            this.warn('Heal operation completed with recommendations only');
-        }
-
-        this.info(`Generated ${changes.length.toString()} recommendations`);
-
-        for (const change of changes) {
-            await this.recommendation(change);
-        }
-
-        await this.writeToFile('heal_result', result);
-    }
-
-    /**
-     * Configures file output for persistent logging.
-     * @param filepath - Path to log file
-     */
-    setOutputFile(filepath: string): void {
-        this.config.outputFile = filepath;
-    }
-
-    /**
      * Creates a child logger with additional tag context.
      * @param additionalTag - Additional tag information
      * @returns New logger instance with combined tags
      */
-    child(additionalTag: Partial<Types.ILogTag>): LoggerService {
+    protected child(additionalTag: Partial<Types.ILogTag>): LoggerService {
         const combinedTag = { ...this.tag, ...additionalTag };
         return new LoggerService(combinedTag, this.config);
-    }
-
-    /**
-     * Formats file location for display.
-     * @param file - File path
-     * @param line - Line number
-     * @returns Formatted location string
-     */
-    private formatLocation(file?: string, line?: number): string {
-        if (!file) return '';
-        if (line) return ` (${file}:${line.toString()})`;
-        return ` (${file})`;
-    }
-
-    /**
-     * Maps recommendation severity to log level.
-     * @param severity - Recommendation severity
-     * @returns Corresponding log level
-     */
-    private mapSeverityToLevel(
-        severity: Types.IRecommendation['severity'],
-    ): Types.TLogLevelValue {
-        switch (severity) {
-            case 'ERROR':
-                return CONSTS.LOG_LEVEL.ERROR;
-            case 'WARN':
-                return CONSTS.LOG_LEVEL.WARN;
-            case 'INFO':
-                return CONSTS.LOG_LEVEL.INFO;
-            default:
-                return CONSTS.LOG_LEVEL.INFO;
-        }
-    }
-
-    /**
-     * Writes structured data to configured output file.
-     * @param type - Entry type for categorization
-     * @param data - Data to write
-     */
-    private async writeToFile(type: string, data: unknown): Promise<void> {
-        if (!this.config.outputFile) return;
-
-        try {
-            const entry = {
-                timestamp: new Date().toISOString(),
-                tag: this.tag,
-                type,
-                ...(data && typeof data === 'object' && !Array.isArray(data)
-                    ? data
-                    : { data }),
-            };
-
-            const line = JSON.stringify(entry) + '\n';
-            await this.fileService.appendFile(this.config.outputFile, line);
-        } catch (writeError) {
-            this.warn('Failed to write to log file', writeError);
-        }
     }
 
     /**
@@ -206,7 +92,7 @@ export class LoggerService {
      * @param message - Message to log
      * @param details - Additional data to include
      */
-    private log(
+    protected log(
         level: Types.TLogLevelValue,
         message: string,
         details?: unknown,
@@ -242,7 +128,7 @@ export class LoggerService {
      * @param data - Data to print
      * @param colorFn - Color function for styling
      */
-    private printDetails(
+    protected printDetails(
         data: unknown,
         colorFn: (text: string) => string,
     ): void {
@@ -259,7 +145,7 @@ export class LoggerService {
      * @param data - Data to format
      * @returns Formatted string representation
      */
-    private formatData(data: unknown): string {
+    protected formatData(data: unknown): string {
         if (data instanceof Error) return data.stack ?? data.message;
         if (typeof data === 'object' && data !== null)
             return JSON.stringify(data, null, 2);

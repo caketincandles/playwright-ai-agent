@@ -52,3 +52,11 @@ export interface IHealResult {
     readonly filesModified?: readonly string[];
     readonly timestamp: string;
 }
+
+export interface ILogger {
+    debug(message: string, details?: unknown): void;
+    info(message: string, details?: unknown): void;
+    success(message: string, details?: unknown): void;
+    warn(message: string, details?: unknown): void;
+    error(message: string, error?: unknown, exitCode?: number): never;
+}

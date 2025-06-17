@@ -18,6 +18,7 @@ export const SERVICE = {
     CREATE: 'AI-Create',
     IMPROVE: 'AI-Improve',
     DEV: 'Developer-Log',
+    INSTALL: 'Installation',
 } as const;
 
 export const TARGET = {
@@ -75,18 +76,19 @@ export const LOG_COLOUR: Record<
  * Colour mapping for service types.
  * Assigns a background colour to each service for visual distinction.
  */
-export const SERVICE_COLOUR: Record<string, (text: string) => string> = {
+export const SERVICE_COLOUR: Record<Types.TServiceType, (text: string) => string> = {
     [SERVICE.HEAL]: chalk.bgCyan,
     [SERVICE.CREATE]: chalk.bgMagenta,
     [SERVICE.IMPROVE]: chalk.bgYellow,
     [SERVICE.DEV]: chalk.bgRed,
+    [SERVICE.INSTALL]: chalk.bgBlue,
 } as const;
 
 /**
  * Colour mapping for target types.
  * Assigns a text colour to each target for secondary distinction.
  */
-export const TARGET_COLOUR: Record<string, (text: string) => string> = {
+export const TARGET_COLOUR: Record<Types.TTargetType, (text: string) => string> = {
     [TARGET.LOCATOR]: chalk.cyan,
     [TARGET.PAGE]: chalk.magenta,
     [TARGET.API]: chalk.green,

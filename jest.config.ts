@@ -12,10 +12,12 @@ const config: Config = {
     testEnvironment: 'node',
     rootDir: './',
     testMatch: [
+        '<rootDir>/app/**/__tests__/**/*.{ts,tsx}',
+        '<rootDir>/app/**/*.{test,spec}.{ts,tsx}',
         '<rootDir>/src/**/__tests__/**/*.{ts,tsx}',
         '<rootDir>/src/**/*.{test,spec}.{ts,tsx}',
         '<rootDir>/lib/**/__tests__/**/*.{ts,tsx}',
-        '<rootDir>/lib/**/*.{test,spec}.{ts,tsx}'
+        '<rootDir>/lib/**/*.{test,spec}.{ts,tsx}',
     ],
     
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],

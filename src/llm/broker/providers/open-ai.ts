@@ -7,7 +7,7 @@ import { BaseProvider } from './base';
  * Handles OpenAI API-compatible requests and responses
  */
 export class OpenAI extends BaseProvider {
-    readonly name = CONSTS.PROVIDERS.OPENAI;
+    readonly name = CONSTS.PROVIDERS.OPEN_AI;
     readonly defaultConfig: Partial<Types.ILLMConfig> = {
         baseURL: 'https://api.openai.com/v1/chat/completions',
         authMethod: 'bearer',

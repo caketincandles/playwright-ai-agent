@@ -8,7 +8,7 @@ export { Types };
 export class FileService implements Types.IFileService {
     constructor(private readonly basePath?: string) {}
 
-    async readFile(filePath: string): Promise<string> {
+    public async readFile(filePath: string): Promise<string> {
         const fullPath = this.resolvePath(filePath);
         try {
             return await fs.readFile(fullPath, 'utf-8');
@@ -19,7 +19,7 @@ export class FileService implements Types.IFileService {
         }
     }
 
-    async writeFile(filePath: string, content: string): Promise<void> {
+    public async writeFile(filePath: string, content: string): Promise<void> {
         const fullPath = this.resolvePath(filePath);
         try {
             await this.ensureDirectory(path.dirname(fullPath));
@@ -31,7 +31,7 @@ export class FileService implements Types.IFileService {
         }
     }
 
-    async appendFile(filePath: string, content: string): Promise<void> {
+    public async appendFile(filePath: string, content: string): Promise<void> {
         const fullPath = this.resolvePath(filePath);
         try {
             await this.ensureDirectory(path.dirname(fullPath));
@@ -43,7 +43,7 @@ export class FileService implements Types.IFileService {
         }
     }
 
-    async exists(filePath: string): Promise<boolean> {
+    public async exists(filePath: string): Promise<boolean> {
         try {
             await fs.access(this.resolvePath(filePath));
             return true;
@@ -52,7 +52,7 @@ export class FileService implements Types.IFileService {
         }
     }
 
-    async ensureDirectory(dirPath: string): Promise<void> {
+    public async ensureDirectory(dirPath: string): Promise<void> {
         try {
             await fs.mkdir(this.resolvePath(dirPath), { recursive: true });
         } catch (error) {

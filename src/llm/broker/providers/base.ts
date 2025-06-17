@@ -9,7 +9,7 @@ export abstract class BaseProvider implements Types.Broker.Provider.IBase {
     abstract readonly name: Types.TName;
     abstract readonly defaultConfig: Partial<Types.Broker.ILLMConfig>;
 
-    protected readonly logger = Logger.Log.LLM();
+    protected readonly logger: Logger.Types.ILogger = Logger.Log[Logger.CONSTS.SERVICE.DEV]();
 
     /**
      * Transforms request to provider-specific format

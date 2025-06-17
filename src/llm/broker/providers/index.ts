@@ -13,7 +13,7 @@ export class ProviderFactory implements Types.Broker.Provider.IFactory {
         Types.TName,
         Types.Broker.Provider.IBase
     >([
-        [CONSTS.PROVIDERS.OPENAI, new OpenAI()],
+        [CONSTS.PROVIDERS.OPEN_AI, new OpenAI()],
         [CONSTS.PROVIDERS.ANTHROPIC, new Anthropic()],
         [CONSTS.PROVIDERS.LOCAL, new Local()],
     ]);
