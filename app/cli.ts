@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { SetupWizard } from '@app/setup/wizard';
+import { SetupWizard } from '@app/setup/steps/wizard';
 import { Config } from '@app/setup/config';
 import * as Logger from '@lib/services/logger';
 

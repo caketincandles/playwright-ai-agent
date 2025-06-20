@@ -1,12 +1,12 @@
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import * as Types from '@app/setup/types';
+import * as Validate from '@app/setup/validation';
+import * as LlmTypes from '@src/llm/types';
 import { PROVIDER_MODELS, PROVIDERS } from '@src/llm/consts';
 import { toPascalCase } from '@lib/util/data-types/strings';
-import * as LlmTypes from '@src/llm/types';
 import { ILogger } from '@lib/services/logger/types';
-import { BASE } from '@app/core/consts';
-import * as Validate from './validation';
+import { BASE } from '@app/setup/consts';
 
 export class SetupWizard {
     private defaultDir = 'src/pages';
@@ -14,7 +14,7 @@ export class SetupWizard {
     constructor(private readonly log: ILogger){}
 
     public async run(): Promise<Types.ISetupResponses> {
-        console.log(chalk.cyan('🎭 Playwright AI Agent Setup\n'));
+        this.log.info(chalk.cyan('🎭 Playwright AI Agent Setup\n'));
         
         const ai = await this.getAiConfig();
         const locators = await this.getLocatorsConfig();
@@ -24,6 +24,7 @@ export class SetupWizard {
     }
     
     private async getAiConfig(): Promise<Types.TAiSetupResponse> {
+        this.log.info(chalk.cyanBright('✨ AI Setup\n'));
         const providerChoices = Object.entries(PROVIDERS).map(([key, value]) => ({
             name: toPascalCase(key),
             value: value
@@ -128,6 +129,7 @@ export class SetupWizard {
     }
     
     private async getLocatorsConfig(): Promise<Types.IProjectSetup> {
+        this.log.info(chalk.cyanBright('🔍 Locator Config\n'));
         const baseClassSfx = BASE.LOCATOR.CLASS_SUFFIXES;
         const baseParamSfx = BASE.LOCATOR.PARAM_SUFFIXES;
 
@@ -171,6 +173,7 @@ export class SetupWizard {
 
     
     private async getPagesConfig(): Promise<Types.IBaseProjectSetup> {
+        this.log.info(chalk.cyanBright('📄 Page Config\n'));
         const baseClassSfx = BASE.PAGE.CLASS_SUFFIXES;
 
         const { directory } = await inquirer.prompt<{ directory: string }>([{
