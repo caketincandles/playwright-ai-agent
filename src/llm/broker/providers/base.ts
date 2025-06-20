@@ -6,7 +6,7 @@ import * as Logger from '../../../../lib/services/logger';
  * Provides common functionality and enforces interface compliance
  */
 export abstract class BaseProvider implements Types.Broker.Provider.IBase {
-    abstract readonly name: Types.TName;
+    abstract readonly name: Types.TProvider;
     abstract readonly defaultConfig: Partial<Types.Broker.ILLMConfig>;
 
     protected readonly logger: Logger.Types.ILogger = Logger.Log[Logger.CONSTS.SERVICE.DEV]();

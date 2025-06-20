@@ -131,7 +131,7 @@ export class LLM {
      * @returns Configured LLM service instance
      */
     static fromPreset(
-        provider: Types.TName,
+        provider: Types.TProvider,
         apiKey: string | undefined,
         model: string,
         overrides?: Partial<Types.Broker.ILLMConfig>,
@@ -152,7 +152,7 @@ export class LLM {
      * Auto-detects provider based on configuration
      * @returns Detected provider name
      */
-    private detectProvider(): Types.TName {
+    private detectProvider(): Types.TProvider {
         if (this.config.baseURL.includes('api.openai.com')) {
             return 'openai';
         }

@@ -30,7 +30,7 @@ export class SetupWizard {
             value: value
         }));
 
-        const { provider } = await inquirer.prompt<{ provider: LlmTypes.TName }>([{
+        const { provider } = await inquirer.prompt<{ provider: LlmTypes.TProvider }>([{
             type: 'list',
             name: 'provider',
             message: 'Choose AI provider:',
@@ -136,7 +136,7 @@ export class SetupWizard {
         const { locatorDir } = await inquirer.prompt<{ locatorDir: boolean }>([{
             type: 'confirm',
             name: 'locatorDir',
-            message: 'Do you use a dedicated locator folder?',
+            message: 'Do you (intend to) use a dedicated locator folder?',
             default: true
         }]);
 

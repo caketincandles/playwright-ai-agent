@@ -55,13 +55,6 @@ export const PROVIDER_PRESETS: Record<string, Partial<Types.ILLMConfig>> = {
             'anthropic-version': '2023-06-01',
         },
     },
-    'azure-openai': {
-        authMethod: 'api-key',
-        customRequestFormat: false,
-        headers: {
-            'api-key': '',
-        },
-    },
     local: {
         baseURL: 'http://localhost:8080/v1/chat/completions',
         authMethod: 'none',

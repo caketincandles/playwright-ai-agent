@@ -10,7 +10,7 @@ export { OpenAI, Anthropic, Local };
 /** Factory for creating LLM provider instances - centralises instantiation and config */
 export class ProviderFactory implements Types.Broker.Provider.IFactory {
     private readonly providers = new Map<
-        Types.TName,
+        Types.TProvider,
         Types.Broker.Provider.IBase
     >([
         [CONSTS.PROVIDERS.OPEN_AI, new OpenAI()],
@@ -25,7 +25,7 @@ export class ProviderFactory implements Types.Broker.Provider.IFactory {
      * @param name - Provider name
      * @returns Provider instance
      */
-    createProvider(name: Types.TName): Types.Broker.Provider.IBase {
+    createProvider(name: Types.TProvider): Types.Broker.Provider.IBase {
         const provider = this.providers.get(name);
         if (!provider) {
             this.logger.error(`Unknown provider: ${name}`, {
@@ -44,7 +44,7 @@ export class ProviderFactory implements Types.Broker.Provider.IFactory {
      * @param name - Provider name
      * @returns Default configuration
      */
-    getDefaultConfig(name: Types.TName): Partial<Types.Broker.ILLMConfig> {
+    getDefaultConfig(name: Types.TProvider): Partial<Types.Broker.ILLMConfig> {
         const provider = this.createProvider(name);
         return provider.defaultConfig;
     }
@@ -53,7 +53,7 @@ export class ProviderFactory implements Types.Broker.Provider.IFactory {
      * Gets all available provider names
      * @returns Array of provider names
      */
-    getAvailableProviders(): readonly Types.TName[] {
+    getAvailableProviders(): readonly Types.TProvider[] {
         return Array.from(this.providers.keys());
     }
 
@@ -64,7 +64,7 @@ export class ProviderFactory implements Types.Broker.Provider.IFactory {
      * @returns Configured provider
      */
     createFromPreset(
-        name: Types.TName,
+        name: Types.TProvider,
         config: Partial<Types.Broker.ILLMConfig> = {},
     ): Types.Broker.Provider.IBase {
         const provider = this.createProvider(name);

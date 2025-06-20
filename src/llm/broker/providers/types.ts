@@ -7,19 +7,19 @@ export interface IFactory {
      * @param name - Provider name
      * @returns Provider instance
      */
-    createProvider(name: Types.TName): IBase;
+    createProvider(name: Types.TProvider): IBase;
 
     /**
      * Gets default config for provider
      * @param name - Provider name
      * @returns Default configuration
      */
-    getDefaultConfig(name: Types.TName): Partial<Types.Broker.ILLMConfig>;
+    getDefaultConfig(name: Types.TProvider): Partial<Types.Broker.ILLMConfig>;
 }
 
 /** Base interface for all LLM providers */
 export interface IBase {
-    readonly name: Types.TName;
+    readonly name: Types.TProvider;
     readonly defaultConfig: Partial<Types.Broker.ILLMConfig>;
 
     /**

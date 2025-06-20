@@ -1,7 +1,7 @@
 import * as LlmTypes from '@src/llm/types';
 
 interface IAiSetupResponse {
-    readonly provider: LlmTypes.TName;
+    readonly provider: LlmTypes.TProvider;
     readonly model?: LlmTypes.TModelValue;
     readonly apiKey?: string;
     readonly apiUrl?: string;
