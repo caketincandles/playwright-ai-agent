@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import { SetupWizard } from '@app/setup/wizard';
-import { Config } from '@app/setup/config';
+import { ConfigSetup } from '@app/setup/config';
 import * as Logger from '@lib/services/logger';
 
 Logger.initLogging({ level: 'INFO', userFacing: true });
@@ -19,7 +19,7 @@ program
             const wizard = new SetupWizard(logger);
             const responses = await wizard.run();
             
-            const writer = new Config(logger, responses);
+            const writer = new ConfigSetup(logger, responses);
             await writer.save();
             
             logger.success('Setup complete!');

@@ -4,7 +4,7 @@ import { ILogger } from '@lib/services/logger/types';
 import { EnvManager } from '@app/setup/env';
 import { CONFIG_FILE } from '@src/config/consts';
 
-export class Config {
+export class ConfigSetup {
     private readonly fs: FileService;
 
     constructor(private logger: ILogger, private responses: IConfig){
