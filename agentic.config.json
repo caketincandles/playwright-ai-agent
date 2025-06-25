@@ -1,18 +1,18 @@
 {
-  "openai": {
-    "apiKey": "${AI_API_KEY}",
-    "model": "${AI_MODEL}",
-    "baseURL": "https://api.openai.com/v1"
-  },
-  "playwright": {
-    "headless": true,
-    "timeout": 30000
-  },
-  "output": {
-    "directory": "./src/locators",
-    "baseImportPath": "../base/BaseLocators"
-  },
-  "prompts": {
-    "directory": "./prompts"
-  }
+    "openai": {
+        "apiKey": "${AI_API_KEY}",
+        "model": "${AI_MODEL}",
+        "baseURL": "https://api.openai.com/v1"
+    },
+    "playwright": {
+        "headless": true,
+        "timeout": 30000
+    },
+    "output": {
+        "directory": "./src/locators",
+        "baseImportPath": "../base/BaseLocators"
+    },
+    "prompts": {
+        "directory": "./prompts"
+    }
 }

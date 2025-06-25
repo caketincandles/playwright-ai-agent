@@ -27,7 +27,9 @@ export interface IBase {
      * @param request - Standard LLM request
      * @returns Provider-specific request body
      */
-    transformRequest(request: Types.Broker.ILLMRequest): Record<string, unknown>;
+    transformRequest(
+        request: Types.Broker.ILLMRequest,
+    ): Record<string, unknown>;
 
     /**
      * Transforms provider response to standard format

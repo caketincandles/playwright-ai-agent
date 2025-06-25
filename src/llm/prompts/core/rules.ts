@@ -3,7 +3,7 @@ import { TService } from '@src/llm/types';
 import { TAction, TPlaywrightFile } from '@src/llm/prompts/types';
 import { ACTION, PLAYWRIGHT_FILE } from '@src/llm/prompts/consts';
 
-const BASE_RULES: string[] = [ 
+const BASE_RULES: string[] = [
     'Response format: { filePath: string; fileContents: string }[]',
     'Use `unknown` over `any`; maintain TypeScript types, interfaces, and generics',
     'Preserve performance optimisations; avoid overhead unless necessary',
@@ -31,19 +31,19 @@ const GENERATE_BASE_RULES: string[] = [
 
 const ACTION_RULES = {
     [ACTION.GENERATE]: {
-        [PLAYWRIGHT_FILE.LOCATOR]: [ 
+        [PLAYWRIGHT_FILE.LOCATOR]: [
             ...GENERATE_BASE_RULES,
             'Create reusable locator methods with descriptive names',
             'Use data-testid as primary strategy; fallback to role, label or stable attributes',
             'Avoid positional, index-based or dynamic class selectors',
         ],
-        [PLAYWRIGHT_FILE.PAGE]: [ 
+        [PLAYWRIGHT_FILE.PAGE]: [
             ...GENERATE_BASE_RULES,
             'Implement complete page interactions with proper waits',
             'Create methods for common workflows and business actions',
             'Include assertion methods for page state validation',
         ],
-        [PLAYWRIGHT_FILE.TEST]: [ 
+        [PLAYWRIGHT_FILE.TEST]: [
             ...GENERATE_BASE_RULES,
             'Structure tests with clear arrange-act-assert patterns',
             'Include setup/teardown for test isolation',
@@ -51,17 +51,17 @@ const ACTION_RULES = {
         ],
     },
     [ACTION.UPDATE]: {
-        [PLAYWRIGHT_FILE.LOCATOR]: [ 
+        [PLAYWRIGHT_FILE.LOCATOR]: [
             ...UPDATE_BASE_RULES,
             'Verify new locators target same logical elements',
             'Comment variable name changes that may break references',
         ],
-        [PLAYWRIGHT_FILE.PAGE]: [ 
+        [PLAYWRIGHT_FILE.PAGE]: [
             ...UPDATE_BASE_RULES,
             'Preserve method signatures and return types',
             'Maintain abstraction levels and business logic separation',
         ],
-        [PLAYWRIGHT_FILE.TEST]: [ 
+        [PLAYWRIGHT_FILE.TEST]: [
             ...UPDATE_BASE_RULES,
             'Preserve test intent, coverage scope and logical flow',
             'Maintain verification points and assertion structure',
@@ -70,7 +70,7 @@ const ACTION_RULES = {
 } as const satisfies Record<TAction, Record<TPlaywrightFile, string[]>>;
 
 const SERVICE_RULES: Record<TService, string[]> = {
-    [SERVICE.HEAL]: [ 
+    [SERVICE.HEAL]: [
         ...BASE_RULES,
         'Fix immediate failures only; no additional logic',
         'Target root causes, not symptoms; maintain test flow and verification points',
@@ -92,7 +92,7 @@ const PAGE_RULES: string[] = [
     'Separate page interactions from assertions for clarity',
 ] as const;
 
-const TIMING_RULES: string[] = [ 
+const TIMING_RULES: string[] = [
     'Replace hard waits with explicit condition waits',
     'Use `waitForLoadState`, `waitForSelector`, `waitForResponse` over timeouts',
     'Reasonable timeouts: 5-30s based on context',

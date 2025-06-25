@@ -1,6 +1,7 @@
 export function toPascalCase(str: string): string {
-    return str.toLowerCase()
+    return str
+        .toLowerCase()
         .split('_')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join('');
 }

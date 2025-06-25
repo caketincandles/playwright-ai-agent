@@ -8,14 +8,16 @@ export interface ICommand {
 export abstract class BaseCommand implements ICommand {
     constructor(
         protected readonly logger: ILogger,
-        protected readonly config?: IConfig
+        protected readonly config?: IConfig,
     ) {}
 
     abstract execute(): Promise<boolean>;
 
     protected requiresConfig(): boolean {
         if (!this.config) {
-            this.logger.error('No configuration found. Run "npx playwright-ai-agent --init" first.');
+            this.logger.error(
+                'No configuration found. Run "npx playwright-ai-agent --init" first.',
+            );
             return false;
         }
         return true;

@@ -1,8 +1,8 @@
 export const CONFIG_FILE = 'agentic.config.json';
 
-export const BASE = { 
+export const BASE = {
     LOCATOR: {
-        CLASS_SUFFIXES: [ 'Locator', 'Locators', 'Element', 'Elements' ],
+        CLASS_SUFFIXES: ['Locator', 'Locators', 'Element', 'Elements'],
         PARAM_SUFFIXES: [
             'Button',
             'Btn',
@@ -35,6 +35,13 @@ export const BASE = {
         ],
     },
     PAGE: {
-        CLASS_SUFFIXES: [ 'Page', 'Pages', 'Method', 'Methods', 'Component', 'Components' ],
-    }
+        CLASS_SUFFIXES: [
+            'Page',
+            'Pages',
+            'Method',
+            'Methods',
+            'Component',
+            'Components',
+        ],
+    },
 };

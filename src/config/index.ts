@@ -13,7 +13,7 @@ export default class Config {
 
     public async load(): Promise<IConfig | undefined> {
         try {
-            if (!await this.fs.exists(CONFIG_FILE)) {
+            if (!(await this.fs.exists(CONFIG_FILE))) {
                 return undefined;
             }
 

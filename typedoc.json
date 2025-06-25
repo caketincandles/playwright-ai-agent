@@ -5,11 +5,7 @@
     "entryPointStrategy": "expand",
     "out": "./docs/ts-docs",
 
-    "exclude": [
-        "**/node_modules/**",
-        "**/dist/**",
-        "**/templates/**"
-    ],
+    "exclude": ["**/node_modules/**", "**/dist/**", "**/templates/**"],
 
     "excludePrivate": true,
     "excludeProtected": false,

@@ -25,17 +25,17 @@ class LoggerManager {
      * @returns Cached or new logger instance
      */
     getLogger(
-    tag: Types.ILogTag,
-    config?: Partial<Types.ILoggerConfig>,
-): Types.ILogger {
-    const key = this.createKey(tag);
-    if (!this.loggers.has(key)) {
-        const mergedConfig = { ...this.globalConfig, ...config };
-        this.loggers.set(key, new LoggerService(tag, mergedConfig));
+        tag: Types.ILogTag,
+        config?: Partial<Types.ILoggerConfig>,
+    ): Types.ILogger {
+        const key = this.createKey(tag);
+        if (!this.loggers.has(key)) {
+            const mergedConfig = { ...this.globalConfig, ...config };
+            this.loggers.set(key, new LoggerService(tag, mergedConfig));
+        }
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return this.loggers.get(key)!;
     }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.loggers.get(key)!;
-}
 
     /**
      * Creates unique key for logger caching.
@@ -52,16 +52,19 @@ const logger = new LoggerManager();
 
 export { CONSTS, Types };
 
-export const Log: Record<Types.TServiceType, (target?: Types.TTargetType) => Types.ILogger> = {
-    [CONSTS.SERVICE.HEAL]: (target?: Types.TTargetType) => 
+export const Log: Record<
+    Types.TServiceType,
+    (target?: Types.TTargetType) => Types.ILogger
+> = {
+    [CONSTS.SERVICE.HEAL]: (target?: Types.TTargetType) =>
         logger.getLogger({ service: CONSTS.SERVICE.HEAL, target }),
-    [CONSTS.SERVICE.CREATE]: (target?: Types.TTargetType) => 
+    [CONSTS.SERVICE.CREATE]: (target?: Types.TTargetType) =>
         logger.getLogger({ service: CONSTS.SERVICE.CREATE, target }),
-    [CONSTS.SERVICE.IMPROVE]: (target?: Types.TTargetType) => 
+    [CONSTS.SERVICE.IMPROVE]: (target?: Types.TTargetType) =>
         logger.getLogger({ service: CONSTS.SERVICE.IMPROVE, target }),
-    [CONSTS.SERVICE.DEV]: (target?: Types.TTargetType) => 
+    [CONSTS.SERVICE.DEV]: (target?: Types.TTargetType) =>
         logger.getLogger({ service: CONSTS.SERVICE.DEV, target }),
-    [CONSTS.SERVICE.INSTALL]: (target?: Types.TTargetType) => 
+    [CONSTS.SERVICE.INSTALL]: (target?: Types.TTargetType) =>
         logger.getLogger({ service: CONSTS.SERVICE.INSTALL, target }),
 };
 

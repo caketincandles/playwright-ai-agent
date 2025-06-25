@@ -1,36 +1,37 @@
 import * as CONSTS from '../consts';
 import * as Types from '../types';
-import { LoggerService } from ".";
+import { LoggerService } from '.';
 
 export class LoggerResultService extends LoggerService {
     /**
      * Logs structured recommendations for test improvements.
      * @param recommendation - Recommendation data with metadata
      */
-    public async recommendation(recommendation: Types.IRecommendation): Promise<void> {
+    public async recommendation(
+        recommendation: Types.IRecommendation,
+    ): Promise<void> {
         const { type, severity, message, file, line, suggestion, autoFixable } =
             recommendation;
-    
+
         const prefix = autoFixable ? '🔧' : '💡';
         const location = this.formatLocation(file, line);
         const logMessage = `${prefix} [${type.toUpperCase()}] ${message}${location}`;
-    
+
         const level = this.mapSeverityToLevel(severity);
         this.log(level, logMessage);
-    
+
         if (suggestion) this.printDetails(suggestion, CONSTS.LOG_COLOUR[level]);
-            
-    
+
         await this.writeToFile('recommendation', recommendation);
     }
-    
+
     /**
      * Logs heal operation results with comprehensive summary.
      * @param result - Heal operation results
      */
     public async healResult(result: Types.IHealResult): Promise<void> {
         const { success, changes, filesModified } = result;
-    
+
         if (success) {
             this.success('Heal operation completed');
             if (filesModified?.length) {
@@ -39,14 +40,13 @@ export class LoggerResultService extends LoggerService {
                 );
             }
         } else this.warn('Heal operation completed with recommendations only');
-            
-    
+
         this.info(`Generated ${changes.length.toString()} recommendations`);
-    
+
         for (const change of changes) {
             await this.recommendation(change);
         }
-    
+
         await this.writeToFile('heal_result', result);
     }
 

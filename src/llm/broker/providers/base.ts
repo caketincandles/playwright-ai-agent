@@ -9,7 +9,8 @@ export abstract class BaseProvider implements Types.Broker.Provider.IBase {
     abstract readonly name: Types.TProvider;
     abstract readonly defaultConfig: Partial<Types.Broker.ILLMConfig>;
 
-    protected readonly logger: Logger.Types.ILogger = Logger.Log[Logger.CONSTS.SERVICE.DEV]();
+    protected readonly logger: Logger.Types.ILogger =
+        Logger.Log[Logger.CONSTS.SERVICE.DEV]();
 
     /**
      * Transforms request to provider-specific format
@@ -25,7 +26,9 @@ export abstract class BaseProvider implements Types.Broker.Provider.IBase {
      * @param responseData - Raw provider response
      * @returns Standardized LLM response
      */
-    abstract transformResponse(responseData: unknown): Types.Broker.TLLMResponse;
+    abstract transformResponse(
+        responseData: unknown,
+    ): Types.Broker.TLLMResponse;
 
     /**
      * Builds authentication headers

@@ -27,7 +27,9 @@ export class EnvManager {
     }
 
     private replaceApiKey(content: string, newKey: string): string {
-        const lines = content.split('\n').filter(line => !line.startsWith('AI_API_KEY='));
+        const lines = content
+            .split('\n')
+            .filter((line) => !line.startsWith('AI_API_KEY='));
         lines.push(`AI_API_KEY=${newKey}`);
         return lines.join('\n') + '\n';
     }

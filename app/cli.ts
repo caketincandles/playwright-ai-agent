@@ -18,10 +18,10 @@ program
         try {
             const wizard = new SetupWizard(logger);
             const responses = await wizard.run();
-            
+
             const writer = new ConfigSetup(logger, responses);
             await writer.save();
-            
+
             logger.success('Setup complete!');
         } catch (error) {
             logger.error('Setup failed', error);

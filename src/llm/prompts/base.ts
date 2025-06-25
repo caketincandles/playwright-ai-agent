@@ -7,9 +7,17 @@ import type { TService } from '@src/llm/types';
 import { RULES } from '@src/llm/prompts/core/rules';
 
 export abstract class BasePrompt implements Types.IXmlSchema {
-    private static readonly CONFIG_MAP: Record<Types.TPlaywrightFile, (config: unknown) => Types.ISuffixes | undefined> = {
+    private static readonly CONFIG_MAP: Record<
+        Types.TPlaywrightFile,
+        (config: unknown) => Types.ISuffixes | undefined
+    > = {
         [CONSTS.PLAYWRIGHT_FILE.LOCATOR]: (config) => {
-            const cfg = config as { locators?: { classSuffixes?: string[]; paramSuffixes?: string[] } };
+            const cfg = config as {
+                locators?: {
+                    classSuffixes?: string[];
+                    paramSuffixes?: string[];
+                };
+            };
             return {
                 classSuffixes: cfg.locators?.classSuffixes,
                 paramSuffixes: cfg.locators?.paramSuffixes,
@@ -29,24 +37,24 @@ export abstract class BasePrompt implements Types.IXmlSchema {
 
     protected readonly serviceRules: Record<Types.TPlaywrightFile, string[]>;
     protected abstract target: Types.TPlaywrightFile;
-    
+
     public readonly identity = CONSTS.IDENTITY;
     public abstract rules: string[];
-    
+
     public main_objective: string;
     public instructions: string[];
     public code: Types.ITargetFiles = { content: [] };
 
     constructor(
-        protected readonly filePaths: string[], 
-        protected readonly service: TService
+        protected readonly filePaths: string[],
+        protected readonly service: TService,
     ) {
         this.main_objective = MAIN_OBJECTIVE[this.service];
         this.instructions = INSTRUCTIONS[this.service];
         this.serviceRules = RULES[this.service];
-        
-        this.dataLoadPromise = this.loadData().then(() => { 
-            this.isLoaded = true; 
+
+        this.dataLoadPromise = this.loadData().then(() => {
+            this.isLoaded = true;
         });
     }
 
@@ -71,17 +79,19 @@ export abstract class BasePrompt implements Types.IXmlSchema {
     private async loadData(): Promise<void> {
         const [fileContents, config] = await Promise.all([
             this.loadFileContents(),
-            new Config().load()
+            new Config().load(),
         ]);
 
         this.code = {
             content: fileContents,
-            inclusions: BasePrompt.CONFIG_MAP[this.target](config)
+            inclusions: BasePrompt.CONFIG_MAP[this.target](config),
         };
     }
 
     private async loadFileContents(): Promise<string[]> {
         const fs = new FileService();
-        return Promise.all(this.filePaths.map(filePath => fs.readFile(filePath)));
+        return Promise.all(
+            this.filePaths.map((filePath) => fs.readFile(filePath)),
+        );
     }
 }

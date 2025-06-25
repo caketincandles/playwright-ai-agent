@@ -2,8 +2,9 @@ import { SERVICE } from '@src/llm/consts';
 import { TService } from '@src/llm/types';
 
 export const MAIN_OBJECTIVE: Record<TService, string> = {
-    [SERVICE.HEAL]: 'You are repairing broken or failing code to restore functionality',
-}as const;
+    [SERVICE.HEAL]:
+        'You are repairing broken or failing code to restore functionality',
+} as const;
 
 export const INSTRUCTIONS: Record<TService, string[]> = {
     [SERVICE.HEAL]: [
