@@ -9,3 +9,4 @@ export type TProviderModels = typeof CONSTS.PROVIDER_MODELS;
 export type TOpenAiModels = typeof CONSTS.PROVIDER_MODELS[typeof CONSTS.PROVIDERS.OPEN_AI];
 export type TAnthropicModels = typeof CONSTS.PROVIDER_MODELS[typeof CONSTS.PROVIDERS.ANTHROPIC];
 export type TModelValue = TOpenAiModels | TAnthropicModels;
+export type TService = typeof CONSTS.SERVICE[keyof typeof CONSTS.SERVICE];

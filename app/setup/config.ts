@@ -1,13 +1,13 @@
-import { FileService } from "@lib/services/file";
-import { ISetupResponses } from './types';
-import { ILogger } from "@lib/services/logger/types";
-import { EnvManager } from "./env";
+import FileService from '@lib/services/file';
+import { IConfig } from '@src/config/types';
+import { ILogger } from '@lib/services/logger/types';
+import { EnvManager } from '@app/setup/env';
+import { CONFIG_FILE } from '@src/config/consts';
 
 export class Config {
-    private static readonly FileName = 'agentic.config.json';
     private readonly fs: FileService;
 
-    constructor(private logger: ILogger, private responses: ISetupResponses){
+    constructor(private logger: ILogger, private responses: IConfig){
         this.fs = new FileService();
     }
 
@@ -20,10 +20,10 @@ export class Config {
             
             // Write new files
             const config = this.buildConfig();
-            await this.fs.writeFile(Config.FileName, JSON.stringify(config, null, 2));
+            await this.fs.writeFile(CONFIG_FILE, JSON.stringify(config, null, 2));
             
             if (this.responses.ai.apiKey) {
-                const envManager = new EnvManager(this.fs);
+                const envManager = new EnvManager();
                 await envManager.updateApiKey(this.responses.ai.apiKey);
             }
             
@@ -50,7 +50,7 @@ export class Config {
     }
 
     private async createBackups(backups: { file: string; content: string }[]): Promise<void> {
-        const filesToCheck = [Config.FileName, '.env'];
+        const filesToCheck = [CONFIG_FILE, '.env'];
         
         for (const file of filesToCheck) {
             if (await this.fs.exists(file)) {

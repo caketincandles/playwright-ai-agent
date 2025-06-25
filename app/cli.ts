@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { SetupWizard } from '@app/setup/steps/wizard';
+import { SetupWizard } from '@app/setup/wizard';
 import { Config } from '@app/setup/config';
 import * as Logger from '@lib/services/logger';
 
@@ -12,7 +12,7 @@ const program = new Command()
     .version('1.0.0');
 
 program
-    .command('init')
+    .command('--init')
     .description('Setup configuration')
     .action(async () => {
         try {

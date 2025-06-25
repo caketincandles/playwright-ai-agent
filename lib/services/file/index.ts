@@ -5,7 +5,7 @@ import * as Types from './types';
 export { Types };
 
 /** Production file service implementation */
-export class FileService implements Types.IFileService {
+export default class FileService implements Types.IFileService {
     constructor(private readonly basePath?: string) {}
 
     public async readFile(filePath: string): Promise<string> {

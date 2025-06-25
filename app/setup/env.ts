@@ -1,7 +1,11 @@
-import { FileService } from '@lib/services/file';
+import FileService from '@lib/services/file';
 
 export class EnvManager {
-    constructor(private readonly fs: FileService) {}
+    private readonly fs: FileService;
+
+    constructor() {
+        this.fs = new FileService();
+    }
 
     public async updateApiKey(apiKey: string): Promise<void> {
         const existing = await this.readEnv();

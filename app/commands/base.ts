@@ -1,5 +1,5 @@
 import { ILogger } from '@lib/services/logger/types';
-import { ISetupResponses } from '@app/setup/types';
+import { IConfig } from '@src/config/types';
 
 export interface ICommand {
     execute(): Promise<boolean>;
@@ -8,14 +8,14 @@ export interface ICommand {
 export abstract class BaseCommand implements ICommand {
     constructor(
         protected readonly logger: ILogger,
-        protected readonly config?: ISetupResponses
+        protected readonly config?: IConfig
     ) {}
 
     abstract execute(): Promise<boolean>;
 
     protected requiresConfig(): boolean {
         if (!this.config) {
-            this.logger.error('No configuration found. Run "npx playwright-ai-agent init" first.');
+            this.logger.error('No configuration found. Run "npx playwright-ai-agent --init" first.');
             return false;
         }
         return true;

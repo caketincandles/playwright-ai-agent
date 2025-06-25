@@ -1,33 +1,22 @@
-import { FileService } from '@lib/services/file';
-import { ISetupResponses } from '@app/setup/types';
+import { IConfig } from '@src/config/types';
 import { ILogger } from '@lib/services/logger/types';
 import { EnvManager } from '@app/setup/env';
+import { CONFIG_FILE } from '@src/config/consts';
+import Config from '@src/config';
 
-export class ConfigLoader {
-    private static readonly FileName = 'agentic.config.json';
-
+export class ConfigCli extends Config {
     constructor(
-        private readonly logger: ILogger,
-        private readonly fs = new FileService()
-    ) {}
-
-    public async load(): Promise<ISetupResponses | undefined> {
-        try {
-            if (!await this.fs.exists(ConfigLoader.FileName)) {
-                return undefined;
-            }
-
-            const content = await this.fs.readFile(ConfigLoader.FileName);
-            const config = JSON.parse(content) as ISetupResponses;
-            
-            return await this.mergeWithEnv(config);
-        } catch (error) {
-            this.logger.error('Failed to load configuration', error);
-        }
+        private readonly log: ILogger
+    ) {
+        super();
     }
 
-    private async mergeWithEnv(config: ISetupResponses): Promise<ISetupResponses> {
-        const envManager = new EnvManager(this.fs);
+    public async mergeWithEnv(): Promise<IConfig> {
+        const config = await this.load();
+        if(!config) {
+            this.log.error(`Error loading ${CONFIG_FILE}`);
+        }
+        const envManager = new EnvManager();
         const apiKey = await envManager.getApiKey();
     
         if (apiKey && 'provider' in config.ai) {

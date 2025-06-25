@@ -28,3 +28,7 @@ export const ROLE = {
     SYS: 'system', // system prompts are the base level prompts, user prompts are added
     USER: 'user', // user prompts represent a person
 } as const;
+
+export const SERVICE = {
+    HEAL: 'Heal'
+} as const;

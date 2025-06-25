@@ -18,7 +18,7 @@ export class ProviderFactory implements Types.Broker.Provider.IFactory {
         [CONSTS.PROVIDERS.LOCAL, new Local()],
     ]);
 
-    private readonly logger = Logger.Log.LLM();
+    private readonly logger = Logger.Log['Developer-Log']();
 
     /**
      * Creates a provider instance

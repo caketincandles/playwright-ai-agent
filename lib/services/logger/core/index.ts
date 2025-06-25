@@ -1,7 +1,7 @@
 import process from 'process';
 import * as CONSTS from '../consts';
 import * as Types from '../types';
-import { FileService } from '../../file';
+import FileService from '../../file';
 import { IFileService } from '../../file/types';
 
 /**
