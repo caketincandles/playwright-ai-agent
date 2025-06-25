@@ -14,7 +14,9 @@ export class PromptFactory extends BasePrompt {
         this.rules = this.serviceRules[this.target];
     }
 
-    public createPrompt(): string {
+    public async createPrompt(): Promise<string> {
+        await this.ensureDataLoaded();
+        
         const identity = this.getSingletonXml(this.identity, 'persona');
         const mainObj = this.getSingletonXml(this.main_objective, 'main-objective');
         const instructions = this.getArrayXml(this.instructions, 'instruction');

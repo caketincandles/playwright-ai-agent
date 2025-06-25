@@ -7,71 +7,81 @@ import type { TService } from '@src/llm/types';
 import { RULES } from '@src/llm/prompts/core/rules';
 
 export abstract class BasePrompt implements Types.IXmlSchema {
-    public readonly identity = CONSTS.IDENTITY;
-    public readonly main_objective: string;
-    public readonly instructions: string[];
+    private static readonly CONFIG_MAP: Record<Types.TPlaywrightFile, (config: unknown) => Types.ISuffixes | undefined> = {
+        [CONSTS.PLAYWRIGHT_FILE.LOCATOR]: (config) => {
+            const cfg = config as { locators?: { classSuffixes?: string[]; paramSuffixes?: string[] } };
+            return {
+                classSuffixes: cfg.locators?.classSuffixes,
+                paramSuffixes: cfg.locators?.paramSuffixes,
+            };
+        },
+        [CONSTS.PLAYWRIGHT_FILE.PAGE]: (config) => {
+            const cfg = config as { pages?: { classSuffixes?: string[] } };
+            return {
+                classSuffixes: cfg.pages?.classSuffixes,
+            };
+        },
+        [CONSTS.PLAYWRIGHT_FILE.TEST]: () => undefined,
+    };
+
+    private dataLoadPromise?: Promise<void>;
+    private isLoaded = false;
+
     protected readonly serviceRules: Record<Types.TPlaywrightFile, string[]>;
-
-    public code: Types.ITargetFiles;
-
-    public abstract rules: string[];
-
     protected abstract target: Types.TPlaywrightFile;
+    
+    public readonly identity = CONSTS.IDENTITY;
+    public abstract rules: string[];
+    
+    public main_objective: string;
+    public instructions: string[];
+    public code: Types.ITargetFiles = { content: [] };
 
     constructor(
         protected readonly filePaths: string[], 
         protected readonly service: TService
     ) {
-        this.code = {
-            content: [],
-        };
-
-        void this.loadData();
-
         this.main_objective = MAIN_OBJECTIVE[this.service];
         this.instructions = INSTRUCTIONS[this.service];
         this.serviceRules = RULES[this.service];
+        
+        this.dataLoadPromise = this.loadData().then(() => { 
+            this.isLoaded = true; 
+        });
+    }
+
+    public setPromptValues(overrides: {
+        mainObjective?: string;
+        instructions?: string[];
+    }): void {
+        if (overrides.mainObjective !== undefined) {
+            this.main_objective = overrides.mainObjective;
+        }
+        if (overrides.instructions !== undefined) {
+            this.instructions = overrides.instructions;
+        }
+    }
+
+    protected async ensureDataLoaded(): Promise<void> {
+        if (this.dataLoadPromise) {
+            await this.dataLoadPromise;
+        }
     }
 
     private async loadData(): Promise<void> {
-        await this.loadFileContents();
-        await this.loadConfig();
-    }
+        const [fileContents, config] = await Promise.all([
+            this.loadFileContents(),
+            new Config().load()
+        ]);
 
-    private async loadFileContents(): Promise<void> {
-        const contents: string[] = [];
-        const fs = new FileService();
-
-        for (const filePath of this.filePaths) {
-            contents.push(await fs.readFile(filePath));
-        }
-        
         this.code = {
-            ...this.code,
-            content: contents
+            content: fileContents,
+            inclusions: BasePrompt.CONFIG_MAP[this.target](config)
         };
     }
 
-    private async loadConfig(): Promise<void> {
-        const config = await new Config().load();
-        let inclusions = undefined;
-
-        if (this.target === CONSTS.PLAYWRIGHT_FILE.LOCATOR) {
-            inclusions = {
-                classSuffixes: config?.locators.classSuffixes,
-                paramSuffixes: config?.locators.paramSuffixes,
-            }
-        }
-
-        if (this.target === CONSTS.PLAYWRIGHT_FILE.PAGE) {
-            inclusions = {
-                classSuffixes: config?.pages.classSuffixes,
-            }
-        }
-
-        this.code = {
-            ...this.code,
-            inclusions
-        }
+    private async loadFileContents(): Promise<string[]> {
+        const fs = new FileService();
+        return Promise.all(this.filePaths.map(filePath => fs.readFile(filePath)));
     }
 }
