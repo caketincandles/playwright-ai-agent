@@ -8,20 +8,20 @@ import { RULES } from '@src/llm/prompts/core/rules';
 
 export abstract class BasePrompt implements Types.IXmlSchema {
     public readonly identity = CONSTS.IDENTITY;
+    public readonly main_objective: string;
+    public readonly instructions: string[];
+    protected readonly serviceRules: Record<Types.TPlaywrightFile, string[]>;
 
     public code: Types.ITargetFiles;
 
-    public readonly main_objective: string;
-
-    public readonly instructions: string[];
-
-    protected readonly _rules: Record<Types.TPlaywrightFile, string[]>;
-
     public abstract rules: string[];
 
-    public abstract target: Types.TPlaywrightFile;
+    protected abstract target: Types.TPlaywrightFile;
 
-    constructor(protected readonly filePaths: string[], protected readonly service: TService) {
+    constructor(
+        protected readonly filePaths: string[], 
+        protected readonly service: TService
+    ) {
         this.code = {
             content: [],
         };
@@ -30,7 +30,7 @@ export abstract class BasePrompt implements Types.IXmlSchema {
 
         this.main_objective = MAIN_OBJECTIVE[this.service];
         this.instructions = INSTRUCTIONS[this.service];
-        this._rules = RULES[this.service];
+        this.serviceRules = RULES[this.service];
     }
 
     private async loadData(): Promise<void> {
