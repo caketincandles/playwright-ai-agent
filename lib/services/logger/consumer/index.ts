@@ -13,8 +13,7 @@ export class Consumer {
     }
 
 public log(details: Types.IConsumerLog): void {
-    const timestamp = new Date().toISOString();
-    const prefix = `${timestamp} ${this.tag} - Changes and recommendations are as follows: \n\n`;
+    const prefix = `${this.tag} - Changes and recommendations are as follows: \n\n`;
     const result = this.formatOutput(details);
     process.stdout.write(`${prefix}${result}`);
 }
