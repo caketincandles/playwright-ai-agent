@@ -5,13 +5,13 @@ import * as Validate from '@app/setup/validation';
 import * as LlmTypes from '@src/llm/types';
 import { PROVIDER_MODELS, PROVIDERS } from '@src/llm/consts';
 import { toPascalCase } from '@lib/util/data-types/strings';
-import { ILogger } from '@lib/services/logger/types';
+import { IBaseLogger } from '@lib/services/logger/types';
 import { BASE } from '@src/config/consts';
 
 export class SetupWizard {
     private defaultDir = 'src/pages';
 
-    constructor(private readonly log: ILogger) {}
+    constructor(private readonly log: IBaseLogger) {}
 
     public async run(): Promise<Types.IConfig> {
         this.log.info(chalk.cyan('🎭 Playwright AI Agent Setup\n'));

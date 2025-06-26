@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import * as Types from './types';
+import * as Types from '@lib/services/logger/types';
 
 /**
  * Log level mapping.
@@ -13,11 +13,27 @@ export const LOG_LEVEL = {
     ERROR: 4,
 } as const;
 
+
+/**
+ * Reverse mapping from log level values to their string keys.
+ * Useful for converting numeric levels back to their readable identifiers.
+ */
+export const LOG_LEVEL_REVERSE: Record<
+    Types.TLogLevelValue,
+    Types.TLogLevelKey
+> = {
+    [LOG_LEVEL.DEBUG]: 'DEBUG',
+    [LOG_LEVEL.INFO]: 'INFO',
+    [LOG_LEVEL.SUCCESS]: 'SUCCESS',
+    [LOG_LEVEL.WARN]: 'WARN',
+    [LOG_LEVEL.ERROR]: 'ERROR',
+} as const;
+
 export const SERVICE = {
     HEAL: 'AI-Heal',
     CREATE: 'AI-Create',
     IMPROVE: 'AI-Improve',
-    DEV: 'Developer-Log',
+    DEV: 'DeveloperLog',
     INSTALL: 'Installation',
 } as const;
 
@@ -39,11 +55,11 @@ export const DEFAULT_LOG_CONFIG: Types.ILoggerConfig = {
 
 /**
  * User-facing logger configuration.
- * Optimized for end-user readability.
+ * Optimised for end-user readability.
  */
 export const USER_LOG_CONFIG: Types.ILoggerConfig = {
     minLevel: LOG_LEVEL.INFO,
-    showTimestamp: true,
+    showTimestamp: false,
     userFacing: true,
 };
 
@@ -98,19 +114,4 @@ export const TARGET_COLOUR: Record<
     [TARGET.LOCATOR]: chalk.cyan,
     [TARGET.PAGE]: chalk.magenta,
     [TARGET.API]: chalk.green,
-} as const;
-
-/**
- * Reverse mapping from log level values to their string keys.
- * Useful for converting numeric levels back to their readable identifiers.
- */
-export const LOG_LEVEL_REVERSE: Record<
-    Types.TLogLevelValue,
-    Types.TLogLevelKey
-> = {
-    [LOG_LEVEL.DEBUG]: 'DEBUG',
-    [LOG_LEVEL.INFO]: 'INFO',
-    [LOG_LEVEL.SUCCESS]: 'SUCCESS',
-    [LOG_LEVEL.WARN]: 'WARN',
-    [LOG_LEVEL.ERROR]: 'ERROR',
 } as const;

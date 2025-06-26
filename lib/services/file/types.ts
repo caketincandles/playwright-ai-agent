@@ -1,6 +1,4 @@
-/**
- * Generic file service interface
- */
+/** Generic file service interface */
 export interface IFileService {
     readFile(filePath: string): Promise<string>;
     writeFile(filePath: string, content: string): Promise<void>;

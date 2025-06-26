@@ -4,7 +4,11 @@ import { TAction, TPlaywrightFile } from '@src/llm/prompts/types';
 import { ACTION, PLAYWRIGHT_FILE } from '@src/llm/prompts/consts';
 
 const BASE_RULES: string[] = [
-    'Response format: { filePath: string; fileContents: string }[]',
+    '## Response format: { filePath: string; fileContents: string; changeLog?: string[]; recommendations?: { snippet: string, reason: string }[] }[]',
+    '### You must summarise any changes made in the `changeLog` array and why, as concisely as possible', 
+    '### Recommendations must be formatted from indent 0 and using 2 spaces',
+    '### Recommendations must always be at most one function or variable and never the whole class. They should be broken up as much as logically possible to do so',
+    '### Always return the file with the most changes first, then return the file with the most recommendations',
     'Use `unknown` over `any`; maintain TypeScript types, interfaces, and generics',
     'Preserve performance optimisations; avoid overhead unless necessary',
     'Minimal comments for non-obvious changes only; update existing comments if inaccurate',
@@ -14,11 +18,13 @@ const BASE_RULES: string[] = [
 ] as const;
 
 const UPDATE_BASE_RULES: string[] = [
+    '### Add any minor breaking changes to the `recommendations` object array. Add the code snippet of the recommended change to snippet, and the purpose for the change in `reason` as concisely as possible',
     'Preserve imports, exports, and module structure',
     'Assume external references work as described; do not redeclare',
     'Minimal changes to resolve specific issues; avoid overengineering',
     'Prevent impact on other areas; comment potential breaking changes (e.g. typos affecting references)',
     'Maintain file formatting and indentation consistency',
+    'You may be provided files for context or to update on any breaking changes. Consider the provided instructions and wider impact to determine if modifications are appropriate',
 ] as const;
 
 const GENERATE_BASE_RULES: string[] = [

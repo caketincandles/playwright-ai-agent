@@ -1,20 +1,19 @@
 import process from 'process';
-import * as CONSTS from '../consts';
-import * as Types from '../types';
-import FileService from '../../file';
-import { IFileService } from '../../file/types';
+import * as CONSTS from '@lib/services/logger/consts';
+import * as Types from 'lib/services/logger/types';
+import FileService, { Types as FileTypes } from '@lib/services/file';
 
 /**
  * Enhanced logging system for AI automation operations.
  * Provides structured output, file logging, and process management for errors vs warnings.
  */
-export class LoggerService implements Types.ILogger {
+export class LoggerService implements Types.IBaseLogger {
     protected config: Types.ILoggerConfig;
 
     constructor(
         protected readonly tag: Types.ILogTag,
         config?: Partial<Types.ILoggerConfig>,
-        protected readonly fileService: IFileService = new FileService(),
+        protected readonly fileService: FileTypes.IFileService = new FileService(),
     ) {
         this.config = { ...CONSTS.DEFAULT_LOG_CONFIG, ...config };
     }

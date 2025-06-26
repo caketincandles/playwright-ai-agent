@@ -1,4 +1,4 @@
-import { ILogger } from '@lib/services/logger/types';
+import { IBaseLogger } from '@lib/services/logger/types';
 import { IConfig } from '@src/config/types';
 
 export interface ICommand {
@@ -7,7 +7,7 @@ export interface ICommand {
 
 export abstract class BaseCommand implements ICommand {
     constructor(
-        protected readonly logger: ILogger,
+        protected readonly logger: IBaseLogger,
         protected readonly config?: IConfig,
     ) {}
 

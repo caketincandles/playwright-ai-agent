@@ -1,4 +1,4 @@
-import * as CONSTS from './consts';
+import * as CONSTS from '@lib/services/logger/consts';
 
 /** Log level type */
 export type TLogLevelKey = keyof typeof CONSTS.LOG_LEVEL;
@@ -9,6 +9,11 @@ export type TServiceType = (typeof CONSTS.SERVICE)[keyof typeof CONSTS.SERVICE];
 
 /** Target type for operations */
 export type TTargetType = (typeof CONSTS.TARGET)[keyof typeof CONSTS.TARGET];
+
+export interface IConsumerLog {
+    service: TServiceType;
+    target?: TTargetType;
+}
 
 /** Combined log tag structure */
 export interface ILogTag {
@@ -53,7 +58,7 @@ export interface IHealResult {
     readonly timestamp: string;
 }
 
-export interface ILogger {
+export interface IBaseLogger {
     debug(message: string, details?: unknown): void;
     info(message: string, details?: unknown): void;
     success(message: string, details?: unknown): void;

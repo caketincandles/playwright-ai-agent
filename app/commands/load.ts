@@ -1,11 +1,11 @@
 import { IConfig } from '@src/config/types';
-import { ILogger } from '@lib/services/logger/types';
+import { IBaseLogger } from '@lib/services/logger/types';
 import { EnvManager } from '@app/setup/env';
 import { CONFIG_FILE } from '@src/config/consts';
 import Config from '@src/config';
 
 export class ConfigCli extends Config {
-    constructor(private readonly log: ILogger) {
+    constructor(private readonly log: IBaseLogger) {
         super();
     }
 

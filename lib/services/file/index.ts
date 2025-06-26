@@ -1,6 +1,6 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import * as Types from './types';
+import * as Types from '@lib/services/file/types';
 
 export { Types };
 

@@ -27,7 +27,7 @@ class LoggerManager {
     getLogger(
         tag: Types.ILogTag,
         config?: Partial<Types.ILoggerConfig>,
-    ): Types.ILogger {
+    ): Types.IBaseLogger {
         const key = this.createKey(tag);
         if (!this.loggers.has(key)) {
             const mergedConfig = { ...this.globalConfig, ...config };
@@ -54,7 +54,7 @@ export { CONSTS, Types };
 
 export const Log: Record<
     Types.TServiceType,
-    (target?: Types.TTargetType) => Types.ILogger
+    (target?: Types.TTargetType) => Types.IBaseLogger
 > = {
     [CONSTS.SERVICE.HEAL]: (target?: Types.TTargetType) =>
         logger.getLogger({ service: CONSTS.SERVICE.HEAL, target }),
