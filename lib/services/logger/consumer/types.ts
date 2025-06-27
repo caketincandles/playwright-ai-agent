@@ -6,7 +6,7 @@ export type TServiceType = (typeof CONSTS.SERVICE)[keyof typeof CONSTS.SERVICE];
 /** Target type for operations */
 export type TTargetType = (typeof CONSTS.TARGET)[keyof typeof CONSTS.TARGET];
 
-export interface IConsumerConfig {
+export interface IConfig {
     service: TServiceType;
     target?: TTargetType;
 }

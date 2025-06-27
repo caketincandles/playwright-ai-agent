@@ -1,18 +1,18 @@
-import process from 'process';
 import chalk from 'chalk';
+import process from 'process';
 import * as Types from '@lib/services/logger/consumer/types';
 import * as CONSTS from '@lib/services/logger/consumer/consts';
 
 export { CONSTS, Types };
 
-export class Consumer {
+export class Log {
     private readonly tag: string;
 
-    constructor(private readonly config: Types.IConsumerConfig){
+    constructor(private readonly config: Types.IConfig){
         this.tag = this.formatTag;
     }
 
-public log(details: Types.IConsumerLog): void {
+public out(details: Types.IConsumerLog): void {
     const prefix = `${this.tag} - Changes and recommendations are as follows: \n\n`;
     const result = this.formatOutput(details);
     process.stdout.write(`${prefix}${result}`);

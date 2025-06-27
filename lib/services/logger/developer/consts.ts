@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import * as Types from '@lib/services/logger/developer/types';
 
 /**
@@ -28,20 +29,13 @@ export const LOG_LEVEL_REVERSE: Record<
     [LOG_LEVEL.ERROR]: 'ERROR',
 } as const;
 
-/**
- * Default logger configuration.
- * Sets the minimum log level and whether timestamps are shown.
- */
-export const DEV_LOG_CONFIG: Types.ILoggerConfig = {
-    minLevel: LOG_LEVEL.INFO,
-    userFacing: false,
-};
-
-/**
- * User-facing logger configuration.
- * Optimised for end-user readability.
- */
-export const INSTALLATION_LOG_CONFIG: Types.ILoggerConfig = {
-    minLevel: LOG_LEVEL.INFO,
-    userFacing: true,
-};
+export const COLOUR_MAP: Record<
+    Types.TLogLevelValue,
+    (text: string) => string
+> = {
+    [LOG_LEVEL.DEBUG]: chalk.white,
+    [LOG_LEVEL.ERROR]: chalk.redBright,
+    [LOG_LEVEL.INFO]: chalk.blueBright,
+    [LOG_LEVEL.WARN]: chalk.yellowBright,
+    [LOG_LEVEL.SUCCESS]: chalk.greenBright,
+} as const;
