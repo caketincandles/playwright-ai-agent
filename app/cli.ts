@@ -1,10 +1,8 @@
+import process from 'process';
 import { Command } from 'commander';
 import { SetupWizard } from '@app/setup/wizard';
 import { ConfigSetup } from '@app/setup/config';
-import * as Logger from '@lib/services/logger';
-
-Logger.initLogging({ level: 'INFO', userFacing: true });
-const logger = Logger.Log.Installation();
+import { logger } from '@lib/services/logger';
 
 const program = new Command()
     .name('playwright-ai-agent')
@@ -16,15 +14,16 @@ program
     .description('Setup configuration')
     .action(async () => {
         try {
-            const wizard = new SetupWizard(logger);
+            const wizard = new SetupWizard();
             const responses = await wizard.run();
 
-            const writer = new ConfigSetup(logger, responses);
+            const writer = new ConfigSetup(responses);
             await writer.save();
 
-            logger.success('Setup complete!');
+            logger.dev.success('Setup complete!');
         } catch (error) {
-            logger.error('Setup failed', error);
+            logger.dev.error('Setup failed', error);
+            process.exit(1);
         }
     });
 

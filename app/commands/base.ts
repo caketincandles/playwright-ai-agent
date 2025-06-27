@@ -1,4 +1,4 @@
-import { IBaseLogger } from '@lib/services/logger/types';
+import { devLog } from '@lib/services/logger';
 import { IConfig } from '@src/config/types';
 
 export interface ICommand {
@@ -6,16 +6,13 @@ export interface ICommand {
 }
 
 export abstract class BaseCommand implements ICommand {
-    constructor(
-        protected readonly logger: IBaseLogger,
-        protected readonly config?: IConfig,
-    ) {}
+    constructor(protected readonly config?: IConfig) {}
 
     abstract execute(): Promise<boolean>;
 
     protected requiresConfig(): boolean {
         if (!this.config) {
-            this.logger.error(
+            devLog.error(
                 'No configuration found. Run "npx playwright-ai-agent --init" first.',
             );
             return false;

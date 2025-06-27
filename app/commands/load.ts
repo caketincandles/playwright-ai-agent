@@ -1,18 +1,13 @@
-import { IConfig } from '@src/config/types';
-import { IBaseLogger } from '@lib/services/logger/types';
+import process from 'process';
 import { EnvManager } from '@app/setup/env';
-import { CONFIG_FILE } from '@src/config/consts';
-import Config from '@src/config';
+import * as Config from '@src/config';
 
-export class ConfigCli extends Config {
-    constructor(private readonly log: IBaseLogger) {
-        super();
-    }
-
-    public async mergeWithEnv(): Promise<IConfig> {
+export class ConfigCli extends Config.Config {
+    public async mergeWithEnv(): Promise<Config.Types.IConfig> {
         const config = await this.load();
         if (!config) {
-            this.log.error(`Error loading ${CONFIG_FILE}`);
+            this.log.error(`Error loading ${Config.CONSTS.CONFIG_FILE}`);
+            process.exit(1);
         }
         const envManager = new EnvManager();
         const apiKey = await envManager.getApiKey();

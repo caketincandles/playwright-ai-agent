@@ -1,26 +1,31 @@
+import process from 'process';
 import FileService from '@lib/services/file';
-import { IConfig } from '@src/config/types';
-import { CONFIG_FILE } from '@src/config/consts';
+import * as CONSTS from '@src/config/consts';
 import * as Logger from '@lib/services/logger';
+import * as Types from '@src/config/types';
 
-export default class Config {
+export { CONSTS, Types}
+
+export class Config {
     private readonly fs: FileService;
-    private readonly logger = Logger.Log['Developer-Log']();
+    protected readonly log: Logger.Developer.Types.IDeveloperLog;
 
     constructor() {
+        this.log = Logger.logger.dev;
         this.fs = new FileService();
     }
 
-    public async load(): Promise<IConfig | undefined> {
+    public async load(): Promise<Types.IConfig | undefined> {
         try {
-            if (!(await this.fs.exists(CONFIG_FILE))) {
+            if (!(await this.fs.exists(CONSTS.CONFIG_FILE))) {
                 return undefined;
             }
 
-            const content = await this.fs.readFile(CONFIG_FILE);
-            return JSON.parse(content) as IConfig;
+            const content = await this.fs.readFile(CONSTS.CONFIG_FILE);
+            return JSON.parse(content) as Types.IConfig;
         } catch (error) {
-            this.logger.error('Failed to load configuration', error);
+            this.log.error('Failed to load configuration', error);
+            process.exit(1);
         }
     }
 }

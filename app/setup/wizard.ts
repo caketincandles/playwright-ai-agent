@@ -1,20 +1,18 @@
-import inquirer from 'inquirer';
 import chalk from 'chalk';
+import inquirer from 'inquirer';
+import * as LlmTypes from '@src/llm/types';
 import * as Types from '@src/config/types';
 import * as Validate from '@app/setup/validation';
-import * as LlmTypes from '@src/llm/types';
+import { devLog } from '@lib/services/logger';
 import { PROVIDER_MODELS, PROVIDERS } from '@src/llm/consts';
 import { toPascalCase } from '@lib/util/data-types/strings';
-import { IBaseLogger } from '@lib/services/logger/types';
 import { BASE } from '@src/config/consts';
 
 export class SetupWizard {
     private defaultDir = 'src/pages';
 
-    constructor(private readonly log: IBaseLogger) {}
-
     public async run(): Promise<Types.IConfig> {
-        this.log.info(chalk.cyan('🎭 Playwright AI Agent Setup\n'));
+        devLog.std(chalk.cyan('🎭 Playwright AI Agent Setup\n'));
 
         const ai = await this.getAiConfig();
         const locators = await this.getLocatorsConfig();
@@ -24,7 +22,7 @@ export class SetupWizard {
     }
 
     private async getAiConfig(): Promise<Types.TAiConfig> {
-        this.log.info(chalk.cyanBright('✨ AI Setup\n'));
+        devLog.std(chalk.cyanBright('✨ AI Setup\n'));
         const providerChoices = Object.entries(PROVIDERS).map(
             ([key, value]) => ({
                 name: toPascalCase(key),
@@ -89,15 +87,15 @@ export class SetupWizard {
         defaultClassSuffixes: string[],
         defaultParamSuffixes?: string[],
     ): Promise<boolean> {
-        this.log.info(
+        devLog.std(
             `\nDefault class suffixes: ${chalk.gray.italic(defaultClassSuffixes.join(', '))}`,
         );
         if (defaultParamSuffixes) {
-            this.log.info(
+            devLog.std(
                 `Default parameter suffixes: ${chalk.gray.italic(defaultParamSuffixes.join(', '))}`,
             );
         }
-        this.log.info(
+        devLog.std(
             chalk.yellow(
                 '💡 Tip: Fewer suffixes = stricter patterns (recommended for linting)\n',
             ),
@@ -144,7 +142,6 @@ export class SetupWizard {
             },
         ]);
 
-        // Filter out 'Add custom...' and process custom suffixes
         const selectedSuffixes = suffixes.filter((s) => s !== addCustom);
         const customSuffixes = customSfx
             ? customSfx
@@ -153,7 +150,6 @@ export class SetupWizard {
                   .filter((s) => s.length > 0)
             : [];
 
-        // Use Set for deduplication validation, then convert back to array
         const allSuffixes = [...selectedSuffixes, ...customSuffixes];
         const uniqueSuffixes = Array.from(new Set(allSuffixes));
 
@@ -161,7 +157,7 @@ export class SetupWizard {
     }
 
     private async getLocatorsConfig(): Promise<Types.IProjectConfig> {
-        this.log.info(chalk.cyanBright('🔍 Locator Config\n'));
+        devLog.std(chalk.cyanBright('🔍 Locator Config\n'));
         const baseClassSfx = BASE.LOCATOR.CLASS_SUFFIXES;
         const baseParamSfx = BASE.LOCATOR.PARAM_SUFFIXES;
 
@@ -218,7 +214,7 @@ export class SetupWizard {
     }
 
     private async getPagesConfig(): Promise<Types.IBaseProjectConfig> {
-        this.log.info(chalk.cyanBright('📄 Page Config\n'));
+        devLog.std(chalk.cyanBright('📄 Page Config\n'));
         const baseClassSfx = BASE.PAGE.CLASS_SUFFIXES;
 
         const { directory } = await inquirer.prompt<{ directory: string }>([

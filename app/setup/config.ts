@@ -1,16 +1,12 @@
+import * as Config from '@src/config';
 import FileService from '@lib/services/file';
-import { IConfig } from '@src/config/types';
-import { IBaseLogger } from '@lib/services/logger/types';
 import { EnvManager } from '@app/setup/env';
-import { CONFIG_FILE } from '@src/config/consts';
+import { devLog } from '@lib/services/logger';
 
 export class ConfigSetup {
     private readonly fs: FileService;
 
-    constructor(
-        private logger: IBaseLogger,
-        private responses: IConfig,
-    ) {
+    constructor(private responses: Config.Types.IConfig) {
         this.fs = new FileService();
     }
 
@@ -18,13 +14,11 @@ export class ConfigSetup {
         const backups: { file: string; content: string }[] = [];
 
         try {
-            // Create backups only if files already exist
             await this.createBackups(backups);
 
-            // Write new files
             const config = this.buildConfig();
             await this.fs.writeFile(
-                CONFIG_FILE,
+                Config.CONSTS.CONFIG_FILE,
                 JSON.stringify(config, null, 2),
             );
 
@@ -35,7 +29,7 @@ export class ConfigSetup {
 
             return true;
         } catch (error) {
-            this.logger.warn('File write failed, restoring backups...');
+            devLog.warn('File write failed, restoring backups...');
             await this.restoreBackups(backups);
             throw error;
         }
@@ -57,7 +51,7 @@ export class ConfigSetup {
     private async createBackups(
         backups: { file: string; content: string }[],
     ): Promise<void> {
-        const filesToCheck = [CONFIG_FILE, '.env'];
+        const filesToCheck = [Config.CONSTS.CONFIG_FILE, '.env'];
 
         for (const file of filesToCheck) {
             if (await this.fs.exists(file)) {
@@ -74,7 +68,7 @@ export class ConfigSetup {
             try {
                 await this.fs.writeFile(backup.file, backup.content);
             } catch (restoreError) {
-                this.logger.error(
+                devLog.error(
                     `Failed to restore ${backup.file}`,
                     restoreError,
                 );

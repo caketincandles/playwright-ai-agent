@@ -5,7 +5,7 @@ import * as Types from '@lib/services/logger/developer/types';
 
 export { CONSTS, Types };
 
-export class Log {
+export class Log implements Types.IDeveloperLog {
     /**
      * Logs debug information (development only).
      * @param message - Debug message
