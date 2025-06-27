@@ -42,7 +42,9 @@ export class ProviderFactory implements Types.Broker.Provider.IFactory {
      * @param name - Provider name
      * @returns Default configuration
      */
-    public getDefaultConfig(name: Types.TProvider): Partial<Types.Broker.ILLMConfig> {
+    public getDefaultConfig(
+        name: Types.TProvider,
+    ): Partial<Types.Broker.ILLMConfig> {
         const provider = this.createProvider(name);
         return provider.defaultConfig;
     }

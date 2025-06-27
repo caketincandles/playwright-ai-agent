@@ -40,8 +40,7 @@ export abstract class BaseProvider implements Types.Broker.Provider.IBase {
      * @returns True if valid, throws error if invalid
      */
     public validateConfig(config: Types.Broker.ILLMConfig): boolean {
-        if (!config.baseURL)
-            devLog.error(`${this.name}: baseURL is required`);
+        if (!config.baseURL) devLog.error(`${this.name}: baseURL is required`);
         if (!config.model) devLog.error(`${this.name}: model is required`);
         return true;
     }

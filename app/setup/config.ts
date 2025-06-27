@@ -68,10 +68,7 @@ export class ConfigSetup {
             try {
                 await this.fs.writeFile(backup.file, backup.content);
             } catch (restoreError) {
-                devLog.error(
-                    `Failed to restore ${backup.file}`,
-                    restoreError,
-                );
+                devLog.error(`Failed to restore ${backup.file}`, restoreError);
             }
         }
     }

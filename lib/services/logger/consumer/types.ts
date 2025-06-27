@@ -13,9 +13,9 @@ export interface IConfig {
 
 export interface IConsumerLog {
     filePath: string;
-    changeLog?: string[]; 
-    recommendations?: { 
-        snippet: string, 
-        reason: string,
+    changeLog?: string[];
+    recommendations?: {
+        snippet: string;
+        reason: string;
     }[];
 }

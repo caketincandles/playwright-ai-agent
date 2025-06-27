@@ -18,7 +18,9 @@ export class Anthropic extends BaseProvider {
         },
     };
 
-    public transformRequest(request: Types.ILLMRequest): Record<string, unknown> {
+    public transformRequest(
+        request: Types.ILLMRequest,
+    ): Record<string, unknown> {
         const systemMessages = request.messages.filter(
             (m) => m.role === 'system',
         );

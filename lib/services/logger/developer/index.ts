@@ -54,12 +54,14 @@ export class Log implements Types.IDeveloperLog {
 
     /**
      * Unformatted Log
-     * Use this for non-standard formatting outputs 
+     * Use this for non-standard formatting outputs
      * @param message - Error message
      * @param details - Details or context
      */
     public std(message: string, details?: unknown): void {
-        process.stdout.write(`${message}${details ? chalk.italic(` - ${this.formatData(details)}`) : ''}`);
+        process.stdout.write(
+            `${message}${details ? chalk.italic(` - ${this.formatData(details)}`) : ''}`,
+        );
     }
 
     /**
@@ -68,10 +70,17 @@ export class Log implements Types.IDeveloperLog {
      * @param message - Message to log
      * @param details - Additional data to include
      */
-    private log(level: Types.TLogLevelValue, message: string, details?: unknown): void {
+    private log(
+        level: Types.TLogLevelValue,
+        message: string,
+        details?: unknown,
+    ): void {
         const output = `${chalk.dim(new Date().toISOString())} ${CONSTS.COLOUR_MAP[level](CONSTS.LOG_LEVEL_REVERSE[level])}: "${message}${details ? chalk.italic(` - ${this.formatData(details)}`) : ''}".\n`;
 
-        (level >= CONSTS.LOG_LEVEL.ERROR ? process.stderr : process.stdout).write(output);
+        (level >= CONSTS.LOG_LEVEL.ERROR
+            ? process.stderr
+            : process.stdout
+        ).write(output);
     }
 
     /**
@@ -81,7 +90,8 @@ export class Log implements Types.IDeveloperLog {
      */
     private formatData(data: unknown): string {
         if (data instanceof Error) return data.stack ?? data.message;
-        if (typeof data === 'object' && data !== null) return JSON.stringify(data, null, 2);
+        if (typeof data === 'object' && data !== null)
+            return JSON.stringify(data, null, 2);
         return typeof data === 'number' ? data.toString() : String(data);
     }
 }

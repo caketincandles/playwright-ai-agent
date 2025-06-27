@@ -25,7 +25,9 @@ export default class FileService implements Types.IFileService {
             await this.ensureDirectory(path.dirname(fullPath));
             await fs.writeFile(fullPath, content, 'utf-8');
         } catch (error) {
-            devLog.error(`Failed to write file ${fullPath}: ${this.getErrorMessage(error)}`);
+            devLog.error(
+                `Failed to write file ${fullPath}: ${this.getErrorMessage(error)}`,
+            );
             devLog.debug(`Failed write to "${fullPath}"\n\n${content}\n`);
         }
     }
@@ -36,7 +38,9 @@ export default class FileService implements Types.IFileService {
             await this.ensureDirectory(path.dirname(fullPath));
             await fs.appendFile(fullPath, content, 'utf-8');
         } catch (error) {
-            devLog.error(`Failed to append file ${fullPath}: ${this.getErrorMessage(error)}`);
+            devLog.error(
+                `Failed to append file ${fullPath}: ${this.getErrorMessage(error)}`,
+            );
             devLog.debug(`Failed to append file "${fullPath}"\n\n${content}\n`);
         }
     }
@@ -54,7 +58,9 @@ export default class FileService implements Types.IFileService {
         try {
             await fs.mkdir(this.resolvePath(dirPath), { recursive: true });
         } catch (error) {
-            devLog.error(`Failed to create directory ${dirPath}: ${this.getErrorMessage(error)}`);
+            devLog.error(
+                `Failed to create directory ${dirPath}: ${this.getErrorMessage(error)}`,
+            );
         }
     }
 

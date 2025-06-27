@@ -8,7 +8,7 @@ export interface ILogger {
     consumer(config: Consumer.Types.IConfig): Consumer.Log;
 }
 
-class Log implements ILogger{
+class Log implements ILogger {
     private readonly _developer = new Developer.Log();
 
     /** Developer logger - always available, no configuration needed */
@@ -20,7 +20,7 @@ class Log implements ILogger{
      * Consumer logger - configured once on first use, then reused
      * @param config - Required on first call, ignored on subsequent calls
      */
-    public consumer(config: Consumer.Types.IConfig): Consumer.Log {        
+    public consumer(config: Consumer.Types.IConfig): Consumer.Log {
         return new Consumer.Log(config);
     }
 }

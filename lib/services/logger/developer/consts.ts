@@ -13,7 +13,6 @@ export const LOG_LEVEL = {
     ERROR: 4,
 } as const;
 
-
 /**
  * Reverse mapping from log level values to their string keys.
  * Useful for converting numeric levels back to their readable identifiers.

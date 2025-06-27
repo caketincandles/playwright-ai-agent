@@ -41,8 +41,8 @@ export interface IDeveloperLog {
     error(message: string, error?: unknown): void;
 
     /**
-     * Unformatted Log 
-     * @remarks Use this for non-standard formatting outputs 
+     * Unformatted Log
+     * @remarks Use this for non-standard formatting outputs
      * @param message - Error message
      * @param details - Details or context
      */

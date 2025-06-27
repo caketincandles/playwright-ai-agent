@@ -14,7 +14,9 @@ export class Local extends BaseProvider {
         customRequestFormat: false,
     };
 
-    public transformRequest(request: Types.ILLMRequest): Record<string, unknown> {
+    public transformRequest(
+        request: Types.ILLMRequest,
+    ): Record<string, unknown> {
         return {
             model: request.model,
             messages: request.messages,

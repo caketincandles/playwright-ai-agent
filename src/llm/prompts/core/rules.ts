@@ -5,7 +5,7 @@ import { ACTION, PLAYWRIGHT_FILE } from '@src/llm/prompts/consts';
 
 const BASE_RULES: string[] = [
     '## Response format: { filePath: string; fileContents: string; changeLog?: string[]; recommendations?: { snippet: string, reason: string }[] }[]',
-    '### You must summarise any changes made in the `changeLog` array and why, as concisely as possible', 
+    '### You must summarise any changes made in the `changeLog` array and why, as concisely as possible',
     '### Recommendations must be formatted from indent 0 and using 2 spaces',
     '### Recommendations must always be at most one function or variable and never the whole class. They should be broken up as much as logically possible to do so',
     '### Always return the file with the most changes first, then return the file with the most recommendations',
