@@ -1,9 +1,9 @@
-import * as Types from '../../types';
-import * as CONSTS from '../../consts';
-import * as Logger from '../../../../lib/services/logger';
-import { OpenAI } from './open-ai';
-import { Anthropic } from './anthropic';
-import { Local } from './local';
+import * as Types from '@src/llm/types';
+import * as CONSTS from '@src/llm/consts';
+import { devLog } from '@lib/services/logger';
+import { OpenAI } from '@src/llm/broker/providers/open-ai';
+import { Anthropic } from '@src/llm/broker/providers/anthropic';
+import { Local } from '@src/llm/broker/providers/local';
 
 export { OpenAI, Anthropic, Local };
 
@@ -18,22 +18,20 @@ export class ProviderFactory implements Types.Broker.Provider.IFactory {
         [CONSTS.PROVIDERS.LOCAL, new Local()],
     ]);
 
-    private readonly logger = Logger.Log['Developer-Log']();
-
     /**
      * Creates a provider instance
      * @param name - Provider name
      * @returns Provider instance
      */
-    createProvider(name: Types.TProvider): Types.Broker.Provider.IBase {
+    public createProvider(name: Types.TProvider): Types.Broker.Provider.IBase {
         const provider = this.providers.get(name);
         if (!provider) {
-            this.logger.error(`Unknown provider: ${name}`, {
+            devLog.error(`Unknown provider: ${name}`, {
                 availableProviders: this.getAvailableProviders(),
             });
         }
 
-        this.logger.debug(`Created provider: ${name}`);
+        devLog.debug(`Created provider: ${name}`);
         // logger handles exits more cleanly but then run into null issues rip
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return provider!;
@@ -44,7 +42,7 @@ export class ProviderFactory implements Types.Broker.Provider.IFactory {
      * @param name - Provider name
      * @returns Default configuration
      */
-    getDefaultConfig(name: Types.TProvider): Partial<Types.Broker.ILLMConfig> {
+    public getDefaultConfig(name: Types.TProvider): Partial<Types.Broker.ILLMConfig> {
         const provider = this.createProvider(name);
         return provider.defaultConfig;
     }
@@ -53,7 +51,7 @@ export class ProviderFactory implements Types.Broker.Provider.IFactory {
      * Gets all available provider names
      * @returns Array of provider names
      */
-    getAvailableProviders(): readonly Types.TProvider[] {
+    public getAvailableProviders(): readonly Types.TProvider[] {
         return Array.from(this.providers.keys());
     }
 
@@ -63,7 +61,7 @@ export class ProviderFactory implements Types.Broker.Provider.IFactory {
      * @param config - Configuration overrides
      * @returns Configured provider
      */
-    createFromPreset(
+    public createFromPreset(
         name: Types.TProvider,
         config: Partial<Types.Broker.ILLMConfig> = {},
     ): Types.Broker.Provider.IBase {

@@ -1,7 +1,7 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
-import * as CONSTS from './consts';
-import * as Types from '../types';
-import { ProviderFactory } from './providers';
+import * as CONSTS from '@src/llm/broker/consts';
+import * as Types from '@src/llm/types';
+import { ProviderFactory } from '@src/llm/broker/providers';
 
 /**
  * LLM Service broker for communicating with any LLM API endpoint
@@ -46,7 +46,7 @@ export class LLM {
      * @param requestOptions - Optional request configuration overrides
      * @returns Promise resolving to the LLM response
      */
-    async chatCompletion(
+    public async chatCompletion(
         messages: readonly Types.Broker.ILLMMessage[],
         requestOptions?: {
             readonly temperature?: number;
@@ -91,7 +91,7 @@ export class LLM {
      * @param requestOptions - Optional request configuration overrides
      * @returns Promise resolving to the response content
      */
-    async textCompletion(
+    public async textCompletion(
         prompt: string,
         systemMessage?: string,
         requestOptions?: {
@@ -113,7 +113,7 @@ export class LLM {
      * Tests the connection to the LLM endpoint
      * @returns Promise resolving to true if connection successful
      */
-    async testConnection(): Promise<boolean> {
+    public async testConnection(): Promise<boolean> {
         try {
             await this.textCompletion('Test', undefined, { maxTokens: 1 });
             return true;
@@ -130,7 +130,7 @@ export class LLM {
      * @param overrides - Additional configuration overrides
      * @returns Configured LLM service instance
      */
-    static fromPreset(
+    public static fromPreset(
         provider: Types.TProvider,
         apiKey: string | undefined,
         model: string,

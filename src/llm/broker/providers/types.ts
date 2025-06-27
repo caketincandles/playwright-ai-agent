@@ -1,4 +1,4 @@
-import * as Types from '../../types';
+import * as Types from '@src/llm/types';
 
 /** Provider configuration factory */
 export interface IFactory {

@@ -1,6 +1,6 @@
-import * as CONSTS from '../consts';
-import * as Provider from './providers/types';
-import { TRole } from '../types';
+import * as CONSTS from '@src/llm/consts';
+import * as Provider from '@src/llm/broker/providers/types';
+import { TRole } from '@src/llm/types';
 
 export { Provider };
 

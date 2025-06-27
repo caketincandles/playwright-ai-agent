@@ -1,10 +1,10 @@
 import type * as Types from '@src/llm/prompts/types';
 import * as CONSTS from '@src/llm/prompts/consts';
 import FileService from '@lib/services/file';
-import Config from '@src/config';
+import { Config } from '@src/config';
 import { INSTRUCTIONS, MAIN_OBJECTIVE } from 'src/llm/prompts/core/task';
-import type { TService } from '@src/llm/types';
 import { RULES } from '@src/llm/prompts/core/rules';
+import type { TService } from '@src/llm/types';
 
 export abstract class BasePrompt implements Types.IXmlSchema {
     private static readonly CONFIG_MAP: Record<

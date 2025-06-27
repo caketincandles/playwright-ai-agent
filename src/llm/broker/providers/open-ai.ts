@@ -1,20 +1,21 @@
-import * as Types from '../types';
-import * as CONSTS from '../../consts';
-import { BaseProvider } from './base';
+import * as Types from '@src/llm/broker/types';
+import * as CONSTS from '@src/llm/consts';
+import { BaseProvider } from '@src/llm/broker/providers/base';
+import { devLog } from '@lib/services/logger';
 
 /**
  * OpenAI provider implementation
  * Handles OpenAI API-compatible requests and responses
  */
 export class OpenAI extends BaseProvider {
-    readonly name = CONSTS.PROVIDERS.OPEN_AI;
-    readonly defaultConfig: Partial<Types.ILLMConfig> = {
+    public readonly name = CONSTS.PROVIDERS.OPEN_AI;
+    public readonly defaultConfig: Partial<Types.ILLMConfig> = {
         baseURL: 'https://api.openai.com/v1/chat/completions',
         authMethod: 'bearer',
         customRequestFormat: false,
     };
 
-    transformRequest(request: Types.ILLMRequest): Record<string, unknown> {
+    public transformRequest(request: Types.ILLMRequest): Record<string, unknown> {
         return {
             model: request.model,
             messages: request.messages,
@@ -25,21 +26,21 @@ export class OpenAI extends BaseProvider {
         };
     }
 
-    transformResponse(responseData: unknown): Types.TLLMResponse {
+    public transformResponse(responseData: unknown): Types.TLLMResponse {
         return responseData as Types.ILLMResponse;
     }
 
-    buildAuthHeaders(apiKey?: string): Record<string, string> {
+    public buildAuthHeaders(apiKey?: string): Record<string, string> {
         return {
             ...this.getBaseHeaders(),
             Authorization: `Bearer ${apiKey ?? ''}`,
         };
     }
 
-    validateConfig(config: Types.ILLMConfig): boolean {
+    public validateConfig(config: Types.ILLMConfig): boolean {
         super.validateConfig(config);
         if (config.authMethod !== 'none' && !config.apiKey) {
-            this.logger.error('OpenAI: apiKey is required');
+            devLog.error('OpenAI: apiKey is required');
         }
         return true;
     }

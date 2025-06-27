@@ -1,4 +1,4 @@
-import * as Types from './types';
+import * as Types from '@src/llm/broker/types';
 
 export const AUTH_METHOD = {
     API_KEY: 'api-key',

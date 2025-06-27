@@ -1,5 +1,5 @@
-import * as CONSTS from './consts';
-import * as Broker from './broker/types';
+import * as CONSTS from '@src/llm/consts';
+import * as Broker from '@src/llm/broker/types';
 
 export { Broker };
 

@@ -1,4 +1,4 @@
-import * as BROKER from './broker/consts';
+import * as BROKER from '@src/llm/broker/consts';
 
 export { BROKER };
 

@@ -1,23 +1,20 @@
-import * as Types from '../../types';
-import * as Logger from '../../../../lib/services/logger';
+import * as Types from '@src/llm/types';
+import { devLog } from '@lib/services/logger';
 
 /**
  * Abstract base class for LLM providers
  * Provides common functionality and enforces interface compliance
  */
 export abstract class BaseProvider implements Types.Broker.Provider.IBase {
-    abstract readonly name: Types.TProvider;
-    abstract readonly defaultConfig: Partial<Types.Broker.ILLMConfig>;
-
-    protected readonly logger: Logger.Types.IBaseLogger =
-        Logger.Log[Logger.CONSTS.SERVICE.DEV]();
+    public abstract readonly name: Types.TProvider;
+    public abstract readonly defaultConfig: Partial<Types.Broker.ILLMConfig>;
 
     /**
      * Transforms request to provider-specific format
      * @param request - Standard LLM request
      * @returns Provider-specific request body
      */
-    abstract transformRequest(
+    public abstract transformRequest(
         request: Types.Broker.ILLMRequest,
     ): Record<string, unknown>;
 
@@ -26,7 +23,7 @@ export abstract class BaseProvider implements Types.Broker.Provider.IBase {
      * @param responseData - Raw provider response
      * @returns Standardized LLM response
      */
-    abstract transformResponse(
+    public abstract transformResponse(
         responseData: unknown,
     ): Types.Broker.TLLMResponse;
 
@@ -35,17 +32,17 @@ export abstract class BaseProvider implements Types.Broker.Provider.IBase {
      * @param apiKey - API key if required
      * @returns Headers object
      */
-    abstract buildAuthHeaders(apiKey?: string): Record<string, string>;
+    public abstract buildAuthHeaders(apiKey?: string): Record<string, string>;
 
     /**
      * Validates configuration for this provider
      * @param config - Configuration to validate
      * @returns True if valid, throws error if invalid
      */
-    validateConfig(config: Types.Broker.ILLMConfig): boolean {
+    public validateConfig(config: Types.Broker.ILLMConfig): boolean {
         if (!config.baseURL)
-            this.logger.error(`${this.name}: baseURL is required`);
-        if (!config.model) this.logger.error(`${this.name}: model is required`);
+            devLog.error(`${this.name}: baseURL is required`);
+        if (!config.model) devLog.error(`${this.name}: model is required`);
         return true;
     }
 

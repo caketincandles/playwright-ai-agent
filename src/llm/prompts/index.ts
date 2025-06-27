@@ -1,6 +1,6 @@
 import { BasePrompt } from '@src/llm/prompts/base';
 import { TService } from '@src/llm/types';
-import { TPlaywrightFile } from 'src/llm/prompts/types';
+import { TPlaywrightFile } from '@src/llm/prompts/types';
 
 export class PromptFactory extends BasePrompt {
     public readonly rules: string[];

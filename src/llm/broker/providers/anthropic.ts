@@ -1,14 +1,15 @@
-import * as Types from '../types';
-import * as CONSTS from '../../consts';
-import { BaseProvider } from './base';
+import * as Types from '@src/llm/broker/types';
+import * as CONSTS from '@src/llm/consts';
+import { BaseProvider } from '@src/llm/broker/providers/base';
+import { devLog } from '@lib/services/logger';
 
 /**
  * Anthropic Claude provider implementation
  * Handles Anthropic API requests and responses with custom formatting
  */
 export class Anthropic extends BaseProvider {
-    readonly name = CONSTS.PROVIDERS.ANTHROPIC;
-    readonly defaultConfig: Partial<Types.ILLMConfig> = {
+    public readonly name = CONSTS.PROVIDERS.ANTHROPIC;
+    public readonly defaultConfig: Partial<Types.ILLMConfig> = {
         baseURL: 'https://api.anthropic.com/v1/messages',
         authMethod: 'api-key',
         customRequestFormat: true,
@@ -17,7 +18,7 @@ export class Anthropic extends BaseProvider {
         },
     };
 
-    transformRequest(request: Types.ILLMRequest): Record<string, unknown> {
+    public transformRequest(request: Types.ILLMRequest): Record<string, unknown> {
         const systemMessages = request.messages.filter(
             (m) => m.role === 'system',
         );
@@ -39,7 +40,7 @@ export class Anthropic extends BaseProvider {
         };
     }
 
-    transformResponse(responseData: unknown): Types.TLLMResponse {
+    public transformResponse(responseData: unknown): Types.TLLMResponse {
         const data = responseData as {
             content?: { text?: string }[];
             [key: string]: unknown;
@@ -52,7 +53,7 @@ export class Anthropic extends BaseProvider {
         };
     }
 
-    buildAuthHeaders(apiKey?: string): Record<string, string> {
+    public buildAuthHeaders(apiKey?: string): Record<string, string> {
         return {
             ...this.getBaseHeaders(),
             'x-api-key': apiKey ?? '',
@@ -60,9 +61,9 @@ export class Anthropic extends BaseProvider {
         };
     }
 
-    validateConfig(config: Types.ILLMConfig): boolean {
+    public validateConfig(config: Types.ILLMConfig): boolean {
         super.validateConfig(config);
-        if (!config.apiKey) this.logger.error('Anthropic: apiKey is required');
+        if (!config.apiKey) devLog.error('Anthropic: apiKey is required');
         return true;
     }
 }
