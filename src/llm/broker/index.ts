@@ -1,28 +1,54 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
 import * as CONSTS from '@src/llm/broker/consts';
-import * as Types from '@src/llm/types';
+import * as Types from '@src/llm/broker/types';
+import * as LlmTypes from '@src/llm/types';
 import { ProviderFactory } from '@src/llm/broker/providers';
+import { TAiConfig } from '@src/config/types';
+
+export { Types, CONSTS };
 
 /**
  * LLM Service broker for communicating with any LLM API endpoint
  * Uses strongly typed providers with dedicated logic in subdirectories
  */
-export class LLM {
+export class Llm {
     private readonly httpClient: AxiosInstance;
-    private readonly config: Types.Broker.ILLMConfig;
-    private readonly options: Types.Broker.ILLMServiceOptions;
-    private readonly provider: Types.Broker.Provider.IBase;
+    private readonly config: TAiConfig;
+    private readonly options: Types.ILlmServiceOptions;
+    private readonly provider: Types.Provider.IBase;
     private readonly providerFactory: ProviderFactory;
 
     /**
      * Creates a new LLM service instance
      * @param serviceOptions - Configuration options for the LLM service
      */
-    constructor(serviceOptions: Types.Broker.ILLMServiceOptions) {
-        this.config = {
+    constructor(serviceOptions: Types.ILlmServiceOptions) {
+        // Merge defaults with provided config, ensuring proper discriminated union
+        const baseConfig = {
             ...CONSTS.DEFAULT_LLM_CONFIG,
             ...serviceOptions.config,
         };
+        
+        // Ensure we have a valid discriminated union
+        if ('apiKey' in serviceOptions.config && serviceOptions.config.apiKey) {
+            // External config path
+            this.config = {
+                ...baseConfig,
+                apiKey: serviceOptions.config.apiKey,
+                model: serviceOptions.config.model,
+            } as TAiConfig;
+        } else if ('authMethod' in serviceOptions.config && serviceOptions.config.authMethod) {
+            // Internal config path
+            this.config = {
+                ...baseConfig,
+                authMethod: serviceOptions.config.authMethod,
+                apiUrl: serviceOptions.config.apiUrl,
+            } as TAiConfig;
+        } else {
+            // Fallback to the provided config as-is
+            this.config = serviceOptions.config;
+        }
+        
         this.options = { ...CONSTS.DEFAULT_SERVICE_OPTIONS, ...serviceOptions };
         this.providerFactory = new ProviderFactory();
 
@@ -32,9 +58,9 @@ export class LLM {
         this.provider.validateConfig(this.config);
 
         this.httpClient = axios.create({
-            baseURL: this.config.baseURL,
+            baseURL: this.config.apiUrl,
             timeout: this.config.timeout,
-            headers: this.provider.buildAuthHeaders(this.config.apiKey),
+            headers: this.provider.buildAuthHeaders('apiKey' in this.config ? this.config.apiKey : undefined),
         });
 
         this.setupInterceptors();
@@ -47,14 +73,14 @@ export class LLM {
      * @returns Promise resolving to the LLM response
      */
     public async chatCompletion(
-        messages: readonly Types.Broker.ILLMMessage[],
+        messages: readonly Types.ILLMMessage[],
         requestOptions?: {
             readonly temperature?: number;
             readonly maxTokens?: number;
             readonly additionalParams?: Record<string, unknown>;
         },
-    ): Promise<Types.Broker.TLLMResponse> {
-        const request: Types.Broker.ILLMRequest = {
+    ): Promise<Types.TLLMResponse> {
+        const request: Types.ILLMRequest = {
             model: this.config.model,
             messages,
             temperature:
@@ -91,7 +117,7 @@ export class LLM {
      * @param requestOptions - Optional request configuration overrides
      * @returns Promise resolving to the response content
      */
-    public async textCompletion(
+    public async getResponse(
         prompt: string,
         systemMessage?: string,
         requestOptions?: {
@@ -99,7 +125,7 @@ export class LLM {
             readonly maxTokens?: number;
         },
     ): Promise<string> {
-        const messages: Types.Broker.ILLMMessage[] = [];
+        const messages: Types.ILLMMessage[] = [];
 
         if (systemMessage)
             messages.push({ role: 'system', content: systemMessage });
@@ -113,9 +139,10 @@ export class LLM {
      * Tests the connection to the LLM endpoint
      * @returns Promise resolving to true if connection successful
      */
-    public async testConnection(): Promise<boolean> {
+    public static async testConnection(serviceOptions: Types.ILlmServiceOptions): Promise<boolean> {
+        const llmBroker = new Llm(serviceOptions);
         try {
-            await this.textCompletion('Test', undefined, { maxTokens: 1 });
+            await llmBroker.getResponse('Test', undefined, { maxTokens: 1 });
             return true;
         } catch {
             return false;
@@ -131,32 +158,46 @@ export class LLM {
      * @returns Configured LLM service instance
      */
     public static fromPreset(
-        provider: Types.TProvider,
+        provider: LlmTypes.TProvider,
         apiKey: string | undefined,
         model: string,
-        overrides?: Partial<Types.Broker.ILLMConfig>,
-    ): LLM {
+        overrides?: Partial<TAiConfig>,
+    ): Llm {
         const factory = new ProviderFactory();
         const defaultConfig = factory.getDefaultConfig(provider);
-        const config: Types.Broker.ILLMConfig = {
-            ...defaultConfig,
-            apiKey,
-            model,
-            ...overrides,
-        } as Types.Broker.ILLMConfig;
+        
+        // Create config based on whether we have an API key (external) or not (internal)
+        let config: TAiConfig;
+        if (apiKey) {
+            config = {
+                provider,
+                apiKey,
+                model: model as unknown as LlmTypes.TModelValue,
+                ...defaultConfig,
+                ...overrides,
+            } as TAiConfig;
+        } else {
+            config = {
+                provider,
+                authMethod: 'none' as const,
+                apiUrl: defaultConfig.apiUrl ?? 'http://localhost:8080/v1/chat/completions',
+                ...defaultConfig,
+                ...overrides,
+            } as TAiConfig;
+        }
 
-        return new LLM({ config });
+        return new Llm({ config });
     }
 
     /**
      * Auto-detects provider based on configuration
      * @returns Detected provider name
      */
-    private detectProvider(): Types.TProvider {
-        if (this.config.baseURL.includes('api.openai.com')) {
+    private detectProvider(): LlmTypes.TProvider {
+        if (this.config.apiUrl.includes('api.openai.com')) {
             return 'openai';
         }
-        if (this.config.baseURL.includes('api.anthropic.com')) {
+        if (this.config.apiUrl.includes('api.anthropic.com')) {
             return 'anthropic';
         }
         return 'local';
@@ -216,7 +257,7 @@ export class LLM {
      * @param response - LLM response object
      * @returns Text content from the response
      */
-    private extractContent(response: Types.Broker.TLLMResponse): string {
+    private extractContent(response: Types.TLLMResponse): string {
         if ('choices' in response) {
             return response.choices[0]?.message.content ?? '';
         }
@@ -228,7 +269,7 @@ export class LLM {
      * @param error - The original error
      * @returns Standardised LLM error
      */
-    private handleError(error: unknown): Types.Broker.ILLMError {
+    private handleError(error: unknown): Types.ILLMError {
         if (axios.isAxiosError(error)) {
             const status = error.response?.status ?? 0;
             const errorType = CONSTS.ERROR_TYPE_MAP[status] ?? 'unknown';

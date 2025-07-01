@@ -1,6 +1,6 @@
 import process from 'process';
-import { EnvManager } from '@app/setup/env';
 import * as Config from '@src/config';
+import { EnvManager } from '@app/setup/env';
 
 export class ConfigCli extends Config.Config {
     public async mergeWithEnv(): Promise<Config.Types.IConfig> {

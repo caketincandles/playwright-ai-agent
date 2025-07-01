@@ -4,6 +4,7 @@ import { devLog } from '@lib/services/logger';
 import { OpenAI } from '@src/llm/broker/providers/open-ai';
 import { Anthropic } from '@src/llm/broker/providers/anthropic';
 import { Local } from '@src/llm/broker/providers/local';
+import { TAiConfig } from '@src/config/types';
 
 export { OpenAI, Anthropic, Local };
 
@@ -44,7 +45,7 @@ export class ProviderFactory implements Types.Broker.Provider.IFactory {
      */
     public getDefaultConfig(
         name: Types.TProvider,
-    ): Partial<Types.Broker.ILLMConfig> {
+    ): Partial<TAiConfig> {
         const provider = this.createProvider(name);
         return provider.defaultConfig;
     }
@@ -65,13 +66,13 @@ export class ProviderFactory implements Types.Broker.Provider.IFactory {
      */
     public createFromPreset(
         name: Types.TProvider,
-        config: Partial<Types.Broker.ILLMConfig> = {},
+        config: Partial<TAiConfig> = {},
     ): Types.Broker.Provider.IBase {
         const provider = this.createProvider(name);
         const mergedConfig = {
             ...provider.defaultConfig,
             ...config,
-        } as Types.Broker.ILLMConfig;
+        } as TAiConfig;
         provider.validateConfig(mergedConfig);
         return provider;
     }

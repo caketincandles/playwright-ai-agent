@@ -37,8 +37,7 @@
         "lint:fix": "eslint . --fix && prettier --write .",
         "docs:build": "typedoc && cp docs/README.md docs/ts-docs/index.md",
         "prepare": "npm run build",
-        "prepublishOnly": "npm run lint && npm run build",
-        "test": "echo \"Tests coming soon\" && exit 0"
+        "prepublishOnly": "npm run lint && npm run build"
     },
     "dependencies": {
         "@types/node": "^22.15.21",
@@ -51,8 +50,7 @@
         "playwright": ">=1.40.0",
         "tsc-alias": "^1.8.16",
         "tsconfig-paths": "^4.2.0",
-        "tsx": "^4.7.1",
-        "zod": "^3.25.28"
+        "tsx": "^4.7.1"
     },
     "devDependencies": {
         "@eslint/js": "^9.27.0",

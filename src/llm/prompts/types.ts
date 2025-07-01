@@ -1,17 +1,17 @@
-import { ACTION, PLAYWRIGHT_FILE } from '@src/llm/prompts/consts';
+import { ACTION } from '@src/llm/prompts/consts';
+import { TTargetType } from '@src/services/types';
 
-export type TPlaywrightFile =
-    (typeof PLAYWRIGHT_FILE)[keyof typeof PLAYWRIGHT_FILE];
 export type TAction = (typeof ACTION)[keyof typeof ACTION];
 
 export interface ISuffixes {
+    readonly target: TTargetType;
     classSuffixes?: readonly string[];
     paramSuffixes?: readonly string[];
 }
 
 export interface ITargetFiles {
-    content: string[];
-    inclusions?: ISuffixes;
+    fileName: string;
+    content: string;
 }
 
 export interface IXmlSchema {
@@ -19,5 +19,6 @@ export interface IXmlSchema {
     main_objective: string;
     instructions: string[];
     rules: string[];
-    code: ITargetFiles;
+    code: ITargetFiles[];
+    inclusions?: ISuffixes[];
 }

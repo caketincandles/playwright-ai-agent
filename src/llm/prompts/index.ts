@@ -1,17 +1,16 @@
+import path from 'path';
 import { BasePrompt } from '@src/llm/prompts/base';
-import { TService } from '@src/llm/types';
-import { TPlaywrightFile } from '@src/llm/prompts/types';
+import * as Config from '@src/config';
+import * as Types from '@src/services/types';
 
-export class PromptFactory extends BasePrompt {
-    public readonly rules: string[];
-
+export class Factory extends BasePrompt {
     constructor(
         protected readonly filePaths: string[],
-        protected readonly service: TService,
-        protected readonly target: TPlaywrightFile,
+        protected readonly service: Types.TServiceType,
+        protected readonly config: Config.Types.IConfig,
+        protected readonly target: Types.TTargetType[],
     ) {
-        super(filePaths, service);
-        this.rules = this.serviceRules[this.target];
+        super(filePaths, service, config);
     }
 
     public async createPrompt(): Promise<string> {
@@ -30,27 +29,31 @@ export class PromptFactory extends BasePrompt {
     }
 
     private getCodeXml(): string {
-        const { code } = this;
-        const action = this.service.toLowerCase();
-        const files = this.getArrayXml(
-            code.content,
-            `file-to-${action}`,
-            false,
-        );
+        const tsFiles: string[] = [];
 
-        const suffixes = [
-            code.inclusions?.classSuffixes &&
-                `Naming Convention for ${this.target} Classes: ${code.inclusions.classSuffixes.join(',')}`,
-            code.inclusions?.paramSuffixes &&
-                `Naming Convention for ${this.target} Variables: ${code.inclusions.paramSuffixes.join(', ')}`,
-        ].filter(Boolean) as string[];
+        for (const tsFile of this.code) {
+            tsFiles.push(this.getSingletonXml(
+                this.minifyTypeScript(tsFile.content),
+                this.getCleanFileName(tsFile.fileName),
+            ));
+        }
+
+        const include: string[] = [];
+
+        for (const inclusion of this.inclusions) {
+            const includeByType: string[] = [];
+            if (inclusion.paramSuffixes) includeByType.push(...inclusion.paramSuffixes);
+            if (inclusion.classSuffixes) includeByType.push(...inclusion.classSuffixes);
+            const taggedInclude = this.getArrayXml(includeByType, inclusion.target, false);
+            include.push(taggedInclude);
+        }
 
         const inclusions =
-            suffixes.length > 0
-                ? this.getArrayXml(suffixes, 'naming-convention', false)
+            this.inclusions.length > 0
+                ? this.getArrayXml(include, 'naming-convention', false)
                 : '';
 
-        return `<code>${files}${inclusions}</code>`;
+        return this.getArrayXml([inclusions, ...tsFiles], 'code', false);
     }
 
     private getSingletonXml(item: string, tag: string): string {
@@ -62,5 +65,23 @@ export class PromptFactory extends BasePrompt {
             .map((item) => this.getSingletonXml(item, tag))
             .join('');
         return plural ? `<${tag}s>${members}</${tag}s>` : members;
+    }
+
+    private minifyTypeScript(code: string): string {
+        return code
+            // Remove multi-line comments
+            .replace(/\/\*[\s\S]*?\*\//g, '')
+            // Remove extra whitespace
+            .replace(/\s+/g, ' ')
+            // Remove unnecessary semicolons and brackets spacing
+            .replace(/\s*{\s*/g, '{')
+            .replace(/\s*}\s*/g, '}')
+            .replace(/\s*;\s*/g, ';')
+            .trim();
+    }
+
+    private getCleanFileName(filePath: string): string {
+        const parsed = path.parse(filePath);
+        return parsed.name.replace(/_/g, '-');
     }
 }

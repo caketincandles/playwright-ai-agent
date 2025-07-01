@@ -1,3 +1,10 @@
+export const AUTH_METHOD = {
+    API_KEY: 'api-key',
+    BEARER: 'bearer',
+    NONE: 'none',
+    CUSTOM: 'custom',
+} as const;
+
 export const CONFIG_FILE = 'agentic.config.json';
 
 export const BASE = {

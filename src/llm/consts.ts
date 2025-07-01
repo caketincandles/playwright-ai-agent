@@ -32,3 +32,20 @@ export const ROLE = {
 export const SERVICE = {
     HEAL: 'Heal',
 } as const;
+
+export const RESPONSE_SCHEMA = {
+    filePath: { type: "string", optional: false },
+    fileContents: { type: "string", optional: false },
+    changeLog: { type: "string[]", optional: true },
+    recommendations: { type: "{ snippet: string, reason: string }[]", optional: true }
+} as const;
+
+export const RESPONSE_FORMAT = () => {
+    const fields = Object.entries(RESPONSE_SCHEMA)
+        .map(([key, config]) => {
+            const optional = config.optional ? '?' : '';
+            return `${key}${optional}: ${config.type}`;
+        })
+        .join('; ');
+    return `{ ${fields} }`;
+};

@@ -1,4 +1,5 @@
 import * as Types from '@src/llm/types';
+import { TAiConfig } from '@src/config/types';
 
 /** Provider configuration factory */
 export interface IFactory {
@@ -14,13 +15,13 @@ export interface IFactory {
      * @param name - Provider name
      * @returns Default configuration
      */
-    getDefaultConfig(name: Types.TProvider): Partial<Types.Broker.ILLMConfig>;
+    getDefaultConfig(name: Types.TProvider): Partial<TAiConfig>;
 }
 
 /** Base interface for all LLM providers */
 export interface IBase {
     readonly name: Types.TProvider;
-    readonly defaultConfig: Partial<Types.Broker.ILLMConfig>;
+    readonly defaultConfig: Partial<TAiConfig>;
 
     /**
      * Transforms request to provider-specific format
@@ -50,5 +51,5 @@ export interface IBase {
      * @param config - Configuration to validate
      * @returns True if valid, throws error if invalid
      */
-    validateConfig(config: Types.Broker.ILLMConfig): boolean;
+    validateConfig(config: TAiConfig): boolean;
 }

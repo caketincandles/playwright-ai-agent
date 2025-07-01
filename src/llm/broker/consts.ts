@@ -1,14 +1,8 @@
+import { TAuthMethod, TAiConfig } from '@src/config/types';
 import * as Types from '@src/llm/broker/types';
 
-export const AUTH_METHOD = {
-    API_KEY: 'api-key',
-    BEARER: 'bearer',
-    NONE: 'none',
-    CUSTOM: 'custom',
-} as const;
-
 /** Default configuration values for LLM service */
-export const DEFAULT_LLM_CONFIG: Partial<Types.ILLMConfig> = {
+export const DEFAULT_LLM_CONFIG: Partial<TAiConfig> = {
     timeout: 30000,
     maxRetries: 3,
     authMethod: 'api-key',
@@ -16,14 +10,14 @@ export const DEFAULT_LLM_CONFIG: Partial<Types.ILLMConfig> = {
 } as const;
 
 /** Default service options */
-export const DEFAULT_SERVICE_OPTIONS: Partial<Types.ILLMServiceOptions> = {
-    defaultTemperature: 0.7,
-    defaultMaxTokens: 2000,
+export const DEFAULT_SERVICE_OPTIONS: Partial<Types.ILlmServiceOptions> = {
+    defaultTemperature: 0.6,
+    defaultMaxTokens: 100000,
 } as const;
 
 /** Standard headers for different auth methods */
 export const AUTH_HEADERS: Record<
-    Types.TAuthMethod,
+    TAuthMethod,
     (apiKey?: string) => Record<string, string>
 > = {
     'api-key': (apiKey?: string) => ({
@@ -41,14 +35,14 @@ export const AUTH_HEADERS: Record<
 } as const;
 
 /** Common LLM provider endpoints and configurations */
-export const PROVIDER_PRESETS: Record<string, Partial<Types.ILLMConfig>> = {
+export const PROVIDER_PRESETS: Record<string, Partial<TAiConfig>> = {
     openai: {
-        baseURL: 'https://api.openai.com/v1/chat/completions',
+        apiUrl: 'https://api.openai.com/v1/chat/completions',
         authMethod: 'bearer',
         customRequestFormat: false,
     },
     anthropic: {
-        baseURL: 'https://api.anthropic.com/v1/messages',
+        apiUrl: 'https://api.anthropic.com/v1/messages',
         authMethod: 'api-key',
         customRequestFormat: true,
         headers: {
@@ -56,7 +50,7 @@ export const PROVIDER_PRESETS: Record<string, Partial<Types.ILLMConfig>> = {
         },
     },
     local: {
-        baseURL: 'http://localhost:8080/v1/chat/completions',
+        apiUrl: 'http://localhost:8080/v1/chat/completions',
         authMethod: 'none',
         customRequestFormat: false,
     },
@@ -86,7 +80,3 @@ export const ERROR_TYPE_MAP: Record<number, Types.ILLMError['type']> = {
     503: 'server',
     504: 'server',
 } as const;
-
-/** Default system message for test generation */
-export const DEFAULT_SYSTEM_MESSAGE =
-    'You are an expert at generating and fixing Playwright automation tests. Provide clear, maintainable, and robust test code.' as const;

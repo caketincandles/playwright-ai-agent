@@ -1,32 +1,8 @@
-import * as CONSTS from '@src/llm/consts';
 import * as Provider from '@src/llm/broker/providers/types';
-import { TRole } from '@src/llm/types';
+import { TModelValue, TRole } from '@src/llm/types';
+import { TAiConfig } from '@src/config/types';
 
 export { Provider };
-
-/** Supported authentication methods for LLM APIs */
-export type TAuthMethod =
-    (typeof CONSTS.BROKER.AUTH_METHOD)[keyof typeof CONSTS.BROKER.AUTH_METHOD];
-
-/** LLM provider configuration interface */
-export interface ILLMConfig {
-    /** Base URL for the LLM API endpoint */
-    readonly baseURL: string;
-    /** Model identifier/name to use */
-    readonly model: string;
-    /** Authentication method */
-    readonly authMethod: TAuthMethod;
-    /** API key (if using api-key or bearer auth) */
-    readonly apiKey?: string;
-    /** Custom headers for the request */
-    readonly headers?: Record<string, string>;
-    /** Request timeout in milliseconds (defaults to 30000) */
-    readonly timeout?: number;
-    /** Maximum retries for failed requests (defaults to 3) */
-    readonly maxRetries?: number;
-    /** Custom request body structure (for non-standard APIs) */
-    readonly customRequestFormat?: boolean;
-}
 
 /** Standard LLM message structure */
 export interface ILLMMessage {
@@ -36,7 +12,7 @@ export interface ILLMMessage {
 
 /** LLM request payload structure */
 export interface ILLMRequest {
-    readonly model: string;
+    readonly model?: TModelValue;
     readonly messages: readonly ILLMMessage[];
     readonly temperature?: number;
     readonly maxTokens?: number;
@@ -79,8 +55,8 @@ export interface ICustomLLMResponse {
 export type TLLMResponse = ILLMResponse | ICustomLLMResponse;
 
 /** LLM service configuration options */
-export interface ILLMServiceOptions {
-    readonly config: ILLMConfig;
+export interface ILlmServiceOptions {
+    readonly config: TAiConfig;
     readonly defaultTemperature?: number;
     readonly defaultMaxTokens?: number;
 }

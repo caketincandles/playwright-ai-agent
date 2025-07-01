@@ -1,6 +1,7 @@
 import * as Types from '@src/llm/broker/types';
 import * as CONSTS from '@src/llm/consts';
 import { BaseProvider } from '@src/llm/broker/providers/base';
+import { IAiInternalConfig } from '@src/config/types';
 
 /**
  * Local LLM provider implementation
@@ -8,8 +9,8 @@ import { BaseProvider } from '@src/llm/broker/providers/base';
  */
 export class Local extends BaseProvider {
     public readonly name = CONSTS.PROVIDERS.LOCAL;
-    public readonly defaultConfig: Partial<Types.ILLMConfig> = {
-        baseURL: 'http://localhost:8080/v1/chat/completions',
+    public readonly defaultConfig: Partial<IAiInternalConfig> = {
+        apiUrl: 'http://localhost:8080/v1/chat/completions',
         authMethod: 'none',
         customRequestFormat: false,
     };
@@ -35,7 +36,7 @@ export class Local extends BaseProvider {
         return this.getBaseHeaders();
     }
 
-    public validateConfig(config: Types.ILLMConfig): boolean {
+    public validateConfig(config: IAiInternalConfig): boolean {
         super.validateConfig(config);
         return true;
     }

@@ -1,12 +1,15 @@
-import { SERVICE } from '@src/llm/consts';
-import { TService } from '@src/llm/types';
+import { SERVICE } from '@src/services/consts';
+import { TServiceType } from '@src/services/types';
 
-export const MAIN_OBJECTIVE: Record<TService, string> = {
+export const MAIN_OBJECTIVE: Record<TServiceType, string> = {
+    [SERVICE.CREATE]: '',
     [SERVICE.HEAL]:
         'You are repairing broken or failing code to restore functionality',
+    [SERVICE.IMPROVE]: '',
 } as const;
 
-export const INSTRUCTIONS: Record<TService, string[]> = {
+export const INSTRUCTIONS: Record<TServiceType, string[]> = {
+    [SERVICE.CREATE]: [],
     [SERVICE.HEAL]: [
         'Examine the failing code context and understand what the original intent was',
         'Perform static analysis of the provided code to find any potential errors',
@@ -16,4 +19,5 @@ export const INSTRUCTIONS: Record<TService, string[]> = {
         'Preserve all existing test coverage, assertions and verification points',
         'Ensure the repaired code maintains the same logical flow and business intent as the original',
     ],
+    [SERVICE.IMPROVE]: [],
 } as const;

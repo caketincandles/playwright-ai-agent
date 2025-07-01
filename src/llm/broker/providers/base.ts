@@ -1,5 +1,6 @@
 import * as Types from '@src/llm/types';
 import { devLog } from '@lib/services/logger';
+import { TAiConfig } from '@src/config/types';
 
 /**
  * Abstract base class for LLM providers
@@ -7,7 +8,7 @@ import { devLog } from '@lib/services/logger';
  */
 export abstract class BaseProvider implements Types.Broker.Provider.IBase {
     public abstract readonly name: Types.TProvider;
-    public abstract readonly defaultConfig: Partial<Types.Broker.ILLMConfig>;
+    public abstract readonly defaultConfig: Partial<TAiConfig>;
 
     /**
      * Transforms request to provider-specific format
@@ -39,8 +40,8 @@ export abstract class BaseProvider implements Types.Broker.Provider.IBase {
      * @param config - Configuration to validate
      * @returns True if valid, throws error if invalid
      */
-    public validateConfig(config: Types.Broker.ILLMConfig): boolean {
-        if (!config.baseURL) devLog.error(`${this.name}: baseURL is required`);
+    public validateConfig(config: TAiConfig): boolean {
+        if (!config.apiUrl) devLog.error(`${this.name}: baseURL is required`);
         if (!config.model) devLog.error(`${this.name}: model is required`);
         return true;
     }

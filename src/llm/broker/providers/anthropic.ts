@@ -2,6 +2,7 @@ import * as Types from '@src/llm/broker/types';
 import * as CONSTS from '@src/llm/consts';
 import { BaseProvider } from '@src/llm/broker/providers/base';
 import { devLog } from '@lib/services/logger';
+import { IExternalAiConfig } from '@src/config/types';
 
 /**
  * Anthropic Claude provider implementation
@@ -9,8 +10,8 @@ import { devLog } from '@lib/services/logger';
  */
 export class Anthropic extends BaseProvider {
     public readonly name = CONSTS.PROVIDERS.ANTHROPIC;
-    public readonly defaultConfig: Partial<Types.ILLMConfig> = {
-        baseURL: 'https://api.anthropic.com/v1/messages',
+    public readonly defaultConfig: Partial<IExternalAiConfig> = {
+        apiUrl: 'https://api.anthropic.com/v1/messages',
         authMethod: 'api-key',
         customRequestFormat: true,
         headers: {
@@ -63,7 +64,7 @@ export class Anthropic extends BaseProvider {
         };
     }
 
-    public validateConfig(config: Types.ILLMConfig): boolean {
+    public validateConfig(config: IExternalAiConfig): boolean {
         super.validateConfig(config);
         if (!config.apiKey) devLog.error('Anthropic: apiKey is required');
         return true;

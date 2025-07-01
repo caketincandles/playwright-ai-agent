@@ -2,6 +2,7 @@ import * as Types from '@src/llm/broker/types';
 import * as CONSTS from '@src/llm/consts';
 import { BaseProvider } from '@src/llm/broker/providers/base';
 import { devLog } from '@lib/services/logger';
+import { IExternalAiConfig } from '@src/config/types';
 
 /**
  * OpenAI provider implementation
@@ -9,8 +10,8 @@ import { devLog } from '@lib/services/logger';
  */
 export class OpenAI extends BaseProvider {
     public readonly name = CONSTS.PROVIDERS.OPEN_AI;
-    public readonly defaultConfig: Partial<Types.ILLMConfig> = {
-        baseURL: 'https://api.openai.com/v1/chat/completions',
+    public readonly defaultConfig: Partial<IExternalAiConfig> = {
+        apiUrl: 'https://api.openai.com/v1/chat/completions',
         authMethod: 'bearer',
         customRequestFormat: false,
     };
@@ -39,7 +40,7 @@ export class OpenAI extends BaseProvider {
         };
     }
 
-    public validateConfig(config: Types.ILLMConfig): boolean {
+    public validateConfig(config: IExternalAiConfig): boolean {
         super.validateConfig(config);
         if (config.authMethod !== 'none' && !config.apiKey) {
             devLog.error('OpenAI: apiKey is required');
