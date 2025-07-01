@@ -3,11 +3,13 @@ import * as Broker from '@src/llm/broker/types';
 
 export { Broker };
 
-type TParseType<T> = 
-    T extends "string" ? string
-    : T extends "string[]" ? string[]
-    : T extends "{ snippet: string, reason: string }[]" ? { snippet: string; reason: string }[]
-    : never;
+type TParseType<T> = T extends 'string'
+    ? string
+    : T extends 'string[]'
+      ? string[]
+      : T extends '{ snippet: string, reason: string }[]'
+        ? { snippet: string; reason: string }[]
+        : never;
 
 export type TRole = (typeof CONSTS.ROLE)[keyof typeof CONSTS.ROLE];
 export type TProvider =
@@ -20,8 +22,7 @@ export type TAnthropicModels =
 export type TModelValue = TOpenAiModels | TAnthropicModels;
 
 export type TResponseSchema = {
-    [K in keyof typeof CONSTS.RESPONSE_SCHEMA]: 
-        typeof CONSTS.RESPONSE_SCHEMA[K]["optional"] extends true
-            ? TParseType<typeof CONSTS.RESPONSE_SCHEMA[K]["type"]> | undefined
-            : TParseType<typeof CONSTS.RESPONSE_SCHEMA[K]["type"]>;
+    [K in keyof typeof CONSTS.RESPONSE_SCHEMA]: (typeof CONSTS.RESPONSE_SCHEMA)[K]['optional'] extends true
+        ? TParseType<(typeof CONSTS.RESPONSE_SCHEMA)[K]['type']> | undefined
+        : TParseType<(typeof CONSTS.RESPONSE_SCHEMA)[K]['type']>;
 };

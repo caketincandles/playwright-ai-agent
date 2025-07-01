@@ -80,7 +80,7 @@ export const PAGE_RULES: readonly string[] = [
     'PAGE LOADS: Always verify navigation success with page.waitForURL() or check for expected page elements',
     'BROWSER CONTEXT: Use page.goto() instead of manipulating window.location for better reliability',
     'REDIRECTS: Handle expected redirects by waiting for final URL or expected page content',
-    'Always define specific wait conditions rather than arbitrary delays'
+    'Always define specific wait conditions rather than arbitrary delays',
 ] as const;
 
 export const SERVICE_BASE_RULES: Record<TServiceType, readonly string[]> = {
@@ -112,7 +112,10 @@ export const SERVICE_MAP: Record<TServiceType, TAction[]> = {
     [SERVICE.IMPROVE]: [ACTION.GENERATE, ACTION.UPDATE],
 } as const;
 
-export const TARGET_RULES: Record<TAction, Record<TTargetType, readonly string[]>> = {
+export const TARGET_RULES: Record<
+    TAction,
+    Record<TTargetType, readonly string[]>
+> = {
     [ACTION.GENERATE]: {
         [TARGET.API]: [
             'Create complete API client classes with proper error handling and response typing',

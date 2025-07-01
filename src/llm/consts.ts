@@ -34,10 +34,13 @@ export const SERVICE = {
 } as const;
 
 export const RESPONSE_SCHEMA = {
-    filePath: { type: "string", optional: false },
-    fileContents: { type: "string", optional: false },
-    changeLog: { type: "string[]", optional: true },
-    recommendations: { type: "{ snippet: string, reason: string }[]", optional: true }
+    filePath: { type: 'string', optional: false },
+    fileContents: { type: 'string', optional: false },
+    changeLog: { type: 'string[]', optional: true },
+    recommendations: {
+        type: '{ snippet: string, reason: string }[]',
+        optional: true,
+    },
 } as const;
 
 export const RESPONSE_FORMAT = () => {

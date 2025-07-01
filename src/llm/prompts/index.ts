@@ -32,19 +32,27 @@ export class Factory extends BasePrompt {
         const tsFiles: string[] = [];
 
         for (const tsFile of this.code) {
-            tsFiles.push(this.getSingletonXml(
-                this.minifyTypeScript(tsFile.content),
-                this.getCleanFileName(tsFile.fileName),
-            ));
+            tsFiles.push(
+                this.getSingletonXml(
+                    this.minifyTypeScript(tsFile.content),
+                    this.getCleanFileName(tsFile.fileName),
+                ),
+            );
         }
 
         const include: string[] = [];
 
         for (const inclusion of this.inclusions) {
             const includeByType: string[] = [];
-            if (inclusion.paramSuffixes) includeByType.push(...inclusion.paramSuffixes);
-            if (inclusion.classSuffixes) includeByType.push(...inclusion.classSuffixes);
-            const taggedInclude = this.getArrayXml(includeByType, inclusion.target, false);
+            if (inclusion.paramSuffixes)
+                includeByType.push(...inclusion.paramSuffixes);
+            if (inclusion.classSuffixes)
+                includeByType.push(...inclusion.classSuffixes);
+            const taggedInclude = this.getArrayXml(
+                includeByType,
+                inclusion.target,
+                false,
+            );
             include.push(taggedInclude);
         }
 
@@ -68,16 +76,18 @@ export class Factory extends BasePrompt {
     }
 
     private minifyTypeScript(code: string): string {
-        return code
-            // Remove multi-line comments
-            .replace(/\/\*[\s\S]*?\*\//g, '')
-            // Remove extra whitespace
-            .replace(/\s+/g, ' ')
-            // Remove unnecessary semicolons and brackets spacing
-            .replace(/\s*{\s*/g, '{')
-            .replace(/\s*}\s*/g, '}')
-            .replace(/\s*;\s*/g, ';')
-            .trim();
+        return (
+            code
+                // Remove multi-line comments
+                .replace(/\/\*[\s\S]*?\*\//g, '')
+                // Remove extra whitespace
+                .replace(/\s+/g, ' ')
+                // Remove unnecessary semicolons and brackets spacing
+                .replace(/\s*{\s*/g, '{')
+                .replace(/\s*}\s*/g, '}')
+                .replace(/\s*;\s*/g, ';')
+                .trim()
+        );
     }
 
     private getCleanFileName(filePath: string): string {

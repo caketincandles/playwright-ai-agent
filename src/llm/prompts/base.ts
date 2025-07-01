@@ -72,9 +72,9 @@ export abstract class BasePrompt implements Types.IXmlSchema {
     }
 
     private get getInclusions(): Types.ISuffixes[] {
-        const suffixRules: Types.ISuffixes[] = []
+        const suffixRules: Types.ISuffixes[] = [];
         for (const target of this.target) {
-            suffixRules.push(this.getSuffixes(target))
+            suffixRules.push(this.getSuffixes(target));
         }
         return suffixRules;
     }
@@ -86,24 +86,28 @@ export abstract class BasePrompt implements Types.IXmlSchema {
         const actions = RULE.SERVICE_MAP[this.service];
 
         if (this.target.length > 0) {
-            
             for (const target of this.target) {
                 for (const action of actions) {
                     RULESET.push(...RULE.TARGET_RULES[action][target]);
                 }
             }
-            
-            if (!this.target.includes(TARGET.PAGE) && this.target.includes(TARGET.TEST)) {
+
+            if (
+                !this.target.includes(TARGET.PAGE) &&
+                this.target.includes(TARGET.TEST)
+            ) {
                 RULESET.push(...RULE.PAGE_RULES);
             }
         } else {
             for (const target in TARGET) {
                 for (const action of actions) {
-                    RULESET.push(...RULE.TARGET_RULES[action][target as TTargetType]);
+                    RULESET.push(
+                        ...RULE.TARGET_RULES[action][target as TTargetType],
+                    );
                 }
             }
         }
-        
+
         return RULESET;
     }
 
@@ -113,14 +117,21 @@ export abstract class BasePrompt implements Types.IXmlSchema {
         }
         let inc: IProjectConfig = this.config.pages;
         if (target === TARGET.LOCATOR) inc = this.config.locators;
-        const classSuffixes = inc.classSuffixes ? [`Naming Convention for ${target} Classes: ${inc.classSuffixes.join(',')}`] : undefined;
-        const paramSuffixes =  inc.paramSuffixes ?
-                [`Naming Convention for ${target} Variables: ${inc.paramSuffixes.join(', ')}`] : undefined;
-        
+        const classSuffixes = inc.classSuffixes
+            ? [
+                  `Naming Convention for ${target} Classes: ${inc.classSuffixes.join(',')}`,
+              ]
+            : undefined;
+        const paramSuffixes = inc.paramSuffixes
+            ? [
+                  `Naming Convention for ${target} Variables: ${inc.paramSuffixes.join(', ')}`,
+              ]
+            : undefined;
+
         return {
             target,
             classSuffixes,
             paramSuffixes,
-        }
+        };
     }
 }

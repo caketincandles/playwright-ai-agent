@@ -1,8 +1,7 @@
 import * as LlmTypes from '@src/llm/types';
 import { AUTH_METHOD } from '@src/config/consts';
 
-export type TAuthMethod =
-    (typeof AUTH_METHOD)[keyof typeof AUTH_METHOD];
+export type TAuthMethod = (typeof AUTH_METHOD)[keyof typeof AUTH_METHOD];
 
 interface IBaseAiConfig {
     readonly apiUrl: string;

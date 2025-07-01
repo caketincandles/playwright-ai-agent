@@ -28,7 +28,7 @@ export class Llm {
             ...CONSTS.DEFAULT_LLM_CONFIG,
             ...serviceOptions.config,
         };
-        
+
         // Ensure we have a valid discriminated union
         if ('apiKey' in serviceOptions.config && serviceOptions.config.apiKey) {
             // External config path
@@ -37,7 +37,10 @@ export class Llm {
                 apiKey: serviceOptions.config.apiKey,
                 model: serviceOptions.config.model,
             } as TAiConfig;
-        } else if ('authMethod' in serviceOptions.config && serviceOptions.config.authMethod) {
+        } else if (
+            'authMethod' in serviceOptions.config &&
+            serviceOptions.config.authMethod
+        ) {
             // Internal config path
             this.config = {
                 ...baseConfig,
@@ -48,7 +51,7 @@ export class Llm {
             // Fallback to the provided config as-is
             this.config = serviceOptions.config;
         }
-        
+
         this.options = { ...CONSTS.DEFAULT_SERVICE_OPTIONS, ...serviceOptions };
         this.providerFactory = new ProviderFactory();
 
@@ -60,7 +63,9 @@ export class Llm {
         this.httpClient = axios.create({
             baseURL: this.config.apiUrl,
             timeout: this.config.timeout,
-            headers: this.provider.buildAuthHeaders('apiKey' in this.config ? this.config.apiKey : undefined),
+            headers: this.provider.buildAuthHeaders(
+                'apiKey' in this.config ? this.config.apiKey : undefined,
+            ),
         });
 
         this.setupInterceptors();
@@ -139,7 +144,9 @@ export class Llm {
      * Tests the connection to the LLM endpoint
      * @returns Promise resolving to true if connection successful
      */
-    public static async testConnection(serviceOptions: Types.ILlmServiceOptions): Promise<boolean> {
+    public static async testConnection(
+        serviceOptions: Types.ILlmServiceOptions,
+    ): Promise<boolean> {
         const llmBroker = new Llm(serviceOptions);
         try {
             await llmBroker.getResponse('Test', undefined, { maxTokens: 1 });
@@ -165,7 +172,7 @@ export class Llm {
     ): Llm {
         const factory = new ProviderFactory();
         const defaultConfig = factory.getDefaultConfig(provider);
-        
+
         // Create config based on whether we have an API key (external) or not (internal)
         let config: TAiConfig;
         if (apiKey) {
@@ -180,7 +187,9 @@ export class Llm {
             config = {
                 provider,
                 authMethod: 'none' as const,
-                apiUrl: defaultConfig.apiUrl ?? 'http://localhost:8080/v1/chat/completions',
+                apiUrl:
+                    defaultConfig.apiUrl ??
+                    'http://localhost:8080/v1/chat/completions',
                 ...defaultConfig,
                 ...overrides,
             } as TAiConfig;
