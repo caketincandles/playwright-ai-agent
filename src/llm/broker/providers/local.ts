@@ -8,8 +8,8 @@ import { IAiInternalConfig } from '@src/config/types';
  * Handles local/self-hosted LLM APIs with no authentication
  */
 export class Local extends BaseProvider {
-    public readonly name = CONSTS.PROVIDERS.LOCAL;
-    public readonly defaultConfig: Partial<IAiInternalConfig> = {
+    public readonly NAME = CONSTS.PROVIDERS.LOCAL;
+    public readonly DEFAULT: Partial<IAiInternalConfig> = {
         apiUrl: 'http://localhost:8080/v1/chat/completions',
         authMethod: 'none',
         customRequestFormat: false,

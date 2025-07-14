@@ -9,8 +9,8 @@ import { IExternalAiConfig } from '@src/config/types';
  * Handles OpenAI API-compatible requests and responses
  */
 export class OpenAI extends BaseProvider {
-    public readonly name = CONSTS.PROVIDERS.OPEN_AI;
-    public readonly defaultConfig: Partial<IExternalAiConfig> = {
+    public readonly NAME = CONSTS.PROVIDERS.OPEN_AI;
+    public readonly DEFAULT: Partial<IExternalAiConfig> = {
         apiUrl: 'https://api.openai.com/v1/chat/completions',
         authMethod: 'bearer',
         customRequestFormat: false,

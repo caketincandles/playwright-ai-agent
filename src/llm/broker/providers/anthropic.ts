@@ -9,8 +9,8 @@ import { IExternalAiConfig } from '@src/config/types';
  * Handles Anthropic API requests and responses with custom formatting
  */
 export class Anthropic extends BaseProvider {
-    public readonly name = CONSTS.PROVIDERS.ANTHROPIC;
-    public readonly defaultConfig: Partial<IExternalAiConfig> = {
+    public readonly NAME = CONSTS.PROVIDERS.ANTHROPIC;
+    public readonly DEFAULT: Partial<IExternalAiConfig> = {
         apiUrl: 'https://api.anthropic.com/v1/messages',
         authMethod: 'api-key',
         customRequestFormat: true,
@@ -66,7 +66,7 @@ export class Anthropic extends BaseProvider {
 
     public validateConfig(config: IExternalAiConfig): boolean {
         super.validateConfig(config);
-        if (!config.apiKey) devLog.error('Anthropic: apiKey is required');
+        if (!config.apiKey) devLog.error('Anthropic: `apiKey` is required');
         return true;
     }
 }

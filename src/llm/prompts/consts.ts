@@ -1,6 +1,6 @@
 export const ACTION = {
-    UPDATE: 'Update',
-    GENERATE: 'Generate',
+    UPDATE: 'update',
+    GENERATE: 'generate',
 } as const;
 
 export const IDENTITY =

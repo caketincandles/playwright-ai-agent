@@ -1,14 +1,13 @@
 import path from 'path';
 import { BasePrompt } from '@src/llm/prompts/base';
 import * as Config from '@src/config';
-import * as Types from '@src/services/types';
 
 export class Factory extends BasePrompt {
     constructor(
         protected readonly filePaths: string[],
-        protected readonly service: Types.TServiceType,
+        protected readonly service: Config.Types.TServiceType,
         protected readonly config: Config.Types.IConfig,
-        protected readonly target: Types.TTargetType[],
+        protected readonly target: Config.Types.TTargetType[],
     ) {
         super(filePaths, service, config);
     }

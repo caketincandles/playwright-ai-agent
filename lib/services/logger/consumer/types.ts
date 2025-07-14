@@ -1,4 +1,4 @@
-import * as CONSTS from '@src/services/consts';
+import * as CONSTS from '@src/config/consts';
 
 /** Primary service type */
 export type TServiceType = (typeof CONSTS.SERVICE)[keyof typeof CONSTS.SERVICE];

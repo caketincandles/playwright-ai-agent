@@ -1,16 +1,15 @@
-import { SERVICE } from '@src/services/consts';
-import { TServiceType } from '@src/services/types';
+import * as Config from '@src/config';
 
-export const MAIN_OBJECTIVE: Record<TServiceType, string> = {
-    [SERVICE.CREATE]: '',
-    [SERVICE.HEAL]:
+export const MAIN_OBJECTIVE: Record<Config.Types.TServiceType, string> = {
+    [Config.CONSTS.SERVICE.CREATE]: '',
+    [Config.CONSTS.SERVICE.HEAL]:
         'You are repairing broken or failing code to restore functionality',
-    [SERVICE.IMPROVE]: '',
+    [Config.CONSTS.SERVICE.IMPROVE]: '',
 } as const;
 
-export const INSTRUCTIONS: Record<TServiceType, string[]> = {
-    [SERVICE.CREATE]: [],
-    [SERVICE.HEAL]: [
+export const INSTRUCTIONS: Record<Config.Types.TServiceType, string[]> = {
+    [Config.CONSTS.SERVICE.CREATE]: [],
+    [Config.CONSTS.SERVICE.HEAL]: [
         'Examine the failing code context and understand what the original intent was',
         'Perform static analysis of the provided code to find any potential errors',
         'Analyse the provided error message, stack trace, or failure description if provided to identify the root cause of a failure',
@@ -19,5 +18,5 @@ export const INSTRUCTIONS: Record<TServiceType, string[]> = {
         'Preserve all existing test coverage, assertions and verification points',
         'Ensure the repaired code maintains the same logical flow and business intent as the original',
     ],
-    [SERVICE.IMPROVE]: [],
+    [Config.CONSTS.SERVICE.IMPROVE]: [],
 } as const;

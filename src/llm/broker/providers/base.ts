@@ -7,8 +7,8 @@ import { TAiConfig } from '@src/config/types';
  * Provides common functionality and enforces interface compliance
  */
 export abstract class BaseProvider implements Types.Broker.Provider.IBase {
-    public abstract readonly name: Types.TProvider;
-    public abstract readonly defaultConfig: Partial<TAiConfig>;
+    public abstract readonly NAME: Types.TProvider;
+    public abstract readonly DEFAULT: Partial<TAiConfig>;
 
     /**
      * Transforms request to provider-specific format
@@ -41,8 +41,8 @@ export abstract class BaseProvider implements Types.Broker.Provider.IBase {
      * @returns True if valid, throws error if invalid
      */
     public validateConfig(config: TAiConfig): boolean {
-        if (!config.apiUrl) devLog.error(`${this.name}: baseURL is required`);
-        if (!config.model) devLog.error(`${this.name}: model is required`);
+        if (!config.apiUrl) devLog.error(`${this.NAME}: baseURL is required`);
+        if (!config.model) devLog.error(`${this.NAME}: model is required`);
         return true;
     }
 

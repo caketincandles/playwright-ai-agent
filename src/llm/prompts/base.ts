@@ -1,18 +1,16 @@
+import FileService from '@lib/services/file';
 import type * as Types from '@src/llm/prompts/types';
 import * as CONSTS from '@src/llm/prompts/consts';
-import FileService from '@lib/services/file';
 import * as Config from '@src/config';
-import { INSTRUCTIONS, MAIN_OBJECTIVE } from 'src/llm/prompts/core/task';
 import * as RULE from '@src/llm/prompts/core/rules';
-import { TARGET } from '@src/services/consts';
-import { TServiceType, TTargetType } from '@src/services/types';
+import { INSTRUCTIONS, MAIN_OBJECTIVE } from 'src/llm/prompts/core/task';
 import { IProjectLocatorConfig } from '@src/config/types';
 
 export abstract class BasePrompt implements Types.IXmlSchema {
     private dataLoadPromise?: Promise<void>;
     private isLoaded = false;
 
-    protected abstract target: TTargetType[];
+    protected abstract target: Config.Types.TTargetType[];
 
     public readonly identity = CONSTS.IDENTITY;
 
@@ -24,7 +22,7 @@ export abstract class BasePrompt implements Types.IXmlSchema {
 
     constructor(
         protected readonly filePaths: string[],
-        protected readonly service: TServiceType,
+        protected readonly service: Config.Types.TServiceType,
         protected readonly config: Config.Types.IConfig,
     ) {
         this.main_objective = MAIN_OBJECTIVE[this.service];
@@ -93,16 +91,18 @@ export abstract class BasePrompt implements Types.IXmlSchema {
             }
 
             if (
-                !this.target.includes(TARGET.PAGE) &&
-                this.target.includes(TARGET.TEST)
+                !this.target.includes(Config.CONSTS.TARGET.PAGE) &&
+                this.target.includes(Config.CONSTS.TARGET.TEST)
             ) {
                 RULESET.push(...RULE.PAGE_RULES);
             }
         } else {
-            for (const target in TARGET) {
+            for (const target in Config.CONSTS.TARGET) {
                 for (const action of actions) {
                     RULESET.push(
-                        ...RULE.TARGET_RULES[action][target as TTargetType],
+                        ...RULE.TARGET_RULES[action][
+                            target as Config.Types.TTargetType
+                        ],
                     );
                 }
             }
@@ -111,12 +111,15 @@ export abstract class BasePrompt implements Types.IXmlSchema {
         return RULESET;
     }
 
-    private getSuffixes(target: TTargetType): Types.ISuffixes {
-        if (target !== TARGET.LOCATOR && target !== TARGET.PAGE) {
+    private getSuffixes(target: Config.Types.TTargetType): Types.ISuffixes {
+        if (
+            target !== Config.CONSTS.TARGET.LOCATOR &&
+            target !== Config.CONSTS.TARGET.PAGE
+        ) {
             return { target };
         }
         let inc: IProjectLocatorConfig = this.config.pages;
-        if (target === TARGET.LOCATOR) inc = this.config.locators;
+        if (target === Config.CONSTS.TARGET.LOCATOR) inc = this.config.locators;
         const classSuffixes = inc.classSuffixes
             ? [
                   `Naming Convention for ${target} Classes: ${inc.classSuffixes.join(',')}`,

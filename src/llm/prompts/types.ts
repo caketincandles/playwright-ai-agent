@@ -1,5 +1,5 @@
 import { ACTION } from '@src/llm/prompts/consts';
-import { TTargetType } from '@src/services/types';
+import { TTargetType } from '@src/config/types';
 
 export type TAction = (typeof ACTION)[keyof typeof ACTION];
 

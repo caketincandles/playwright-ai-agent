@@ -1,7 +1,6 @@
-import * as Types from '@src/services/types';
 import * as Broker from '@src/llm/broker';
 import * as Prompt from '@src/llm/prompts';
-import { IConfig } from '@src/config/types';
+import * as Config from '@src/config';
 import { TResponseSchema } from '@src/llm/types';
 import { RESPONSE_SCHEMA } from '@src/llm/consts';
 
@@ -9,9 +8,9 @@ export class Llm {
     private readonly broker: Broker.Llm;
 
     constructor(
-        private readonly config: IConfig,
-        private readonly service: Types.TServiceType,
-        private readonly target: Types.TTargetType[],
+        private readonly config: Config.Types.IConfig,
+        private readonly service: Config.Types.TServiceType,
+        private readonly target: Config.Types.TTargetType[],
     ) {
         this.broker = new Broker.Llm({ config: this.config.ai });
     }

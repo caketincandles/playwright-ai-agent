@@ -1,3 +1,16 @@
+export const SERVICE = {
+    HEAL: 'AI.HEAL',
+    CREATE: 'AI.CREATE',
+    IMPROVE: 'AI.IMPROVE',
+} as const;
+
+export const TARGET = {
+    LOCATOR: 'LOCATOR',
+    PAGE: 'PAGE',
+    TEST: 'TEST',
+    API: 'API',
+} as const;
+
 export const AUTH_METHOD = {
     API_KEY: 'api-key',
     BEARER: 'bearer',

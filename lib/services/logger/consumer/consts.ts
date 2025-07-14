@@ -1,12 +1,11 @@
 import chalk from 'chalk';
-import * as BASE_CONSTS from '@src/services/consts';
-import * as BaseTypes from '@src/services/types';
+import * as Config from '@src/config';
 
 export const COLOUR_MAP: Record<
-    BaseTypes.TServiceType,
+    Config.Types.TServiceType,
     (text: string) => string
 > = {
-    [BASE_CONSTS.SERVICE.HEAL]: chalk.bgGreen.black,
-    [BASE_CONSTS.SERVICE.CREATE]: chalk.bgBlue.white,
-    [BASE_CONSTS.SERVICE.IMPROVE]: chalk.bgYellow.black,
+    [Config.CONSTS.SERVICE.HEAL]: chalk.bgGreen.black,
+    [Config.CONSTS.SERVICE.CREATE]: chalk.bgBlue.white,
+    [Config.CONSTS.SERVICE.IMPROVE]: chalk.bgYellow.black,
 } as const;

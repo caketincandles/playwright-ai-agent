@@ -1,7 +1,8 @@
 import * as LlmTypes from '@src/llm/types';
-import { AUTH_METHOD } from '@src/config/consts';
+import * as CONSTS from '@src/config/consts';
 
-export type TAuthMethod = (typeof AUTH_METHOD)[keyof typeof AUTH_METHOD];
+export type TAuthMethod =
+    (typeof CONSTS.AUTH_METHOD)[keyof typeof CONSTS.AUTH_METHOD];
 
 interface IBaseAiConfig {
     readonly apiUrl: string;
@@ -41,3 +42,9 @@ export interface IConfig {
     readonly locators: IProjectLocatorConfig;
     readonly pages: IProjectPageConfig;
 }
+
+/** Primary service type */
+export type TServiceType = (typeof CONSTS.SERVICE)[keyof typeof CONSTS.SERVICE];
+
+/** Target type for operations */
+export type TTargetType = (typeof CONSTS.TARGET)[keyof typeof CONSTS.TARGET];

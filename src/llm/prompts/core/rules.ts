@@ -1,8 +1,7 @@
 import { RESPONSE_FORMAT } from '@src/llm/consts';
 import { TAction } from '@src/llm/prompts/types';
 import { ACTION } from '@src/llm/prompts/consts';
-import { TARGET, SERVICE } from '@src/services/consts';
-import { TServiceType, TTargetType } from '@src/services/types';
+import * as Config from '@src/config';
 
 const BASE_RULES: readonly string[] = [
     `## CRITICAL: Response format must be EXACTLY: \`${RESPONSE_FORMAT()}[]\` - no other format is acceptable`,
@@ -83,21 +82,24 @@ export const PAGE_RULES: readonly string[] = [
     'Always define specific wait conditions rather than arbitrary delays',
 ] as const;
 
-export const SERVICE_BASE_RULES: Record<TServiceType, readonly string[]> = {
-    [SERVICE.CREATE]: [
+export const SERVICE_BASE_RULES: Record<
+    Config.Types.TServiceType,
+    readonly string[]
+> = {
+    [Config.CONSTS.SERVICE.CREATE]: [
         ...GENERATE_RULES,
         'SCOPE: Generate complete, production-ready code following all project patterns and conventions',
         'STRUCTURE: Create proper class hierarchies, method organization, and clear separation of concerns',
         'VALIDATION: Include input validation, error handling, and edge case coverage',
     ],
-    [SERVICE.HEAL]: [
+    [Config.CONSTS.SERVICE.HEAL]: [
         ...UPDATE_RULES,
         'OBJECTIVE: Fix ONLY the immediate test failure - do not refactor or improve unrelated code',
         'ROOT CAUSE: Target the actual cause of failure, not symptoms - fix broken selectors, not just timeouts',
         'MINIMAL SCOPE: Modify only the failing code path - preserve all working functionality exactly as-is',
         'NO ENHANCEMENTS: Do not add new features, improve performance, or update coding styles',
     ],
-    [SERVICE.IMPROVE]: [
+    [Config.CONSTS.SERVICE.IMPROVE]: [
         ...GENERATE_RULES,
         ...UPDATE_RULES,
         'SCOPE: Enhance code quality, performance, and maintainability while preserving functionality',
@@ -106,36 +108,36 @@ export const SERVICE_BASE_RULES: Record<TServiceType, readonly string[]> = {
     ],
 } as const;
 
-export const SERVICE_MAP: Record<TServiceType, TAction[]> = {
-    [SERVICE.CREATE]: [ACTION.GENERATE],
-    [SERVICE.HEAL]: [ACTION.UPDATE],
-    [SERVICE.IMPROVE]: [ACTION.GENERATE, ACTION.UPDATE],
+export const SERVICE_MAP: Record<Config.Types.TServiceType, TAction[]> = {
+    [Config.CONSTS.SERVICE.CREATE]: [ACTION.GENERATE],
+    [Config.CONSTS.SERVICE.HEAL]: [ACTION.UPDATE],
+    [Config.CONSTS.SERVICE.IMPROVE]: [ACTION.GENERATE, ACTION.UPDATE],
 } as const;
 
 export const TARGET_RULES: Record<
     TAction,
-    Record<TTargetType, readonly string[]>
+    Record<Config.Types.TTargetType, readonly string[]>
 > = {
     [ACTION.GENERATE]: {
-        [TARGET.API]: [
+        [Config.CONSTS.TARGET.API]: [
             'Create complete API client classes with proper error handling and response typing',
             'Include request/response interfaces and proper HTTP status code handling',
             'Implement retry logic and timeout handling for network requests',
         ],
-        [TARGET.LOCATOR]: [
+        [Config.CONSTS.TARGET.LOCATOR]: [
             ...LOCATOR_RULES,
             'CREATE REQUIREMENT: Generate reusable locator methods with descriptive names like getUsernameInput(), getSubmitButton()',
             'ORGANIZATION: Group related locators in logical classes (LoginLocators, DashboardLocators)',
             'RETURN TYPES: All locator methods must return Playwright Locator objects, never strings or ElementHandle',
         ],
-        [TARGET.PAGE]: [
+        [Config.CONSTS.TARGET.PAGE]: [
             ...PAGE_RULES,
             'PAGE METHODS: Create action methods (fillLoginForm, clickSubmitButton) and verification methods (isLoggedIn, hasErrorMessage)',
             'WORKFLOW SUPPORT: Generate methods for complete business workflows, not just individual element interactions',
             'STATE VALIDATION: Include methods to verify page state and wait for page readiness before interactions',
             'CHAINING: Design methods to return Page object for fluent interface: page.login().navigateToDashboard()',
         ],
-        [TARGET.TEST]: [
+        [Config.CONSTS.TARGET.TEST]: [
             ...TEST_RULES,
             'TEST STRUCTURE: Use clear arrange-act-assert pattern with descriptive test names explaining expected behavior',
             'SETUP/TEARDOWN: Include proper beforeEach/afterEach for test isolation and cleanup',
@@ -143,27 +145,30 @@ export const TARGET_RULES: Record<
         ],
     },
     [ACTION.UPDATE]: {
-        [TARGET.API]: [
+        [Config.CONSTS.TARGET.API]: [
             'Preserve existing request/response interfaces unless they cause the specific failure',
             'Update only failing API calls - do not modify working endpoints',
         ],
-        [TARGET.LOCATOR]: [
+        [Config.CONSTS.TARGET.LOCATOR]: [
             ...LOCATOR_RULES,
             'LOCATOR UPDATES: When changing selectors, verify new locator targets the same logical element as before',
             'BREAKING CHANGES: Add recommendation if locator method name changes - warn about potential reference breaks in tests',
             'SELECTOR MIGRATION: When updating selectors, prefer moving up the priority hierarchy (CSS -> role -> testid)',
         ],
-        [TARGET.PAGE]: [
+        [Config.CONSTS.TARGET.PAGE]: [
             ...PAGE_RULES,
             'METHOD SIGNATURES: Preserve existing method signatures and return types unless they directly cause failures',
             'ABSTRACTION LEVELS: Maintain existing separation between low-level actions and high-level business methods',
             'BACKWARDS COMPATIBILITY: Ensure page method changes do not break existing test calls',
             'RECOVERY: Only add error recovery logic if the original test intended to handle specific failure scenarios',
         ],
-        [TARGET.TEST]: [
+        [Config.CONSTS.TARGET.TEST]: [
             'TEST INTENT: Preserve original test purpose, coverage scope, and logical flow - only fix failing assertions/actions',
             'VERIFICATION POINTS: Maintain existing assertion structure unless assertions are factually incorrect',
             'TEST DATA: Update test data only if it causes the specific test failure being addressed',
         ],
     },
-} as const satisfies Record<TAction, Record<TTargetType, readonly string[]>>;
+} as const satisfies Record<
+    TAction,
+    Record<Config.Types.TTargetType, readonly string[]>
+>;

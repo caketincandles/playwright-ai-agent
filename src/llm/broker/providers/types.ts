@@ -20,8 +20,8 @@ export interface IFactory {
 
 /** Base interface for all LLM providers */
 export interface IBase {
-    readonly name: Types.TProvider;
-    readonly defaultConfig: Partial<TAiConfig>;
+    readonly NAME: Types.TProvider;
+    readonly DEFAULT: Partial<TAiConfig>;
 
     /**
      * Transforms request to provider-specific format

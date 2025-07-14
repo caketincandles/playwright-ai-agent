@@ -45,7 +45,7 @@ export class ProviderFactory implements Types.Broker.Provider.IFactory {
      */
     public getDefaultConfig(name: Types.TProvider): Partial<TAiConfig> {
         const provider = this.createProvider(name);
-        return provider.defaultConfig;
+        return provider.DEFAULT;
     }
 
     /**
@@ -68,7 +68,7 @@ export class ProviderFactory implements Types.Broker.Provider.IFactory {
     ): Types.Broker.Provider.IBase {
         const provider = this.createProvider(name);
         const mergedConfig = {
-            ...provider.defaultConfig,
+            ...provider.DEFAULT,
             ...config,
         } as TAiConfig;
         provider.validateConfig(mergedConfig);
