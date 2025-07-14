@@ -27,17 +27,17 @@ export interface IAiInternalConfig extends IBaseAiConfig {
 
 export type TAiConfig = IExternalAiConfig | IAiInternalConfig;
 
-export interface IBaseProjectConfig {
+export interface IProjectPageConfig {
     readonly directory: string;
     readonly classSuffixes?: readonly string[];
 }
 
-export interface IProjectConfig extends IBaseProjectConfig {
+export interface IProjectLocatorConfig extends IProjectPageConfig {
     readonly paramSuffixes?: readonly string[];
 }
 
 export interface IConfig {
     readonly ai: TAiConfig;
-    readonly locators: IProjectConfig;
-    readonly pages: IBaseProjectConfig;
+    readonly locators: IProjectLocatorConfig;
+    readonly pages: IProjectPageConfig;
 }

@@ -156,7 +156,7 @@ export class SetupWizard {
         return uniqueSuffixes;
     }
 
-    private async getLocatorsConfig(): Promise<Types.IProjectConfig> {
+    private async getLocatorsConfig(): Promise<Types.IProjectLocatorConfig> {
         devLog.std(chalk.cyanBright('🔍 Locator Config\n'));
         const baseClassSfx = BASE.LOCATOR.CLASS_SUFFIXES;
         const baseParamSfx = BASE.LOCATOR.PARAM_SUFFIXES;
@@ -213,7 +213,7 @@ export class SetupWizard {
         };
     }
 
-    private async getPagesConfig(): Promise<Types.IBaseProjectConfig> {
+    private async getPagesConfig(): Promise<Types.IProjectPageConfig> {
         devLog.std(chalk.cyanBright('📄 Page Config\n'));
         const baseClassSfx = BASE.PAGE.CLASS_SUFFIXES;
 

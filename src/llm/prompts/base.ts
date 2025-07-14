@@ -6,7 +6,7 @@ import { INSTRUCTIONS, MAIN_OBJECTIVE } from 'src/llm/prompts/core/task';
 import * as RULE from '@src/llm/prompts/core/rules';
 import { TARGET } from '@src/services/consts';
 import { TServiceType, TTargetType } from '@src/services/types';
-import { IProjectConfig } from '@src/config/types';
+import { IProjectLocatorConfig } from '@src/config/types';
 
 export abstract class BasePrompt implements Types.IXmlSchema {
     private dataLoadPromise?: Promise<void>;
@@ -115,7 +115,7 @@ export abstract class BasePrompt implements Types.IXmlSchema {
         if (target !== TARGET.LOCATOR && target !== TARGET.PAGE) {
             return { target };
         }
-        let inc: IProjectConfig = this.config.pages;
+        let inc: IProjectLocatorConfig = this.config.pages;
         if (target === TARGET.LOCATOR) inc = this.config.locators;
         const classSuffixes = inc.classSuffixes
             ? [
