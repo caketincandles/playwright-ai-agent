@@ -2,8 +2,8 @@ import * as Types from '@src/services/types';
 import * as Broker from '@src/llm/broker';
 import * as Prompt from '@src/llm/prompts';
 import { IConfig } from '@src/config/types';
-import { TResponseSchema } from './types';
-import { RESPONSE_SCHEMA } from './consts';
+import { TResponseSchema } from '@src/llm/types';
+import { RESPONSE_SCHEMA } from '@src/llm/consts';
 
 export class Llm {
     private readonly broker: Broker.Llm;
@@ -23,7 +23,8 @@ export class Llm {
             this.config,
             this.target,
         );
-        const rawResponse = await prompt.createPrompt();
+        const rawPrompt = await prompt.createPrompt();
+        const rawResponse = await this.broker.getResponse(rawPrompt);
         return this.parseResponse(rawResponse);
     }
 
