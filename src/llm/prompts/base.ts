@@ -78,37 +78,47 @@ export abstract class BasePrompt implements Types.IXmlSchema {
     }
 
     private get getRules(): string[] {
-        const RULESET: string[] = [];
-        RULESET.push(...RULE.SERVICE_BASE_RULES[this.service]);
+        const ACTIONS = RULE.SERVICE_ACTION_MAP[this.service];
 
-        const actions = RULE.SERVICE_MAP[this.service];
+        const TARGET: Config.Types.TTargetType[] =
+            this.target.length > 0
+                ? this.target
+                : Object.values(Config.CONSTS.TARGET);
+        const TARGET_RULES = this.getTargetRules(ACTIONS, TARGET);
 
-        if (this.target.length > 0) {
-            for (const target of this.target) {
-                for (const action of actions) {
-                    RULESET.push(...RULE.TARGET_RULES[action][target]);
-                }
+        const RULESET: string[] = [
+            ...RULE.BASE_RULES,
+            ...RULE.SERVICE_RULES[this.service],
+            ...TARGET_RULES,
+        ];
+
+        for (const ACTION of ACTIONS) {
+            RULESET.push(...RULE.ACTION_RULES[ACTION]);
+        }
+
+        return RULESET;
+    }
+
+    private getTargetRules(
+        actions: Types.TAction[],
+        target: Config.Types.TTargetType[],
+    ): string[] {
+        const ret: string[] = [];
+        for (const TARGET of target) {
+            for (const ACTION of actions) {
+                ret.push(...RULE.ACTION_TARGET_RULES[ACTION][TARGET]);
             }
-
+            ret.push(...RULE.TARGET_RULES[TARGET]);
+        }
+        if (this.target.length > 0) {
             if (
                 !this.target.includes(Config.CONSTS.TARGET.PAGE) &&
                 this.target.includes(Config.CONSTS.TARGET.TEST)
             ) {
-                RULESET.push(...RULE.PAGE_RULES);
-            }
-        } else {
-            for (const target in Config.CONSTS.TARGET) {
-                for (const action of actions) {
-                    RULESET.push(
-                        ...RULE.TARGET_RULES[action][
-                            target as Config.Types.TTargetType
-                        ],
-                    );
-                }
+                ret.push(...RULE.TARGET_RULES[Config.CONSTS.TARGET.PAGE]);
             }
         }
-
-        return RULESET;
+        return ret;
     }
 
     private getSuffixes(target: Config.Types.TTargetType): Types.ISuffixes {

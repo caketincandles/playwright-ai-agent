@@ -3,7 +3,7 @@ import { TAction } from '@src/llm/prompts/types';
 import { ACTION } from '@src/llm/prompts/consts';
 import * as Config from '@src/config';
 
-const BASE_RULES: readonly string[] = [
+export const BASE_RULES: readonly string[] = [
     `## CRITICAL: Response format must be EXACTLY: \`${RESPONSE_FORMAT()}[]\` - no other format is acceptable`,
     '### REQUIRED: Populate `changeLog` array with bullet points explaining what changed and why, using max 15 words per entry',
     '### REQUIRED: Each `recommendations` entry must contain executable code snippet under 50 characters and reason under 20 words',
@@ -22,99 +22,97 @@ const BASE_RULES: readonly string[] = [
     'URL FORMAT: Use relative URLs (/dashboard) not absolute (https://example.com/dashboard) for environment flexibility',
 ] as const;
 
-const UPDATE_RULES: readonly string[] = [
-    ...BASE_RULES,
-    '### REQUIRED: Add breaking changes to `recommendations` with exact code snippet and reason - be specific about what breaks',
-    'NEVER modify imports/exports unless they directly cause the failure being fixed',
-    'NEVER redeclare external types, interfaces, or functions - assume they work as documented',
-    'Make minimal targeted changes - modify only the specific lines causing issues',
-    'Before changing variable/method names, add recommendation warning about potential reference breaks',
-    'Maintain exact indentation, spacing, and formatting style of the original file',
-    'When multiple files provided, determine actual scope of necessary changes - do not modify context-only files unless essential',
-    'PRIORITY ORDER: Fix immediate issue > Preserve functionality > Maintain patterns > Improve code quality',
-    'ERROR MESSAGES: Maintain existing error message formats for logging consistency - add context, do not replace',
-    'TRY-CATCH: Preserve existing error handling patterns - only add context or modify catch blocks if needed for debugging',
-    'STACK TRACES: Preserve original error stack traces when re-throwing or wrapping errors',
-    'PARAMETERS: Preserve URL parameters and query strings unless they directly cause test failures',
-] as const;
-
-const GENERATE_RULES: readonly string[] = [
-    ...BASE_RULES,
-    'CONFIGURATION: Follow provided linter configs (.eslintrc, tsconfig.json) exactly - do not deviate from project standards',
-    'PATTERNS: Study existing project files to match naming conventions, folder structure, and code organization',
-    'ROBUSTNESS: Include comprehensive error handling, input validation, and graceful failure modes',
-    'ABSTRACTIONS: Create clear, single-responsibility classes and methods with intuitive naming',
-    'TESTING: Generate code that is easily testable with proper dependency injection and clear interfaces',
-    'DOCUMENTATION: Include TSDoc comments for all public methods with parameter and return type descriptions',
-] as const;
-
-const LOCATOR_RULES: readonly string[] = [
-    'SELECTOR PRIORITY (use first available): data-testid > ARIA role > aria-label > text content > stable attributes > CSS classes > CSS selectors',
-    'AVOID: nth-child(), :first, :last, position-based selectors',
-    'FORBIDDEN: randomly generated IDs, dynamic class names',
-    'Page Object Model: group related locators, use descriptive method names, return Locator objects not ElementHandle',
-    'TEST REQUIREMENT: Verify locators work across mobile/desktop viewports and different application states',
-    'Use playwright locator methods: getByTestId(), getByRole(), getByLabel(), getByText() over CSS selectors',
-    'For complex elements, chain locators: page.getByRole("button").filter({hasText: "Submit"})',
-    'FLAKY ELEMENTS: Add retry logic with exponential backoff for unstable elements',
-    'DYNAMIC CONTENT: For loading spinners/overlays, wait for them to disappear before interacting with underlying elements',
-] as const;
-
-const TEST_RULES: readonly string[] = [
-    'ASSERTION STRENGTH: Keep strict assertions (toEqual, toBe) unless test failure proves actual behavior is correct',
-    'SOFT ASSERTIONS: Use expect.soft() sparingly and only when test must continue after assertion failure',
-    'EXPECTED VALUES: Only change expected values when actual application behavior is verified correct - not just to make tests pass',
-] as const;
-
-export const PAGE_RULES: readonly string[] = [
-    'SEPARATION: Keep page interactions (clicks, fills) separate from assertions - use different methods',
-    'WAIT STRATEGY: Use page.waitForLoadState(), waitForSelector() instead of arbitrary timeouts',
-    'RETURN TYPES: Page methods should return Page object for chaining or specific data types for getters',
-    'FORBIDDEN: Do not suppress errors with empty catch blocks unless specifically required for test flow',
-    'TEST FAILURES: Add descriptive error messages that help identify what went wrong: "Login button not found after 30s wait"',
-    'FORBIDDEN: page.waitForTimeout() - use explicit waits: waitForSelector(), waitForLoadState(), waitForResponse()',
-    'ELEMENT STATE: Verify element is visible AND enabled before interaction - use locator.isVisible() and isEnabled()',
-    'LOADING STATES: Use page.waitForLoadState("networkidle") for SPAs, "domcontentloaded" for static pages',
-    'PRE-INTERACTION: Always verify element.isVisible() && element.isEnabled() before click/fill/select actions',
-    'PAGE LOADS: Always verify navigation success with page.waitForURL() or check for expected page elements',
-    'BROWSER CONTEXT: Use page.goto() instead of manipulating window.location for better reliability',
-    'REDIRECTS: Handle expected redirects by waiting for final URL or expected page content',
-    'Always define specific wait conditions rather than arbitrary delays',
-] as const;
-
-export const SERVICE_BASE_RULES: Record<
+export const SERVICE_RULES: Record<
     Config.Types.TServiceType,
     readonly string[]
 > = {
     [Config.CONSTS.SERVICE.CREATE]: [
-        ...GENERATE_RULES,
         'SCOPE: Generate complete, production-ready code following all project patterns and conventions',
         'STRUCTURE: Create proper class hierarchies, method organization, and clear separation of concerns',
         'VALIDATION: Include input validation, error handling, and edge case coverage',
     ],
     [Config.CONSTS.SERVICE.HEAL]: [
-        ...UPDATE_RULES,
         'OBJECTIVE: Fix ONLY the immediate test failure - do not refactor or improve unrelated code',
         'ROOT CAUSE: Target the actual cause of failure, not symptoms - fix broken selectors, not just timeouts',
         'MINIMAL SCOPE: Modify only the failing code path - preserve all working functionality exactly as-is',
         'NO ENHANCEMENTS: Do not add new features, improve performance, or update coding styles',
     ],
     [Config.CONSTS.SERVICE.IMPROVE]: [
-        ...GENERATE_RULES,
-        ...UPDATE_RULES,
         'SCOPE: Enhance code quality, performance, and maintainability while preserving functionality',
         'OPTIMIZATION: Focus on performance improvements, better error handling, and code organization',
         'COMPATIBILITY: Ensure all improvements maintain backward compatibility',
     ],
 } as const;
 
-export const SERVICE_MAP: Record<Config.Types.TServiceType, TAction[]> = {
-    [Config.CONSTS.SERVICE.CREATE]: [ACTION.GENERATE],
-    [Config.CONSTS.SERVICE.HEAL]: [ACTION.UPDATE],
-    [Config.CONSTS.SERVICE.IMPROVE]: [ACTION.GENERATE, ACTION.UPDATE],
-} as const;
+export const SERVICE_ACTION_MAP: Record<Config.Types.TServiceType, TAction[]> =
+    {
+        [Config.CONSTS.SERVICE.CREATE]: [ACTION.GENERATE],
+        [Config.CONSTS.SERVICE.HEAL]: [ACTION.UPDATE],
+        [Config.CONSTS.SERVICE.IMPROVE]: [ACTION.GENERATE, ACTION.UPDATE],
+    } as const;
 
-export const TARGET_RULES: Record<
+export const ACTION_RULES: Record<TAction, readonly string[]> = {
+    [ACTION.GENERATE]: [
+        'CONFIGURATION: Follow provided linter configs (.eslintrc, tsconfig.json) exactly - do not deviate from project standards',
+        'PATTERNS: Study existing project files to match naming conventions, folder structure, and code organization',
+        'ROBUSTNESS: Include comprehensive error handling, input validation, and graceful failure modes',
+        'ABSTRACTIONS: Create clear, single-responsibility classes and methods with intuitive naming',
+        'TESTING: Generate code that is easily testable with proper dependency injection and clear interfaces',
+        'DOCUMENTATION: Include TSDoc comments for all public methods with parameter and return type descriptions',
+    ],
+    [ACTION.UPDATE]: [
+        '### REQUIRED: Add breaking changes to `recommendations` with exact code snippet and reason - be specific about what breaks',
+        'NEVER modify imports/exports unless they directly cause the failure being fixed',
+        'NEVER redeclare external types, interfaces, or functions - assume they work as documented',
+        'Make minimal targeted changes - modify only the specific lines causing issues',
+        'Before changing variable/method names, add recommendation warning about potential reference breaks',
+        'Maintain exact indentation, spacing, and formatting style of the original file',
+        'When multiple files provided, determine actual scope of necessary changes - do not modify context-only files unless essential',
+        'PRIORITY ORDER: Fix immediate issue > Preserve functionality > Maintain patterns > Improve code quality',
+        'ERROR MESSAGES: Maintain existing error message formats for logging consistency - add context, do not replace',
+        'TRY-CATCH: Preserve existing error handling patterns - only add context or modify catch blocks if needed for debugging',
+        'STACK TRACES: Preserve original error stack traces when re-throwing or wrapping errors',
+        'PARAMETERS: Preserve URL parameters and query strings unless they directly cause test failures',
+    ],
+};
+
+export const TARGET_RULES: Record<Config.Types.TTargetType, readonly string[]> =
+    {
+        [Config.CONSTS.TARGET.API]: [],
+        [Config.CONSTS.TARGET.LOCATOR]: [
+            'SELECTOR PRIORITY (use first available): data-testid > ARIA role > aria-label > text content > stable attributes > CSS classes > CSS selectors',
+            'AVOID: nth-child(), :first, :last, position-based selectors',
+            'FORBIDDEN: randomly generated IDs, dynamic class names',
+            'Page Object Model: group related locators, use descriptive method names, return Locator objects not ElementHandle',
+            'TEST REQUIREMENT: Verify locators work across mobile/desktop viewports and different application states',
+            'Use playwright locator methods: getByTestId(), getByRole(), getByLabel(), getByText() over CSS selectors',
+            'For complex elements, chain locators: page.getByRole("button").filter({hasText: "Submit"})',
+            'FLAKY ELEMENTS: Add retry logic with exponential backoff for unstable elements',
+            'DYNAMIC CONTENT: For loading spinners/overlays, wait for them to disappear before interacting with underlying elements',
+        ],
+        [Config.CONSTS.TARGET.PAGE]: [
+            'SEPARATION: Keep page interactions (clicks, fills) separate from assertions - use different methods',
+            'WAIT STRATEGY: Use page.waitForLoadState(), waitForSelector() instead of arbitrary timeouts',
+            'RETURN TYPES: Page methods should return Page object for chaining or specific data types for getters',
+            'FORBIDDEN: Do not suppress errors with empty catch blocks unless specifically required for test flow',
+            'TEST FAILURES: Add descriptive error messages that help identify what went wrong: "Login button not found after 30s wait"',
+            'FORBIDDEN: page.waitForTimeout() - use explicit waits: waitForSelector(), waitForLoadState(), waitForResponse()',
+            'ELEMENT STATE: Verify element is visible AND enabled before interaction - use locator.isVisible() and isEnabled()',
+            'LOADING STATES: Use page.waitForLoadState("networkidle") for SPAs, "domcontentloaded" for static pages',
+            'PRE-INTERACTION: Always verify element.isVisible() && element.isEnabled() before click/fill/select actions',
+            'PAGE LOADS: Always verify navigation success with page.waitForURL() or check for expected page elements',
+            'BROWSER CONTEXT: Use page.goto() instead of manipulating window.location for better reliability',
+            'REDIRECTS: Handle expected redirects by waiting for final URL or expected page content',
+            'Always define specific wait conditions rather than arbitrary delays',
+        ],
+        [Config.CONSTS.TARGET.TEST]: [
+            'ASSERTION STRENGTH: Keep strict assertions (toEqual, toBe) unless test failure proves actual behavior is correct',
+            'SOFT ASSERTIONS: Use expect.soft() sparingly and only when test must continue after assertion failure',
+            'EXPECTED VALUES: Only change expected values when actual application behavior is verified correct - not just to make tests pass',
+        ],
+    };
+
+export const ACTION_TARGET_RULES: Record<
     TAction,
     Record<Config.Types.TTargetType, readonly string[]>
 > = {
@@ -125,20 +123,17 @@ export const TARGET_RULES: Record<
             'Implement retry logic and timeout handling for network requests',
         ],
         [Config.CONSTS.TARGET.LOCATOR]: [
-            ...LOCATOR_RULES,
             'CREATE REQUIREMENT: Generate reusable locator methods with descriptive names like getUsernameInput(), getSubmitButton()',
             'ORGANIZATION: Group related locators in logical classes (LoginLocators, DashboardLocators)',
             'RETURN TYPES: All locator methods must return Playwright Locator objects, never strings or ElementHandle',
         ],
         [Config.CONSTS.TARGET.PAGE]: [
-            ...PAGE_RULES,
             'PAGE METHODS: Create action methods (fillLoginForm, clickSubmitButton) and verification methods (isLoggedIn, hasErrorMessage)',
             'WORKFLOW SUPPORT: Generate methods for complete business workflows, not just individual element interactions',
             'STATE VALIDATION: Include methods to verify page state and wait for page readiness before interactions',
             'CHAINING: Design methods to return Page object for fluent interface: page.login().navigateToDashboard()',
         ],
         [Config.CONSTS.TARGET.TEST]: [
-            ...TEST_RULES,
             'TEST STRUCTURE: Use clear arrange-act-assert pattern with descriptive test names explaining expected behavior',
             'SETUP/TEARDOWN: Include proper beforeEach/afterEach for test isolation and cleanup',
             'COVERAGE: Generate tests for positive scenarios, negative scenarios, edge cases, and error conditions',
@@ -150,13 +145,11 @@ export const TARGET_RULES: Record<
             'Update only failing API calls - do not modify working endpoints',
         ],
         [Config.CONSTS.TARGET.LOCATOR]: [
-            ...LOCATOR_RULES,
             'LOCATOR UPDATES: When changing selectors, verify new locator targets the same logical element as before',
             'BREAKING CHANGES: Add recommendation if locator method name changes - warn about potential reference breaks in tests',
             'SELECTOR MIGRATION: When updating selectors, prefer moving up the priority hierarchy (CSS -> role -> testid)',
         ],
         [Config.CONSTS.TARGET.PAGE]: [
-            ...PAGE_RULES,
             'METHOD SIGNATURES: Preserve existing method signatures and return types unless they directly cause failures',
             'ABSTRACTION LEVELS: Maintain existing separation between low-level actions and high-level business methods',
             'BACKWARDS COMPATIBILITY: Ensure page method changes do not break existing test calls',
