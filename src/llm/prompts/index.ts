@@ -1,6 +1,6 @@
 import path from 'path';
-import { BasePrompt } from '@src/llm/prompts/base';
 import * as Config from '@src/config';
+import { BasePrompt } from '@src/llm/prompts/base';
 
 export class Factory extends BasePrompt {
     constructor(
@@ -20,11 +20,13 @@ export class Factory extends BasePrompt {
             this.main_objective,
             'main-objective',
         );
-        const instructions = this.getArrayXml(this.instructions, 'instruction');
+        const instructions = this.getArrayAsList(this.instructions);
         const rules = this.getArrayXml(this.rules, 'rule');
         const code = this.getCodeXml();
 
-        return `<system-prompt>${identity}<task>${mainObj}${instructions}${rules}</task>${code}</system-prompt>`;
+        const minifiedXml = this.minifyXml(`${identity}<task>${mainObj}${instructions}${rules}</task>`);
+
+        return `<system-prompt>${minifiedXml}${code}</system-prompt>`;
     }
 
     private getCodeXml(): string {
@@ -57,7 +59,7 @@ export class Factory extends BasePrompt {
 
         const inclusions =
             this.inclusions.length > 0
-                ? this.getArrayXml(include, 'naming-convention', false)
+                ? this.getSingletonXml(this.getArrayAsList(include), 'naming-convention')
                 : '';
 
         return this.getArrayXml([inclusions, ...tsFiles], 'code', false);
@@ -74,6 +76,10 @@ export class Factory extends BasePrompt {
         return plural ? `<${tag}s>${members}</${tag}s>` : members;
     }
 
+    private getArrayAsList(arr: string[]): string {
+        return '* ' + arr.join('\n* ');
+    }
+
     private minifyTypeScript(code: string): string {
         return (
             code
@@ -88,6 +94,25 @@ export class Factory extends BasePrompt {
                 .trim()
         );
     }
+
+    private minifyXml(xml: string): string {
+    return (
+        xml
+            // Remove whitespace between tags
+            .replace(/>\s+</g, '><')
+            // Remove extra whitespace (but preserve single spaces in content)
+            .replace(/\s+/g, ' ')
+            // Remove spaces around tag brackets
+            .replace(/\s*<\s*/g, '<')
+            .replace(/\s*>\s*/g, '>')
+            // Remove spaces around = in attributes
+            .replace(/\s*=\s*/g, '=')
+            // Remove spaces around quotes in attributes
+            .replace(/=\s*"/g, '="')
+            .replace(/"\s+/g, '" ')
+            .trim()
+    );
+}
 
     private getCleanFileName(filePath: string): string {
         const parsed = path.parse(filePath);
