@@ -3,7 +3,7 @@ import * as Config from '@src/config';
 import { EnvManager } from '@app/setup/env';
 
 export class ConfigCli extends Config.Config {
-    public async mergeWithEnv(): Promise<Config.Types.IConfig> {
+    public async mergeWithEnv(): Promise<Config.Types.IConfigFile> {
         const config = await this.load();
         if (!config) {
             this.log.error(`Error loading ${Config.CONSTS.CONFIG_FILE}`);

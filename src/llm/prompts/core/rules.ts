@@ -3,6 +3,8 @@ import { TAction } from '@src/llm/prompts/types';
 import { ACTION } from '@src/llm/prompts/consts';
 import * as Config from '@src/config';
 
+// <criteria-name> ## this is important </criteria-name>
+
 export const BASE_RULES: readonly string[] = [
     `## CRITICAL: Response format must be EXACTLY: \`${RESPONSE_FORMAT()}[]\` - no other format is acceptable`,
     '### REQUIRED: Populate `changeLog` array with bullet points explaining what changed and why, using max 15 words per entry',

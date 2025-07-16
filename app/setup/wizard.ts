@@ -1,7 +1,8 @@
 import chalk from 'chalk';
 import inquirer from 'inquirer';
+import * as ConfigTypes from '@src/config/types';
 import * as LlmTypes from '@src/llm/types';
-import * as Types from '@src/config/types';
+import * as SetupTypes from '@app/types';
 import * as Validate from '@app/setup/validation';
 import { devLog } from '@lib/services/logger';
 import { PROVIDER_MODELS, PROVIDERS } from '@src/llm/consts';
@@ -11,17 +12,17 @@ import { BASE } from '@src/config/consts';
 export class SetupWizard {
     private defaultDir = 'src/pages';
 
-    public async run(): Promise<Types.IConfig> {
+    public async run(): Promise<SetupTypes.ISetupConfig> {
         devLog.std(chalk.cyan('🎭 Playwright AI Agent Setup\n'));
 
         const ai = await this.getAiConfig();
         const locators = await this.getLocatorsConfig();
         const pages = await this.getPagesConfig();
 
-        return { ai, locators, pages };
+        return { ai, settings: { locators, pages } };
     }
 
-    private async getAiConfig(): Promise<Types.TAiConfig> {
+    private async getAiConfig(): Promise<ConfigTypes.TAiConfig> {
         devLog.std(chalk.cyanBright('✨ AI Setup\n'));
         const providerChoices = Object.entries(PROVIDERS).map(
             ([key, value]) => ({
@@ -51,7 +52,7 @@ export class SetupWizard {
                     validate: Validate.url,
                 },
             ]);
-            return { provider, apiUrl } as Types.IAiInternalConfig;
+            return { provider, apiUrl } as ConfigTypes.IAiInternalConfig;
         }
 
         const modelChoices = Object.entries(PROVIDER_MODELS[provider]).map(
@@ -80,7 +81,7 @@ export class SetupWizard {
             },
         ]);
 
-        return { provider, model, apiKey } as Types.IExternalAiConfig;
+        return { provider, model, apiKey } as ConfigTypes.IExternalAiConfig;
     }
 
     private async showDefaultsAndAccept(
@@ -156,7 +157,7 @@ export class SetupWizard {
         return uniqueSuffixes;
     }
 
-    private async getLocatorsConfig(): Promise<Types.IProjectLocatorConfig> {
+    private async getLocatorsConfig(): Promise<SetupTypes.IProjectLocatorConfig> {
         devLog.std(chalk.cyanBright('🔍 Locator Config\n'));
         const baseClassSfx = BASE.LOCATOR.CLASS_SUFFIXES;
         const baseParamSfx = BASE.LOCATOR.PARAM_SUFFIXES;
@@ -213,7 +214,7 @@ export class SetupWizard {
         };
     }
 
-    private async getPagesConfig(): Promise<Types.IProjectPageConfig> {
+    private async getPagesConfig(): Promise<SetupTypes.IProjectPageConfig> {
         devLog.std(chalk.cyanBright('📄 Page Config\n'));
         const baseClassSfx = BASE.PAGE.CLASS_SUFFIXES;
 

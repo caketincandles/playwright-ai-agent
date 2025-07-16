@@ -4,7 +4,7 @@ import * as CONSTS from '@src/llm/prompts/consts';
 import * as Config from '@src/config';
 import * as RULE from '@src/llm/prompts/core/rules';
 import { INSTRUCTIONS, MAIN_OBJECTIVE } from 'src/llm/prompts/core/task';
-import { IProjectLocatorConfig } from '@src/config/types';
+import { IProjectLocatorConfig } from '@app/types';
 
 export abstract class BasePrompt implements Types.IXmlSchema {
     private dataLoadPromise?: Promise<void>;
@@ -16,14 +16,14 @@ export abstract class BasePrompt implements Types.IXmlSchema {
 
     public rules: string[];
     public main_objective: string;
-    public instructions: string[];
+    public instructions: string;
     public code: Types.ITargetFiles[] = [];
     public inclusions: Types.ISuffixes[] = [];
 
     constructor(
         protected readonly filePaths: string[],
         protected readonly service: Config.Types.TServiceType,
-        protected readonly config: Config.Types.IConfig,
+        protected readonly config: Config.Types.IConfigFile,
     ) {
         this.main_objective = MAIN_OBJECTIVE[this.service];
         this.instructions = INSTRUCTIONS[this.service];
@@ -37,7 +37,7 @@ export abstract class BasePrompt implements Types.IXmlSchema {
 
     public setPromptValues(overrides: {
         mainObjective?: string;
-        instructions?: string[];
+        instructions?: string;
     }): void {
         if (overrides.mainObjective !== undefined) {
             this.main_objective = overrides.mainObjective;
@@ -128,8 +128,9 @@ export abstract class BasePrompt implements Types.IXmlSchema {
         ) {
             return { target };
         }
-        let inc: IProjectLocatorConfig = this.config.pages;
-        if (target === Config.CONSTS.TARGET.LOCATOR) inc = this.config.locators;
+        let inc: IProjectLocatorConfig = this.config.settings.pages;
+        if (target === Config.CONSTS.TARGET.LOCATOR)
+            inc = this.config.settings.locators;
         const classSuffixes = inc.classSuffixes
             ? [
                   `Naming Convention for ${target} Classes: ${inc.classSuffixes.join(',')}`,

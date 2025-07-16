@@ -17,7 +17,7 @@ export interface ITargetFiles {
 export interface IXmlSchema {
     readonly identity: string;
     main_objective: string;
-    instructions: string[];
+    instructions: string;
     rules: string[];
     code: ITargetFiles[];
     inclusions?: ISuffixes[];

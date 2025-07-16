@@ -1,10 +1,17 @@
 import * as LlmTypes from '@src/llm/types';
 import * as CONSTS from '@src/config/consts';
+import { ISettingsSetupConfig, ISetupConfig } from '@app/types';
+import { TKeysOfType } from '@lib/util/data-types/types';
 
 export type TAuthMethod =
     (typeof CONSTS.AUTH_METHOD)[keyof typeof CONSTS.AUTH_METHOD];
 
-interface IBaseAiConfig {
+export interface IProjectSummary {
+    base?: Record<TTargetType, string>;
+    examples?: Record<TTargetType, string>;
+}
+
+export interface IBaseAiConfig {
     readonly apiUrl: string;
     readonly provider: LlmTypes.TProvider;
     readonly authMethod?: TAuthMethod;
@@ -28,19 +35,24 @@ export interface IAiInternalConfig extends IBaseAiConfig {
 
 export type TAiConfig = IExternalAiConfig | IAiInternalConfig;
 
-export interface IProjectPageConfig {
-    readonly directory: string;
-    readonly classSuffixes?: readonly string[];
+export interface IPromptConfigFile {
+    readonly filePaths: string[];
+    prompt?: string;
 }
 
-export interface IProjectLocatorConfig extends IProjectPageConfig {
-    readonly paramSuffixes?: readonly string[];
+export interface ISettingsConfigFile extends ISettingsSetupConfig {
+    base?: IPromptConfigFile;
+    example?: IPromptConfigFile;
 }
 
-export interface IConfig {
-    readonly ai: TAiConfig;
-    readonly locators: IProjectLocatorConfig;
-    readonly pages: IProjectPageConfig;
+export type TPromptConfigKeys = TKeysOfType<
+    ISettingsConfigFile,
+    IPromptConfigFile
+>;
+
+export interface IConfigFile extends ISetupConfig {
+    readonly settings: ISettingsConfigFile;
+    project?: IProjectSummary;
 }
 
 /** Primary service type */

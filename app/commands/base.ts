@@ -6,7 +6,7 @@ export interface ICommand {
 }
 
 export abstract class BaseCommand implements ICommand {
-    constructor(protected readonly config?: Config.Types.IConfig) {}
+    constructor(protected readonly config?: Config.Types.IConfigFile) {}
 
     abstract execute(): Promise<boolean>;
 

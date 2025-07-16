@@ -8,7 +8,7 @@ export class Llm {
     private readonly broker: Broker.Llm;
 
     constructor(
-        private readonly config: Config.Types.IConfig,
+        private config: Config.Types.IConfigFile,
         private readonly service: Config.Types.TServiceType,
         private readonly target: Config.Types.TTargetType[],
     ) {

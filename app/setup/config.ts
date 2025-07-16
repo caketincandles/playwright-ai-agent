@@ -1,4 +1,5 @@
 import * as Config from '@src/config';
+import * as Types from '@app/types';
 import FileService from '@lib/services/file';
 import { EnvManager } from '@app/setup/env';
 import { devLog } from '@lib/services/logger';
@@ -6,7 +7,7 @@ import { devLog } from '@lib/services/logger';
 export class ConfigSetup {
     private readonly fs: FileService;
 
-    constructor(private responses: Config.Types.IConfig) {
+    constructor(private responses: Types.ISetupConfig) {
         this.fs = new FileService();
     }
 
@@ -43,8 +44,8 @@ export class ConfigSetup {
         return {
             lastUpdated: new Date().toLocaleString('en-GB'),
             ai: aiConfig,
-            locators: this.responses.locators,
-            pages: this.responses.pages,
+            locators: this.responses.settings.locators,
+            pages: this.responses.settings.pages,
         };
     }
 
